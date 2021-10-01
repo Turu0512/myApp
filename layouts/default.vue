@@ -3,6 +3,7 @@
     <v-navigation-drawer
       v-model="drawer"
       app
+      clipped
     >
     <v-list-item>
         <v-list-item-title class="title">
@@ -35,10 +36,10 @@
       <!--  -->
     </v-navigation-drawer>
 
-    <v-app-bar app>
+    <v-app-bar app clippedLeft>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-toolbar-title>送迎くん</v-toolbar-title>
     </v-app-bar>
 
     <v-main>

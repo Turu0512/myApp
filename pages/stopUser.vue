@@ -1,6 +1,6 @@
 <template>
  <v-app>
-  <h1 class="text-center">利用者一覧</h1>
+  <h1 class="text-center">利用中止者一覧</h1>
   <v-container>
   <v-row 
   class="d-flex justify-center d-inline-block">
@@ -90,9 +90,9 @@ export default ({
    {week:"日"},
   ],
   users:[
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true}
+   {name:"龍宮寺　堅", sex:"男", address:"３丁目", week:"月,水", use:false},
+   {name:"龍宮寺　堅", sex:"男", address:"３丁目", week:"月,水", use:false},
+   {name:"龍宮寺　堅", sex:"男", address:"３丁目", week:"月,水", use:false}
   ]
   
  })
