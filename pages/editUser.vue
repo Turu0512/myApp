@@ -126,11 +126,23 @@
       </v-col>
     </v-row>
     
+  <v-row>
+     <v-col cols="2">
+        <v-subheader class="text-center">中止</v-subheader>
+      </v-col>
+     <v-checkbox
+      label="利用者一覧に名前が表示されなくなります"
+    ></v-checkbox>
+    </v-row>
+    <v-low>
+     <v-col cols="12" class="pl-12">
+     ＊再表示させる場合にはチェックを外してください
+     </v-col>
+    </v-low>
     <v-row class="justify-center mt-10">
-        <v-btn>登録</v-btn>
+        <v-btn>編集</v-btn>
     </v-row>
   </v-container>
-  
   
 
    

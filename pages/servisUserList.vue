@@ -32,6 +32,7 @@
   </v-row>
 
   </v-container>
+  
   <v-container>
    <v-simple-table
     fixed-header
@@ -90,6 +91,19 @@ export default ({
    {week:"日"},
   ],
   users:[
+   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
+   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
+   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
+   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
+   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
+   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
+   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
+   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
+   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
+   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
+   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
+   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
+   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
    {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
    {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
    {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true}
