@@ -54,7 +54,7 @@
             利用日
           </th>
           <th class="text-rigth text-center">
-            -
+            ー
           </th>
         </tr>
       </thead>
