@@ -185,7 +185,7 @@ users:{
 
 methods:{
   createUser(){
-  const user =  JSON.parse(JSON.stringify(this.users))
+  const user =  { ...this.users }
   this.$store.dispatch("user/addUser",user)
   this.users.displayName= ""
   this.users.firstName= ""
