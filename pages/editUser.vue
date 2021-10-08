@@ -1,6 +1,6 @@
 <template>
  <v-app>
-  <h1 class="text-center">利用者登録</h1>
+  <h1 class="text-center">利用者編集</h1>
 
   <v-container>
   
@@ -92,11 +92,16 @@
      <v-col cols="2">
         <v-subheader class="text-center">利用日</v-subheader>
       </v-col>
+      <div
+      v-for="(item, i) in items" :key="i">
+
      <v-checkbox
-      v-for="item in items" :key="item.index"
       :label="item.week"
+      :value="item.week"
       class="mr-7"
+      v-model="users.dayOfWeek"
     ></v-checkbox>
+      </div>
     </v-row>
 
     <v-row>
@@ -104,14 +109,20 @@
         <v-subheader class="text-center">送迎</v-subheader>
       </v-col>
       
-      <v-radio-group row>
-     <v-radio
-      v-for="transfer in transfers" :key="transfer.index"
+      <v-radio-group 
+      row
+      v-for="(transfer, i) in transfers" :key="i"
+      v-model="users.transfers">
+      <v-radio
+      :id="transfer.label"
       :label="transfer.label"
+      :value="transfer.label"
       class="mr-7"
+      
     ></v-radio>
       </v-radio-group>
     </v-row>
+
 
     <v-row
    align="center" >
@@ -134,11 +145,11 @@
       label="利用者一覧に名前が表示されなくなります"
     ></v-checkbox>
     </v-row>
-    <v-low>
+    <v-row>
      <v-col cols="12" class="pl-12">
      ＊再表示させる場合にはチェックを外してください
      </v-col>
-    </v-low>
+    </v-row>
     <v-row class="justify-center mt-10">
         <v-btn>編集</v-btn>
     </v-row>
@@ -153,23 +164,43 @@
 export default {
  data:()=> ({
   sex:["男","女"],
-  items:[
-   {week:"月"},
-   {week:"火"},
-   {week:"水"},
-   {week:"木"},
-   {week:"金"},
-   {week:"土"},
-   {week:"日"},
+items:[
+  {week:"月"},
+  {week:"火"},
+  {week:"水"},
+  {week:"木"},
+  {week:"金"},
+  {week:"土"},
+  {week:"日"},
+],
+transfers:[
+  {label:"送迎あり"},
+  {label:"送迎なし"},
+  {label:"途中送迎"}
   ],
-  transfers:[
-   {label:"送迎あり", value:false},
-   {label:"送迎なし", value:false},
-   {label:"途中送迎", value:false}
-   ],
- }),
+
+
+users:{
+  displayName: "",
+  firstName: "",
+  familyName: "",
+  firstNameRuby: "",
+  lastNameRuby: "",
+  sex: "",
+  address: "",
+  dayOfWeek: [],
+  transfers: "",
+  },
+}),
+computed: {
+    users() {
+      return this.$store.getters["user/editUsersData"]
+    }
+  }
 }
 </script>
+
+
 
 <style>
 .v-subheader{

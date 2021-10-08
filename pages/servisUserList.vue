@@ -63,11 +63,17 @@
           v-for="user in users"
           :key="user.name"
         >
-          <td >{{ user.name }}</td>
+          <td >{{ user.familyName +" "+ user.firstName}}</td>
           <td align="center">{{ user.sex }}</td>
           <td align="center">{{ user.address }}</td>
-          <td align="center">{{ user.week }}</td>
-          <td align="center"><v-btn>編集</v-btn></td>
+          <td align="center">
+            <th v-for="dayOfWeek in user.dayOfWeek" :key="dayOfWeek"
+            class="pa-1"
+            >
+              {{ dayOfWeek }}
+              </th>
+          </td>
+          <td align="center"><v-btn @click="editUser(user)">編集</v-btn></td>
         </tr>
       </tbody>
     </template>
@@ -79,7 +85,7 @@
 
 <script>
 
-export default ({
+export default {
  data:()=>({
   items:[
    {week:"月"},
@@ -90,25 +96,21 @@ export default ({
    {week:"土"},
    {week:"日"},
   ],
-  users:[
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true},
-   {name:"佐野万次郎", sex:"男", address:"一丁目", week:"月,水", use:true}
-  ]
   
- })
-})
+ }),
+
+computed:{
+  users(){
+    return this.$store.getters["user/users"]
+  }
+},
+
+methods: {
+  editUser(user) {
+  this.$store.commit("user/editUserData",user);
+  this.$router.push({ name: 'editUser' })
+  }
+}
+
+}
 </script>
