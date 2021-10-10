@@ -59,8 +59,9 @@
       >
       <v-col
       cols="3"
-      v-if="n%2 != 0">
-         {{ user }}
+      v-if="n%2 != 0"
+      @click="abc(n)">
+      
       </v-col>
       <v-card v-else>
        →
@@ -95,7 +96,7 @@
     >
       <v-subheader>家族送迎</v-subheader>
       <v-list-item-group
-        v-model="selectedItem"
+
         color="primary"
       >
         <v-list-item
@@ -125,16 +126,16 @@
     >
       <v-subheader>利用者一覧</v-subheader>
       <v-list-item-group
-        v-model="selectedItem"
+        
         color="primary"
       >
         <v-list-item
-          v-for="(item, i) in items"
+          v-for="(todayUser, i) in todayUsers"
           :key="i"
         >
           
           <v-list-item-content>
-            <v-list-item-title v-text="item.text"></v-list-item-title>
+            <v-list-item-title v-text="todayUser.firstName"></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list-item-group>
@@ -152,7 +153,6 @@
     >
       <v-subheader>休み</v-subheader>
       <v-list-item-group
-        v-model="selectedItem"
         color="primary"
       >
         <v-list-item
@@ -173,16 +173,25 @@
     送り
   </v-card>
   </v-row>
-  
   </v-container>
+  
 
   
  </v-app>
 </template>
 
 <script>
+moment.lang('ja', {
+    weekdays: ["日曜日","月曜日","火曜日","水曜日","木曜日","金曜日","土曜日"],
+    weekdaysShort: ["日","月","火","水","木","金","土"],
+});
 import moment from 'moment';
   export default {
+    created(){
+      const day = moment(this.$route.params.id).format('ddd')
+      this.$store.dispatch('user/fetchTodayUsers',day)
+    },
+
     data: () => ({
       selectedItem: 1,
       items: [
@@ -190,25 +199,24 @@ import moment from 'moment';
         { text: 'Audience' },
         { text: 'Conversions' },
       ],
-      users:[
-       // {name:"佐野",index:1,},
-       // {name:"mob1",index:2,},
-       // {name:"木崎",index:3},
-       // {name:"mob2",index:4},
-       {},
-       {}
-      ]
     }),
 
     computed: {
     title() {
-      return moment(this.$route.params.id).format('M月 DD日');
+      return moment(this.$route.params.id).format('M月 DD日 (ddd)');
     },
+
+    todayUsers(){
+      return this.$store.getters["user/todayUsers"]
+    }
     },
     methods: {
     backToSchedule() {
       this.$router.push({name: "schedule-schedule"});
     },
+    abc(index){
+      console.log(index)
+    }
   }
   }
 </script>

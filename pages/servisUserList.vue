@@ -86,6 +86,10 @@
 <script>
 
 export default {
+  async mounted() {
+     await this.$store.dispatch("user/getUsersList")
+  },
+
  data:()=>({
   items:[
    {week:"月"},
