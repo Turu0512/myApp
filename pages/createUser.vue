@@ -27,7 +27,7 @@
         <v-text-field
         label="姓を入力してください"
         placeholder="例：佐野"
-        v-model="users.firstName"
+        v-model="users.familyName"
         ></v-text-field>
       </v-col>
       <v-col cols="2">
@@ -37,7 +37,7 @@
         <v-text-field
         label="名を入力してください"
         placeholder="例：万次郎"
-        v-model="users.familyName"
+        v-model="users.firstName"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -51,7 +51,7 @@
         <v-text-field
         label="フリガナ"
         placeholder="例：サノ"
-        v-model="users.firstNameRuby"
+        v-model="users.familyNameRuby"
         ></v-text-field>
       </v-col>
       <v-col cols="2">
@@ -61,7 +61,7 @@
         <v-text-field
         label="フリガナ"
         placeholder="例：マンジロウ"
-        v-model="users.lastNameRuby"
+        v-model="users.firstNameRuby"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -175,7 +175,7 @@ users:{
   firstName: "",
   familyName: "",
   firstNameRuby: "",
-  lastNameRuby: "",
+  familyNameRuby: "",
   sex: "",
   address: "",
   dayOfWeek: [],

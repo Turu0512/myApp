@@ -25,7 +25,7 @@
         :month-format="(timestamp) => new Date(timestamp.date).getMonth() + 1 + ' /'"
         @change="getEvents"
         @click:event="showEvent"
-        @click:date="viewDay"
+        @click:date="viewDay(value)"
       ></v-calendar>
     </v-sheet>
   </div>
@@ -39,7 +39,7 @@ import moment from 'moment';
 export default {
   data: () => ({
     events: [],
-    value: moment().format('yyyy-MM-DD'),
+    value: moment().format('yyyy-MM-DD (ddd)'),
   }),
   computed: {
     title() {
@@ -53,8 +53,8 @@ export default {
     showEvent({ event }) {
       alert(`clicked ${event.name}`);
     },
-    viewDay({ date }) {
-      
+    viewDay( date  ) {
+      console.log(date)
       this.$router.push({ name: 'schedule-id' , params: { id: date }})
     },
     getEvents() {
