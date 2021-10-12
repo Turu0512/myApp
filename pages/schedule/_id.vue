@@ -49,25 +49,40 @@
           solo
           
         ></v-select>
-   </v-card>
+    </v-card>
       <v-card
         v-for="n in (6*2-1)"
         :key="n"
-        class="pa-2"
         outlined
         tile
+        min-width="30px"
+        class="pa-0 align-self-center"
       >
       <v-col
       cols="3"
       v-if="n%2 != 0"
-      @click="abc(n)">
+      class="pa-0"
+      width="58px"
+      >
+      <draggable 
+          class="d-flex flex-row" 
+          group="myGroup" @start="drag=true" 
+          @end="drag=false" :options="options">
+          <v-list-item-group class="pa-0">
+          <v-list-item class="pa-0 ">
+
+          </v-list-item>
+          </v-list-item-group>
+          </draggable>
       
       </v-col>
       <v-card v-else>
-       →
+        <div>
+        →
+        </div>
       </v-card>
       </v-card>
-        
+          
     </v-card>
     </v-col>
     </div>
@@ -129,15 +144,19 @@
         
         color="primary"
       >
+      <draggable 
+      group="myGroup" @start="drag=true" 
+      @end="drag=false" :options="options">
         <v-list-item
           v-for="(todayUser, i) in todayUsers"
           :key="i"
         >
           
-          <v-list-item-content>
-            <v-list-item-title v-text="todayUser.firstName"></v-list-item-title>
+          <v-list-item-content d-inline>
+            <v-list-item-title v-text="todayUser.displayName"></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+         </draggable>
       </v-list-item-group>
     </v-list>
   </v-card>
@@ -186,19 +205,27 @@ moment.lang('ja', {
     weekdaysShort: ["日","月","火","水","木","金","土"],
 });
 import moment from 'moment';
+
+import draggable from 'vuedraggable'
+
   export default {
+    components: { draggable },
+
     created(){
       const day = moment(this.$route.params.id).format('ddd')
       this.$store.dispatch('user/fetchTodayUsers',day)
     },
 
     data: () => ({
+      options: {
+      animation: 200},
       selectedItem: 1,
       items: [
         { text: 'Real-Time' },
         { text: 'Audience' },
         { text: 'Conversions' },
       ],
+      a:[]
     }),
 
     computed: {

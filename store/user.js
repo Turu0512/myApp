@@ -47,17 +47,17 @@ export const actions = {
  },
 
 async addUser({commit},user){
- await fbstore.collection('usersList').add({})
- .then((res) => {
-  fbstore.collection('usersList').doc(res.id)
-     .set({
-       ...user,
-       id: res.id,
-     }).then(() => {
-       commit('addUser', user)
-       console.log(user, res.id)
-     })
- })
+await fbstore.collection('usersList').add({})
+.then((res) => {
+fbstore.collection('usersList').doc(res.id)
+    .set({
+      ...user,
+      id: res.id,
+    }).then(() => {
+      commit('addUser', user)
+      console.log(user, res.id)
+    })
+})
 },
 
 async getUsersList({commit}) {
