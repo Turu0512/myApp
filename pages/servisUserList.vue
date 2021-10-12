@@ -67,11 +67,11 @@
           <td align="center">{{ user.sex }}</td>
           <td align="center">{{ user.address }}</td>
           <td align="center">
-            <th v-for="dayOfWeek in user.dayOfWeek" :key="dayOfWeek"
+            <span v-for="dayOfWeek in user.dayOfWeek" :key="dayOfWeek"
             class="pa-1"
             >
               {{ dayOfWeek }}
-              </th>
+              </span>
           </td>
           <td align="center"><v-btn @click="editUser(user)">編集</v-btn></td>
         </tr>
