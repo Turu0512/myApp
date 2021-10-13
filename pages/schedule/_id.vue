@@ -18,7 +18,7 @@
   <div class="d-flex flex-column">
       <v-col
       
-        v-for="n in 3"
+        v-for="n in carList.length"
         :key="n"
         class="pa-2 pt-5"
         outlined
@@ -194,7 +194,6 @@
   </v-row>
   </v-container>
   
-
   
  </v-app>
 </template>
@@ -211,9 +210,11 @@ import draggable from 'vuedraggable'
   export default {
     components: { draggable },
 
-    created(){
+    async created(){
       const day = moment(this.$route.params.id).format('ddd')
       this.$store.dispatch('user/fetchTodayUsers',day)
+
+      await this.$store.dispatch("car/getCarList")
     },
 
     data: () => ({
@@ -232,6 +233,10 @@ import draggable from 'vuedraggable'
     title() {
       return moment(this.$route.params.id).format('M月 DD日 (ddd)');
     },
+
+  carList(){
+    return this.$store.getters["car/fetchCarList"]
+  },
 
     todayUsers(){
       return this.$store.getters["user/todayUsers"]

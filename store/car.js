@@ -12,6 +12,11 @@ console.log(car)
 state.carList.push(car)
 },
 
+addCarList(state , list){
+  state.carList = list
+// console.log(list)
+  
+},
 
 }
 
@@ -24,6 +29,7 @@ fbstore.collection('carList').doc(res.id)
     .set({
       ...car,
       id: res.id,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     }).then(() => {
       commit('addCar', car )
       console.log(car, res.id)
@@ -31,11 +37,22 @@ fbstore.collection('carList').doc(res.id)
 })
 },
 
+async getCarList({commit}){
+  const  list = [];
+  await fbstore.collection('carList').orderBy("timestamp").get()
+  .then(snapshot => {
+   snapshot.forEach(doc => list.push(doc.data()))
+   
+  })
+  commit('addCarList',list)
+}
 
 }
 
 // -----------------------Getters-------------------------
 export const getters = {
-
+  fetchCarList : state => {
+  return state.carList
+ },
 
 }
