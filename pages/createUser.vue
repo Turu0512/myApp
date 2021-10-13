@@ -185,6 +185,8 @@ users:{
 
 methods:{
   createUser(){
+    if(this.users.displayName && this.users.this.users.firstName 
+    && this.users.familyName && this.users.dayOfWeek){
   const user =  { ...this.users }
   this.$store.dispatch("user/addUser",user)
   this.users.displayName= ""
@@ -196,7 +198,11 @@ methods:{
   this.users.address= ""
   this.users.dayOfWeek= []
   this.users.transfers= ""
-  
+    }else{
+      alert("表示名、姓、名、利用日は必ず入力してください")
+      return
+    }
+
   }
 }
 }

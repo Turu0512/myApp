@@ -58,7 +58,7 @@
     </thead>
     <tbody>
       <tr
-        v-for="car in cars"
+        v-for="car in carList"
         :key="car.name"
       >
         <td >{{ car.name }}</td>
@@ -75,20 +75,35 @@
 
 <script>
 export default {
+async mounted() {
+    await this.$store.dispatch("car/getCarList")
+  },
+
 data:() => ({
 car:{
   name:"" , 
   max:"",
 },
 
-cars:[],
-
 }),
 
 methods:{
 createCar(){
-  this.$store.dispatch("car/createCar",this.car)
+  if(!this.car.name || !this.car.max){
+    alert("車両名、定員数、どちらも入力してください")
+    return
+  }
+  const car = {...this.car}
+  this.$store.dispatch("car/createCar", car)
+  this.car.name = ""
+  this.car.max = ""
 }
-}
+},
+
+computed:{
+  carList(){
+    return this.$store.getters["car/fetchCarList"]
+  }
+},
 }
 </script>
