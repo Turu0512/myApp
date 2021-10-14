@@ -6,6 +6,7 @@ export const state = () => ({
  transferUsers:[],
  editUserData:[],
  todayUsers:[],
+ amTransferOderList:[]
 })
 // ------------------Mutations-------------------------------
 export const mutations = {
