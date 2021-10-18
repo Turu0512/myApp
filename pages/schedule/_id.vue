@@ -102,11 +102,11 @@
                   "
                   :options="options"
                   @add="onAdd(index)"
-                  v-model="amTransferOderLists"
+                  v-model="amTransferOderLists[index]"
                   :data-column-id="index"
                 >
                   <v-list-item-title
-                    v-for="item in amTransferOderList[index]"
+                    v-for="item in amTransferOderLists[index]"
                     :key="item.id"
                     :data-column-id="index"
                     min-width="100%"
@@ -284,7 +284,8 @@ export default {
     selectedItem: 1,
     familyTransfer: [],
     absenceUser: [],
-    amTransferOderList: [[], [], []],
+    amTransferOderList: [],
+    amTransferOderLists: [[], [], []],
     moveIndex: "",
     moveAmTransferOderList: {},
     drivers: []
@@ -306,18 +307,18 @@ export default {
       set(value) {
         this.$store.commit("user/fetchTodayUsers", value);
       }
-    },
-
-    amTransferOderLists: {
-      get() {
-        return this.amTransferOderList;
-      },
-      set(value) {
-        // console.log(JSON.stringify(value));
-        console.log(value[0]);
-        this.moveAmTransferOderList = value[0];
-      }
     }
+
+    // amTransferOderLists: {
+    //   get() {
+    //     return this.amTransferOderList;
+    //   },
+    //   set(value) {
+    //     // console.log(JSON.stringify(value));
+    //     console.log(value);
+    //     this.moveAmTransferOderList = value[0];
+    //   }
+    // }
   },
 
   methods: {
@@ -330,10 +331,10 @@ export default {
       // this.amTransferOderList.push(amTransferOderList[index])
     },
     onEnd(event) {
-      // console.log(this.amTransferOderList)
-      this.amTransferOderList[this.moveIndex].push(this.moveAmTransferOderList);
+      console.log(this.amTransferOderLists);
+      // this.amTransferOderList.push(this.moveAmTransferOderList);
       // this.moveAmTransferOderList = "";
-      // console.log(JSON.stringify(this.amTransferOderList));
+      // console.log(JSON.stringify(this.amTransferOderLists));
       console.log(this.amTransferOderList[this.moveIndex]);
       // console.log(this.moveAmTransferOderList);
     }
