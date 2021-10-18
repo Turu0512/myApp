@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <h1 class="text-center">利用者登録</h1>
+    <h1 class="text-center">利用者編集</h1>
 
     <v-container>
       <v-row align="center">
@@ -10,11 +10,7 @@
           >
         </v-col>
         <v-col cols="5">
-          <v-text-field
-            label="送迎表に表示する名前を入力してください"
-            placeholder="例：佐野（万）"
-            v-model="users.displayName"
-          ></v-text-field>
+          <v-text-field v-model="editUser.displayName"></v-text-field>
         </v-col>
       </v-row>
 
@@ -23,21 +19,13 @@
           <v-subheader justify="center">姓</v-subheader>
         </v-col>
         <v-col cols="4">
-          <v-text-field
-            label="姓を入力してください"
-            placeholder="例：佐野"
-            v-model="users.firstName"
-          ></v-text-field>
+          <v-text-field v-model="editUser.firstName"></v-text-field>
         </v-col>
         <v-col cols="2">
           <v-subheader class="text-center">名</v-subheader>
         </v-col>
         <v-col cols="4">
-          <v-text-field
-            label="名を入力してください"
-            placeholder="例：万次郎"
-            v-model="users.lastName"
-          ></v-text-field>
+          <v-text-field v-model="editUser.lastName"></v-text-field>
         </v-col>
       </v-row>
 
@@ -46,21 +34,13 @@
           <v-subheader justify="center">姓（フリガナ）</v-subheader>
         </v-col>
         <v-col cols="4">
-          <v-text-field
-            label="フリガナ"
-            placeholder="例：サノ"
-            v-model="users.firstNameRuby"
-          ></v-text-field>
+          <v-text-field v-model="editUser.firstNameRuby"></v-text-field>
         </v-col>
         <v-col cols="2">
           <v-subheader class="text-center">名（フリガナ）</v-subheader>
         </v-col>
         <v-col cols="4">
-          <v-text-field
-            label="フリガナ"
-            placeholder="例：マンジロウ"
-            v-model="users.lastNameRuby"
-          ></v-text-field>
+          <v-text-field v-model="editUser.lastNameRuby"></v-text-field>
         </v-col>
       </v-row>
 
@@ -69,18 +49,13 @@
           <v-subheader>性別</v-subheader>
         </v-col>
         <v-col cols="4">
-          <v-select :items="sex" label="性別" v-model="users.sex"></v-select>
+          <v-select :items="sex" label="性別" v-model="editUser.sex"></v-select>
         </v-col>
-
         <v-col cols="2">
           <v-subheader class="text-center">住所</v-subheader>
         </v-col>
         <v-col cols="4">
-          <v-text-field
-            label="フリガナ"
-            placeholder="例：マンジロウ"
-            v-model="users.address"
-          ></v-text-field>
+          <v-text-field v-model="editUser.address"></v-text-field>
         </v-col>
       </v-row>
 
@@ -93,7 +68,7 @@
             :label="item.week"
             :value="item.week"
             class="mr-7"
-            v-model="users.dayOfWeek"
+            v-model="editUser.dayOfWeek"
           ></v-checkbox>
         </div>
       </v-row>
@@ -107,7 +82,7 @@
           row
           v-for="(transfer, i) in transfers"
           :key="i"
-          v-model="users.transfers"
+          v-model="editUser.transfers"
         >
           <v-radio
             :id="transfer.label"
@@ -129,11 +104,25 @@
             label="持参するものがあれば入力してください"
             placeholder="例：杖"
           ></v-text-field>
-        </v-col>
-      </v-row> -->
+        </v-col> -->
+      <!-- </v-row> -->
 
+      <v-row>
+        <v-col cols="2">
+          <v-subheader class="text-center">中止</v-subheader>
+        </v-col>
+        <v-checkbox
+          label="利用者一覧に名前が表示されなくなります"
+          v-model="stoped"
+        ></v-checkbox>
+      </v-row>
+      <v-row>
+        <v-col cols="12" class="pl-12">
+          ＊再表示させる場合にはチェックを外してください
+        </v-col>
+      </v-row>
       <v-row class="justify-center mt-10">
-        <v-btn @click="createUser">登録</v-btn>
+        <v-btn @click="editUserSave">編集</v-btn>
       </v-row>
     </v-container>
   </v-app>
@@ -141,6 +130,15 @@
 
 <script>
 export default {
+  async created() {
+    await this.$store.dispatch("user/fetchEditUser", this.$route.params.id);
+    console.log(this.$store.state.user.editUserData);
+    const edit = this.$store.state.user.editUserData;
+    edit.forEach(data => {
+      this.editUser = { ...data };
+    });
+  },
+
   data: () => ({
     sex: ["男", "女"],
     items: [
@@ -158,41 +156,37 @@ export default {
       { label: "途中送迎" }
     ],
 
-    users: {
-      displayName: "",
-      lastName: "",
-      firstName: "",
-      lastNameRuby: "",
-      firstNameRuby: "",
-      sex: "",
-      address: "",
-      dayOfWeek: [],
-      transfers: ""
-    }
-  }),
+    editUser: {},
 
+    stoped: false
+
+    // users:{
+    //   displayName: "",
+    //   lastName: "",
+    //   firstName: "",
+    //   lastNameRuby: "",
+    //   lastNameRuby: "",
+    //   sex: "",
+    //   address: "",
+    //   dayOfWeek: [],
+    //   transfers: "",
+    //   },
+  }),
   methods: {
-    createUser() {
-      if (
-        this.users.displayName &&
-        this.users.this.users.lastName &&
-        this.users.firstName &&
-        this.users.dayOfWeek
-      ) {
-        const user = { ...this.users };
-        this.$store.dispatch("user/addUser", user);
-        this.users.displayName = "";
-        this.users.lastName = "";
-        this.users.firstName = "";
-        this.users.lastNameRuby = "";
-        this.users.lastNameRuby = "";
-        this.users.sex = "";
-        this.users.address = "";
-        this.users.dayOfWeek = [];
-        this.users.transfers = "";
-      } else {
-        alert("表示名、姓、名、利用日は必ず入力してください");
+    async editUserSave() {
+      if (this.stoped) {
+        console.log(this.editUser);
+        await this.$store.dispatch("user/deleteUser", this.editUser);
+        await this.$store.dispatch("user/stopedUser", this.editUser);
+        this.editUser = "";
+        this.$router.push({ name: "servisUserList" });
         return;
+      } else {
+        await this.$store.dispatch("user/updateUser", this.editUser);
+        this.editUser = "";
+        this.$router.push({ name: "servisUserList" });
+        // console.log("return");
+        // this.$store.dispatch("user/updateUser", this.editUser);
       }
     }
   }
