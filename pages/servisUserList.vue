@@ -23,7 +23,7 @@
     </v-container>
 
     <v-container>
-      <v-simple-table fixed-header height="300px">
+      <v-simple-table fixed-header height="100%">
         <template v-slot:default>
           <thead>
             <tr>

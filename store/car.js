@@ -2,7 +2,8 @@ import firebase from "@/plugins/firebase";
 const fbstore = firebase.firestore();
 
 export const state = () => ({
-  carList: []
+  carList: [],
+  car: "aaa"
 });
 // ------------------Mutations-------------------------------
 export const mutations = {

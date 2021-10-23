@@ -48,7 +48,7 @@
                     solo
                   ></v-select>
                 </v-card>
-                <!-- <v-card
+                <!--<v-card
                   v-for="n in car.max * 2 - 1"
                   :key="n.id"
                   outlined
@@ -62,8 +62,8 @@
                     class="pa-0"
                     width="58px"
                     :key="car.id"
-                  > -->
-                <!-- <draggable
+                  >
+                    <draggable
                       class="d-flex flex-row pa-1"
                       group="myGroup"
                       @start="drag = true"
@@ -73,17 +73,17 @@
                       "
                       :options="options"
                       @add="onAdd(index)"
-                      v-model="amTransferOderLists"
+                      v-model="amTransferOderLists[index]"
                       :data-column-id="index"
                     >
-                      <v-list-item-title
+                      <v-list-item
                         class="pa-0"
                         dense
-                        v-for="(item, i) in amTransferOderList[index]"
+                        v-for="(item, i) in amTransferOderLists[index]"
                         :key="i"
                         :data-column-id="index"
                         >{{ item.displayName }}
-                      </v-list-item-title>
+                      </v-list-item>
                     </draggable>
                   </v-col>
                   <v-card v-else>
@@ -104,14 +104,15 @@
                   @add="onAdd(index)"
                   v-model="amTransferOderLists[index]"
                   :data-column-id="index"
+                  style="min-width:100px"
                 >
-                  <v-list-item-title
+                  <v-card-title
+                    class="pa-0 mx-1 text-body-1"
                     v-for="item in amTransferOderLists[index]"
                     :key="item.id"
                     :data-column-id="index"
-                    min-width="100%"
                   >
-                    {{ item.displayName }} →</v-list-item-title
+                    {{ item.displayName }} →</v-card-title
                   >
                 </draggable>
                 <v-sheet
@@ -119,7 +120,8 @@
                   style="heigth: 25px; width: 25px; position: relative"
                   class="ml-2"
                 >
-                  <v-btn
+                  施設
+                  <!-- <v-btn
                     max-height="24px"
                     max-width="24px"
                     fab
@@ -131,26 +133,26 @@
                     <v-icon dark>
                       mdi-plus
                     </v-icon>
-                  </v-btn>
-
-                  <v-btn
-                    max-height="24px"
-                    max-width="24px"
-                    fab
-                    dark
-                    x-small
-                    color="primary"
-                  >
-                    <v-icon dark>
-                      mdi-minus
-                    </v-icon>
-                  </v-btn>
+                  </v-btn> -->
                 </v-sheet>
+                <!-- <v-btn
+                  max-height="24px"
+                  max-width="24px"
+                  fab
+                  dark
+                  x-small
+                  color="primary"
+                  @click="carDelete"
+                >
+                  <v-icon dark>
+                    mdi-close
+                  </v-icon>
+                </v-btn> -->
               </v-card>
             </v-col>
           </div>
 
-          <v-select
+          <!-- <v-select
             item-text="name"
             :items="carList"
             label="車両追加"
@@ -158,7 +160,8 @@
             height="5"
             dense
             solo
-          ></v-select>
+          ></v-select> -->
+          <v-btn @click="saveTodaySchedule">保存</v-btn>
         </v-col>
 
         <v-col cols="2">
@@ -187,7 +190,7 @@
               </v-list-item-group>
             </v-list>
           </v-card>
-
+          <!-- 休みーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
           <v-card width="150" tile class="pt-2">
             <v-list class="user" dense>
               <v-subheader>休み</v-subheader>
@@ -212,6 +215,7 @@
                 </draggable>
               </v-list-item-group>
             </v-list>
+            <!-- 家族送迎ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
             <v-list class="user" dense>
               <v-subheader>家族送迎</v-subheader>
               <v-list-item-group color="primary">
@@ -238,12 +242,7 @@
             </v-list>
           </v-card>
         </v-col>
-        <v-card>
-          amTransferOderList
-          <p>amTransferOderList[0]{{ amTransferOderList[0] }}</p>
-          <p>amTransferOderList[1]{{ amTransferOderList[1] }}</p>
-          <p>amTransferOderList[2]{{ amTransferOderList[2] }}</p>
-        </v-card>
+        <v-card>送り</v-card>
       </v-row>
     </v-container>
   </v-app>
@@ -270,10 +269,20 @@ export default {
   components: { draggable },
 
   async created() {
+    const today = this.$route.params.id;
     const day = moment(this.$route.params.id).format("ddd");
-    this.$store.dispatch("user/fetchTodayUsers", day);
-
+    // this.$store.dispatch("user/fetchTodayUsers", day);
+    this.$store.dispatch("schedule/fetchAbsenceUser", this.$route.params.id);
+    this.$store.dispatch("schedule/fetchTodayUsers", { day, today });
     await this.$store.dispatch("car/getCarList");
+    await this.$store.dispatch(
+      "schedule/fetchTodayAmTransferOderLists",
+      this.$route.params.id
+    );
+  },
+
+  async mounted() {
+    // console.log(this.amTransferOderLists);
   },
 
   data: () => ({
@@ -283,9 +292,7 @@ export default {
     },
     selectedItem: 1,
     familyTransfer: [],
-    absenceUser: [],
     amTransferOderList: [],
-    amTransferOderLists: [[], [], []],
     moveIndex: "",
     moveAmTransferOderList: {},
     drivers: []
@@ -302,25 +309,38 @@ export default {
 
     todayUsers: {
       get() {
-        return this.$store.getters["user/todayUsers"];
+        return this.$store.getters["schedule/todayUsers"];
       },
       set(value) {
-        this.$store.commit("user/fetchTodayUsers", value);
+        this.$store.commit("schedule/fetchTodayUsers", value);
+      }
+    },
+
+    // amTransferOderLists() {
+    //   return this.$store.getters["schedule/amTransferOderLists"];
+    // }
+    amTransferOderLists: {
+      get() {
+        return { ...this.$store.getters["schedule/amTransferOderLists"] };
+      },
+      set(value) {
+        // console.log(JSON.stringify(value));
+        // console.log(value);
+        // this.moveAmTransferOderList = value[0];
+      }
+    },
+
+    absenceUser: {
+      get() {
+        return this.$store.getters["schedule/absenceUser"];
+      },
+      set(value) {
+        // console.log(value);
+        this.$store.commit("schedule/todayAbsenceUser", value);
       }
     }
-
-    // amTransferOderLists: {
-    //   get() {
-    //     return this.amTransferOderList;
-    //   },
-    //   set(value) {
-    //     // console.log(JSON.stringify(value));
-    //     console.log(value);
-    //     this.moveAmTransferOderList = value[0];
-    //   }
-    // }
   },
-
+  //
   methods: {
     backToSchedule() {
       this.$router.push({ name: "schedule-schedule" });
@@ -332,11 +352,34 @@ export default {
     },
     onEnd(event) {
       console.log(this.amTransferOderLists);
-      // this.amTransferOderList.push(this.moveAmTransferOderList);
-      // this.moveAmTransferOderList = "";
-      // console.log(JSON.stringify(this.amTransferOderLists));
-      console.log(this.amTransferOderList[this.moveIndex]);
-      // console.log(this.moveAmTransferOderList);
+      //   this.amTransferOderList.push(this.moveAmTransferOderList);
+      //   this.moveAmTransferOderList = "";
+      //   console.log(JSON.stringify(this.amTransferOderLists));
+      //   console.log(this.amTransferOderList[this.moveIndex]);
+      //   console.log(this.moveAmTransferOderList);
+    },
+    saveTodaySchedule() {
+      const day = this.$route.params.id;
+      const todayAmTransferOderLists = { ...this.amTransferOderLists };
+      const familyTransferList = { ...this.familyTransfer };
+      const absenceUserList = { ...this.absenceUser };
+      const todayUsersList = { ...this.todayUsers };
+      this.$store.dispatch("schedule/saveTodayAmTransferOderLists", {
+        todayAmTransferOderLists,
+        day
+      });
+      this.$store.dispatch("schedule/saveTodayFamilyTransfer", {
+        familyTransferList,
+        day
+      });
+      this.$store.dispatch("schedule/saveTodayAbsenceUser", {
+        absenceUserList,
+        day
+      });
+      this.$store.dispatch("schedule/saveTodayUsers", {
+        todayUsersList,
+        day
+      });
     }
   }
 };

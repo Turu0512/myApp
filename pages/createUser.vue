@@ -175,16 +175,16 @@ export default {
     createUser() {
       if (
         this.users.displayName &&
-        this.users.this.users.lastName &&
+        this.users.lastName &&
         this.users.firstName &&
         this.users.dayOfWeek
       ) {
         const user = { ...this.users };
         this.$store.dispatch("user/addUser", user);
         this.users.displayName = "";
-        this.users.lastName = "";
         this.users.firstName = "";
-        this.users.lastNameRuby = "";
+        this.users.lastName = "";
+        this.users.firstNameRuby = "";
         this.users.lastNameRuby = "";
         this.users.sex = "";
         this.users.address = "";
