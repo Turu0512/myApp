@@ -27,23 +27,6 @@ export const mutations = {
     state.amTransferOderLists = newList;
   },
 
-  todayAbsenceUser(state, list) {
-    // console.log(list);
-    // const newList = new Array();
-    // state.absenceUser = newList;
-    if (list) {
-      // 配列に変換。変換しないとオブジェクトで渡されてしまい、配列じゃない！とエラーが出る
-      const lists = Object.keys(list).map(function(key) {
-        return list[key];
-      });
-      console.log(lists);
-      state.absenceUser = lists;
-    } else {
-      state.absenceUser = [];
-      return;
-    }
-  },
-
   todayUsers(state, list) {
     // console.log(list);
     if (list) {
@@ -65,6 +48,34 @@ export const mutations = {
     });
 
     // console.log();
+  },
+
+  todayAbsenceUser(state, list) {
+    if (list) {
+      // 配列に変換。変換しないとオブジェクトで渡されてしまい、配列じゃない！とエラーが出る
+      const lists = Object.keys(list).map(function(key) {
+        return list[key];
+      });
+      console.log(lists);
+      state.absenceUser = lists;
+    } else {
+      state.absenceUser = [];
+      return;
+    }
+  },
+
+  todayFamilyTransfer(state, list) {
+    if (list) {
+      // 配列に変換。変換しないとオブジェクトで渡されてしまい、配列じゃない！とエラーが出る
+      const lists = Object.keys(list).map(function(key) {
+        return list[key];
+      });
+      console.log(lists);
+      state.familyTransfer = lists;
+    } else {
+      state.familyTransfer = [];
+      return;
+    }
   }
 };
 
@@ -133,15 +144,6 @@ export const actions = {
     }
   },
 
-  async fetchAbsenceUser({ commit }, day) {
-    const listRef = await fbstore
-      .collection(day)
-      .doc("todayAbsenceUser")
-      .get();
-    const lists = listRef.data();
-    commit("todayAbsenceUser", lists);
-  },
-
   async fetchTodayUsers({ commit }, day) {
     const listRef = await fbstore
       .collection(day.today)
@@ -163,6 +165,24 @@ export const actions = {
         });
       commit("fetchTodayUsers", todayUsersList);
     }
+  },
+
+  async fetchAbsenceUser({ commit }, day) {
+    const listRef = await fbstore
+      .collection(day)
+      .doc("todayAbsenceUser")
+      .get();
+    const lists = listRef.data();
+    commit("todayAbsenceUser", lists);
+  },
+
+  async fetchFamilyTransfer({ commit }, day) {
+    const listRef = await fbstore
+      .collection(day.today)
+      .doc("todayFamilyTransfer")
+      .get();
+    const lists = listRef.data();
+    commit("todayFamilyTransfer", lists);
   }
 };
 // -----------------------Getters-------------------------
@@ -177,5 +197,9 @@ export const getters = {
 
   todayUsers: state => {
     return state.todayUsers;
+  },
+
+  familyTransfer: state => {
+    return state.familyTransfer;
   }
 };

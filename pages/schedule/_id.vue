@@ -194,7 +194,7 @@
           <v-card width="150" tile class="pt-2">
             <v-list class="user" dense>
               <v-subheader>休み</v-subheader>
-              <v-list-item-group color="primary">
+              <v-list-item-group class="pa-0" color="primary">
                 <draggable
                   group="myGroup"
                   @start="drag = true"
@@ -206,7 +206,7 @@
                     v-for="(item, index) in absenceUser"
                     :key="index"
                   >
-                    <v-list-item-content>
+                    <v-list-item-content class="pa-0">
                       <v-list-item-title
                         v-text="item.displayName"
                       ></v-list-item-title>
@@ -218,7 +218,7 @@
             <!-- 家族送迎ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
             <v-list class="user" dense>
               <v-subheader>家族送迎</v-subheader>
-              <v-list-item-group color="primary">
+              <v-list-item-group color="primary" class="pa-0">
                 <draggable
                   group="myGroup"
                   @start="drag = true"
@@ -231,7 +231,7 @@
                     :key="index"
                     class="original"
                   >
-                    <v-list-item-content>
+                    <v-list-item-content class="pa-0">
                       <v-list-item-title
                         v-text="item.displayName"
                       ></v-list-item-title>
@@ -271,18 +271,15 @@ export default {
   async created() {
     const today = this.$route.params.id;
     const day = moment(this.$route.params.id).format("ddd");
-    // this.$store.dispatch("user/fetchTodayUsers", day);
     this.$store.dispatch("schedule/fetchAbsenceUser", this.$route.params.id);
     this.$store.dispatch("schedule/fetchTodayUsers", { day, today });
+    this.$store.dispatch("schedule/fetchFamilyTransfer", { day, today });
+
     await this.$store.dispatch("car/getCarList");
     await this.$store.dispatch(
       "schedule/fetchTodayAmTransferOderLists",
       this.$route.params.id
     );
-  },
-
-  async mounted() {
-    // console.log(this.amTransferOderLists);
   },
 
   data: () => ({
@@ -291,7 +288,6 @@ export default {
       animation: 200
     },
     selectedItem: 1,
-    familyTransfer: [],
     amTransferOderList: [],
     moveIndex: "",
     moveAmTransferOderList: {},
@@ -316,9 +312,6 @@ export default {
       }
     },
 
-    // amTransferOderLists() {
-    //   return this.$store.getters["schedule/amTransferOderLists"];
-    // }
     amTransferOderLists: {
       get() {
         return { ...this.$store.getters["schedule/amTransferOderLists"] };
@@ -337,6 +330,15 @@ export default {
       set(value) {
         // console.log(value);
         this.$store.commit("schedule/todayAbsenceUser", value);
+      }
+    },
+
+    familyTransfer: {
+      get() {
+        return this.$store.getters["schedule/familyTransfer"];
+      },
+      set(value) {
+        this.$store.commit("schedule/todayFamilyTransfer", value);
       }
     }
   },
