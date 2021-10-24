@@ -1,264 +1,407 @@
 <template>
-<v-app>
-<v-container>
-  <v-btn outlined small class="ma-4" @click="backToSchedule">
+  <v-app>
+    <v-container>
+      <v-btn outlined small class="ma-4" @click="backToSchedule">
         カレンダーに戻る
       </v-btn>
-  <v-card>
-    <v-card-title class="justify-center">
-      {{title}}
-    </v-card-title>
-  </v-card>
-  <v-row>
-  <v-col
-  cols="8">
-  <v-card>
-    迎え
-  </v-card>
-  <div class="d-flex flex-column">
-      <v-col
-      
-        v-for="n in carList.length"
-        :key="n"
-        class="pa-2 pt-5"
-        outlined
-        tile
-      >
-    <v-card
-      class="d-flex flex-row"
-      :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-4'"
-      flat
-      tile
-      max-height="56px"
-    >
-
-    <v-card
-    max-width="100px">
-    <v-card-title 
-    class="text-subtitle-1 pa-0 ma-0 mt-n5"
-    >デロリアン</v-card-title>
-    <v-card-subtitle
-    class="pa-0 ma-0 text-caption mt-n1"
-    >定員：６名</v-card-subtitle>
-    <v-select
-          :items="items"
-          label="ドライバー"
-          class="pa-0 ma-0 text-caption mt-n1"
-          height="5"
-          dense
-          solo
-          
-        ></v-select>
-    </v-card>
-      <v-card
-        v-for="n in (6*2-1)"
-        :key="n"
-        outlined
-        tile
-        min-width="30px"
-        class="pa-0 align-self-center"
-      >
-      <v-col
-      cols="3"
-      v-if="n%2 != 0"
-      class="pa-0"
-      width="58px"
-      >
-      <draggable 
-          class="d-flex flex-row" 
-          group="myGroup" @start="drag=true" 
-          @end="drag=false" :options="options">
-          <v-list-item-group class="pa-0">
-          <v-list-item class="pa-0 ">
-
-          </v-list-item>
-          </v-list-item-group>
-          </draggable>
-      
-      </v-col>
-      <v-card v-else>
-        <div>
-        →
-        </div>
+      <v-card>
+        <v-card-title class="justify-center">
+          {{ title }}
+        </v-card-title>
       </v-card>
-      </v-card>
-          
-    </v-card>
-    </v-col>
-    </div>
-    <v-select
-          :items="items"
-          label="車両追加"
-          class="pa-0 ma-0 text-caption"
-          height="5"
-          dense
-          solo
-          
-        ></v-select>
-   </v-col>
+      <v-row>
+        <v-col cols="10">
+          <v-card>
+            迎え
+          </v-card>
+          <!-- -------------------main---------------------------------------- -->
+          <div class="d-flex flex-column">
+            <v-col
+              v-for="(car, index) in carList"
+              :key="index"
+              class="pa-2 pt-5"
+              outlined
+              tile
+            >
+              <v-card
+                class="d-flex flex-row"
+                :color="
+                  $vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-4'
+                "
+                flat
+                tile
+                max-height="56px"
+              >
+                <v-card max-width="100px">
+                  <v-card-title class="text-subtitle-1 pa-0 ma-0 mt-n5">{{
+                    car.name
+                  }}</v-card-title>
+                  <v-card-subtitle class="pa-0 ma-0 text-caption mt-n1"
+                    >定員：{{ car.max }} 名</v-card-subtitle
+                  >
+                  <v-select
+                    :items="drivers"
+                    label="ドライバー"
+                    class="pa-0 ma-0 text-caption mt-n1"
+                    height="5"
+                    dense
+                    solo
+                  ></v-select>
+                </v-card>
+                <!--<v-card
+                  v-for="n in car.max * 2 - 1"
+                  :key="n.id"
+                  outlined
+                  tile
+                  min-width="30px"
+                  class="pa-0 align-self-center"
+                >
+                  <v-col
+                    cols="3"
+                    v-if="n % 2 != 0"
+                    class="pa-0"
+                    width="58px"
+                    :key="car.id"
+                  >
+                    <draggable
+                      class="d-flex flex-row pa-1"
+                      group="myGroup"
+                      @start="drag = true"
+                      @end="
+                        drag = false;
+                        onEnd($event);
+                      "
+                      :options="options"
+                      @add="onAdd(index)"
+                      v-model="amTransferOderLists[index]"
+                      :data-column-id="index"
+                    >
+                      <v-list-item
+                        class="pa-0"
+                        dense
+                        v-for="(item, i) in amTransferOderLists[index]"
+                        :key="i"
+                        :data-column-id="index"
+                        >{{ item.displayName }}
+                      </v-list-item>
+                    </draggable>
+                  </v-col>
+                  <v-card v-else>
+                    <div>
+                      →
+                    </div>
+                  </v-card>
+                </v-card> -->
+                <draggable
+                  class="d-flex flex-row pa-1"
+                  group="myGroup"
+                  @start="drag = true"
+                  @end="
+                    drag = false;
+                    onEnd($event);
+                  "
+                  :options="options"
+                  @add="onAdd(index)"
+                  v-model="amTransferOderLists[index]"
+                  :data-column-id="index"
+                  style="min-width:100px"
+                >
+                  <v-card-title
+                    class="pa-0 mx-1 text-body-1"
+                    v-for="item in amTransferOderLists[index]"
+                    :key="item.id"
+                    :data-column-id="index"
+                  >
+                    {{ item.displayName }} →</v-card-title
+                  >
+                </draggable>
+                <v-sheet
+                  color="grey"
+                  style="heigth: 25px; width: 25px; position: relative"
+                  class="ml-2"
+                >
+                  施設
+                  <!-- <v-btn
+                    max-height="24px"
+                    max-width="24px"
+                    fab
+                    dark
+                    color="indigo"
+                    x-small
+                    class="mt-1"
+                  >
+                    <v-icon dark>
+                      mdi-plus
+                    </v-icon>
+                  </v-btn> -->
+                </v-sheet>
+                <!-- <v-btn
+                  max-height="24px"
+                  max-width="24px"
+                  fab
+                  dark
+                  x-small
+                  color="primary"
+                  @click="carDelete"
+                >
+                  <v-icon dark>
+                    mdi-close
+                  </v-icon>
+                </v-btn> -->
+              </v-card>
+            </v-col>
+          </div>
 
+          <!-- <v-select
+            item-text="name"
+            :items="carList"
+            label="車両追加"
+            class="pa-0 ma-0 text-caption"
+            height="5"
+            dense
+            solo
+          ></v-select> -->
+          <v-btn @click="saveTodaySchedule">保存</v-btn>
+        </v-col>
 
-
-<v-col
-   cols="2">
-  <v-card
-    width="150"
-    tile
-  >
-    <v-list 
-    class="user"
-    dense
-    >
-      <v-subheader>家族送迎</v-subheader>
-      <v-list-item-group
-
-        color="primary"
-      >
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-        >
-          
-          <v-list-item-content>
-            <v-list-item-title v-text="item.text"></v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
-  </v-card>
-
-   </v-col>
-
-   <v-col
-   cols="2">
-  <v-card
-    width="150"
-    tile
-  >
-    <v-list 
-    class="user"
-    dense
-    >
-      <v-subheader>利用者一覧</v-subheader>
-      <v-list-item-group
-        
-        color="primary"
-      >
-      <draggable 
-      group="myGroup" @start="drag=true" 
-      @end="drag=false" :options="options">
-        <v-list-item
-          v-for="(todayUser, i) in todayUsers"
-          :key="i"
-        >
-          
-          <v-list-item-content d-inline>
-            <v-list-item-title v-text="todayUser.displayName"></v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-         </draggable>
-      </v-list-item-group>
-    </v-list>
-  </v-card>
-
-  <v-card
-    width="150"
-    tile
-    class="pt-2"
-  >
-    <v-list 
-    class="user"
-    dense
-    >
-      <v-subheader>休み</v-subheader>
-      <v-list-item-group
-        color="primary"
-      >
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-        >
-          
-          <v-list-item-content>
-            <v-list-item-title v-text="item.text"></v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
-  </v-card>
-
-  </v-col>
-　<v-card>
-    送り
-  </v-card>
-  </v-row>
-  </v-container>
-  
-  
- </v-app>
+        <v-col cols="2">
+          <v-card width="150" tile>
+            <v-list class="user" dense>
+              <v-subheader>利用者一覧</v-subheader>
+              <v-list-item-group class="pa-0" color="primary">
+                <draggable
+                  group="myGroup"
+                  @start="drag = true"
+                  @end="(drag = false), onEnd($event)"
+                  :options="options"
+                  v-model="todayUsers"
+                >
+                  <v-list-item
+                    v-for="todayUser in todayUsers"
+                    :key="todayUser.id"
+                  >
+                    <v-list-item-content class="pa-0">
+                      <v-list-item-title
+                        v-text="todayUser.displayName"
+                      ></v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </draggable>
+              </v-list-item-group>
+            </v-list>
+          </v-card>
+          <!-- 休みーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
+          <v-card width="150" tile class="pt-2">
+            <v-list class="user" dense>
+              <v-subheader>休み</v-subheader>
+              <v-list-item-group class="pa-0" color="primary">
+                <draggable
+                  group="myGroup"
+                  @start="drag = true"
+                  @end="(drag = false), onEnd($event)"
+                  :options="options"
+                  v-model="absenceUser"
+                >
+                  <v-list-item
+                    v-for="(item, index) in absenceUser"
+                    :key="index"
+                  >
+                    <v-list-item-content class="pa-0">
+                      <v-list-item-title
+                        v-text="item.displayName"
+                      ></v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </draggable>
+              </v-list-item-group>
+            </v-list>
+            <!-- 家族送迎ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
+            <v-list class="user" dense>
+              <v-subheader>家族送迎</v-subheader>
+              <v-list-item-group color="primary" class="pa-0">
+                <draggable
+                  group="myGroup"
+                  @start="drag = true"
+                  @end="(drag = false), onEnd($event)"
+                  :options="options"
+                  v-model="familyTransfer"
+                >
+                  <v-list-item
+                    v-for="(item, index) in familyTransfer"
+                    :key="index"
+                    class="original"
+                  >
+                    <v-list-item-content class="pa-0">
+                      <v-list-item-title
+                        v-text="item.displayName"
+                      ></v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </draggable>
+              </v-list-item-group>
+            </v-list>
+          </v-card>
+        </v-col>
+        <v-card>送り</v-card>
+      </v-row>
+    </v-container>
+  </v-app>
 </template>
 
 <script>
-moment.lang('ja', {
-    weekdays: ["日曜日","月曜日","火曜日","水曜日","木曜日","金曜日","土曜日"],
-    weekdaysShort: ["日","月","火","水","木","金","土"],
+moment.lang("ja", {
+  weekdays: [
+    "日曜日",
+    "月曜日",
+    "火曜日",
+    "水曜日",
+    "木曜日",
+    "金曜日",
+    "土曜日"
+  ],
+  weekdaysShort: ["日", "月", "火", "水", "木", "金", "土"]
 });
-import moment from 'moment';
+import moment from "moment";
 
-import draggable from 'vuedraggable'
+import draggable from "vuedraggable";
 
-  export default {
-    components: { draggable },
+export default {
+  components: { draggable },
 
-    async created(){
-      const day = moment(this.$route.params.id).format('ddd')
-      this.$store.dispatch('user/fetchTodayUsers',day)
+  async created() {
+    const today = this.$route.params.id;
+    const day = moment(this.$route.params.id).format("ddd");
+    this.$store.dispatch("schedule/fetchAbsenceUser", this.$route.params.id);
+    this.$store.dispatch("schedule/fetchTodayUsers", { day, today });
+    this.$store.dispatch("schedule/fetchFamilyTransfer", { day, today });
 
-      await this.$store.dispatch("car/getCarList")
-    },
-
-    data: () => ({
-      options: {
-      animation: 200},
-      selectedItem: 1,
-      items: [
-        { text: 'Real-Time' },
-        { text: 'Audience' },
-        { text: 'Conversions' },
-      ],
-      a:[]
-    }),
-
-    computed: {
-    title() {
-      return moment(this.$route.params.id).format('M月 DD日 (ddd)');
-    },
-
-  carList(){
-    return this.$store.getters["car/fetchCarList"]
+    await this.$store.dispatch("car/getCarList");
+    await this.$store.dispatch(
+      "schedule/fetchTodayAmTransferOderLists",
+      this.$route.params.id
+    );
   },
 
-    todayUsers(){
-      return this.$store.getters["user/todayUsers"]
-    }
+  data: () => ({
+    options: {
+      group: "myGroup",
+      animation: 200
     },
-    methods: {
+    selectedItem: 1,
+    amTransferOderList: [],
+    moveIndex: "",
+    moveAmTransferOderList: {},
+    drivers: []
+  }),
+
+  computed: {
+    title() {
+      return moment(this.$route.params.id).format("M月 DD日 (ddd)");
+    },
+
+    carList() {
+      return this.$store.getters["car/fetchCarList"];
+    },
+
+    todayUsers: {
+      get() {
+        return this.$store.getters["schedule/todayUsers"];
+      },
+      set(value) {
+        this.$store.commit("schedule/fetchTodayUsers", value);
+      }
+    },
+
+    amTransferOderLists: {
+      get() {
+        return { ...this.$store.getters["schedule/amTransferOderLists"] };
+      },
+      set(value) {
+        // console.log(JSON.stringify(value));
+        // console.log(value);
+        // this.moveAmTransferOderList = value[0];
+      }
+    },
+
+    absenceUser: {
+      get() {
+        return this.$store.getters["schedule/absenceUser"];
+      },
+      set(value) {
+        // console.log(value);
+        this.$store.commit("schedule/todayAbsenceUser", value);
+      }
+    },
+
+    familyTransfer: {
+      get() {
+        return this.$store.getters["schedule/familyTransfer"];
+      },
+      set(value) {
+        this.$store.commit("schedule/todayFamilyTransfer", value);
+      }
+    }
+  },
+  //
+  methods: {
     backToSchedule() {
-      this.$router.push({name: "schedule-schedule"});
+      this.$router.push({ name: "schedule-schedule" });
     },
-    abc(index){
-      console.log(index)
+    onAdd(index) {
+      // console.log(index)
+      this.moveIndex = index;
+      // this.amTransferOderList.push(amTransferOderList[index])
+    },
+    onEnd(event) {
+      console.log(this.amTransferOderLists);
+      //   this.amTransferOderList.push(this.moveAmTransferOderList);
+      //   this.moveAmTransferOderList = "";
+      //   console.log(JSON.stringify(this.amTransferOderLists));
+      //   console.log(this.amTransferOderList[this.moveIndex]);
+      //   console.log(this.moveAmTransferOderList);
+    },
+    saveTodaySchedule() {
+      const day = this.$route.params.id;
+      const todayAmTransferOderLists = { ...this.amTransferOderLists };
+      const familyTransferList = this.familyTransfer;
+      const absenceUserList = this.absenceUser;
+      const todayUsersList = this.todayUsers;
+      console.log(todayAmTransferOderLists);
+      console.log(familyTransferList);
+      console.log(absenceUserList);
+      console.log(todayUsersList);
+
+      this.$store.dispatch("schedule/saveTodayAmTransferOderLists", {
+        todayAmTransferOderLists,
+        day
+      });
+      this.$store.dispatch("schedule/saveTodayFamilyTransfer", {
+        familyTransferList,
+        day
+      });
+      this.$store.dispatch("schedule/saveTodayAbsenceUser", {
+        absenceUserList,
+        day
+      });
+      this.$store.dispatch("schedule/saveTodayUsers", {
+        todayUsersList,
+        day
+      });
     }
   }
-  }
+};
 </script>
 
 <style>
-.user{
- justify-content:center
+.user {
+  justify-content: center;
 }
 
-.v-input__slot{
-  padding:0px !important;
+.v-input__slot {
+  padding: 0px !important;
+}
+
+.v-list-item {
+  min-height: 5px !important;
 }
 </style>
