@@ -361,9 +361,14 @@ export default {
     saveTodaySchedule() {
       const day = this.$route.params.id;
       const todayAmTransferOderLists = { ...this.amTransferOderLists };
-      const familyTransferList = { ...this.familyTransfer };
-      const absenceUserList = { ...this.absenceUser };
-      const todayUsersList = { ...this.todayUsers };
+      const familyTransferList = this.familyTransfer;
+      const absenceUserList = this.absenceUser;
+      const todayUsersList = this.todayUsers;
+      console.log(todayAmTransferOderLists);
+      console.log(familyTransferList);
+      console.log(absenceUserList);
+      console.log(todayUsersList);
+
       this.$store.dispatch("schedule/saveTodayAmTransferOderLists", {
         todayAmTransferOderLists,
         day
@@ -392,5 +397,9 @@ export default {
 
 .v-input__slot {
   padding: 0px !important;
+}
+
+.v-list-item {
+  min-height: 5px !important;
 }
 </style>

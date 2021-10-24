@@ -29,15 +29,17 @@ export const mutations = {
 
   todayAbsenceUser(state, list) {
     // console.log(list);
-    const newList = new Array();
-    state.absenceUser = newList;
+    // const newList = new Array();
+    // state.absenceUser = newList;
     if (list) {
-      Object.entries(list).map(([key, value]) => ({ key, value }));
-      console.log(list);
-      state.absenceUser = list;
-      console.log(state.absenceUser);
+      // 配列に変換。変換しないとオブジェクトで渡されてしまい、配列じゃない！とエラーが出る
+      const lists = Object.keys(list).map(function(key) {
+        return list[key];
+      });
+      console.log(lists);
+      state.absenceUser = lists;
     } else {
-      console.log("absenceUserエラー");
+      state.absenceUser = [];
       return;
     }
   },
@@ -46,10 +48,11 @@ export const mutations = {
     // console.log(list);
     if (list) {
       // console.log(list);
-      const newList = new Array();
-      state.todayUsers = newList;
-      state.todayUsers = list;
-      // console.log(state.todayUsers);
+      const lists = Object.keys(list).map(function(key) {
+        return list[key];
+      });
+      state.todayUsers = lists;
+      console.log(state.todayUsers);
     } else {
       // console.log(state.absenceUser);
       return;
@@ -120,6 +123,7 @@ export const actions = {
     //   list.push(snapshot.data());
     // console.log(lists);
     if (lists) {
+      console.log(lists);
       commit("fetchTodayAmTransferOderLists", lists);
     } else {
       const carList = rootState.car.carList;
