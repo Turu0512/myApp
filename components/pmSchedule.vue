@@ -1,18 +1,10 @@
 <template>
   <v-app>
     <v-container>
-      <v-btn outlined small class="ma-4" @click="backToSchedule">
-        カレンダーに戻る
-      </v-btn>
-      <v-card>
-        <v-card-title class="justify-center">
-          {{ title }}
-        </v-card-title>
-      </v-card>
       <v-row>
         <v-col cols="10">
           <v-card>
-            迎え
+            送り
           </v-card>
           <!-- -------------------main---------------------------------------- -->
           <div class="d-flex flex-column">
@@ -65,7 +57,7 @@
                   >
                     <draggable
                       class="d-flex flex-row pa-1"
-                      group="myGroup"
+                      group="pmGroup"
                       @start="drag = true"
                       @end="
                         drag = false;
@@ -94,18 +86,18 @@
                 </v-card> -->
                 <draggable
                   class="d-flex flex-row pa-1"
-                  group="myGroup"
+                  group="pmGroup"
                   @start="drag = true"
                   @end="drag = false"
                   :options="options"
                   @add="onAdd(index)"
-                  v-model="amTransferOderLists[index]"
+                  v-model="pmTransferOderLists[index]"
                   :data-column-id="index"
                   style="min-width:100px"
                 >
                   <v-card-title
                     class="pa-0 mx-1 text-body-1"
-                    v-for="item in amTransferOderLists[index]"
+                    v-for="item in pmTransferOderLists[index]"
                     :key="item.id"
                     :data-column-id="index"
                   >
@@ -166,14 +158,14 @@
               <v-subheader>利用者一覧</v-subheader>
               <v-list-item-group class="pa-0" color="primary">
                 <draggable
-                  group="myGroup"
+                  group="pmGroup"
                   @start="drag = true"
                   @end="drag = false"
                   :options="options"
-                  v-model="todayUsers"
+                  v-model="todayPmUsers"
                 >
                   <v-list-item
-                    v-for="todayUser in todayUsers"
+                    v-for="todayUser in todayPmUsers"
                     :key="todayUser.id"
                   >
                     <v-list-item-content class="pa-0">
@@ -192,7 +184,7 @@
               <v-subheader>休み</v-subheader>
               <v-list-item-group class="pa-0" color="primary">
                 <draggable
-                  group="myGroup"
+                  group="pmGroup"
                   @start="drag = true"
                   @end="drag = false"
                   :options="options"
@@ -216,14 +208,14 @@
               <v-subheader>家族送迎</v-subheader>
               <v-list-item-group color="primary" class="pa-0">
                 <draggable
-                  group="myGroup"
+                  group="pmGroup"
                   @start="drag = true"
                   @end="drag = false"
                   :options="options"
-                  v-model="familyTransfer"
+                  v-model="pmFamilyTransfer"
                 >
                   <v-list-item
-                    v-for="(item, index) in familyTransfer"
+                    v-for="(item, index) in pmFamilyTransfer"
                     :key="index"
                     class="original"
                   >
@@ -238,10 +230,9 @@
             </v-list>
           </v-card>
         </v-col>
-        <v-btn @click="addReverseSchedule">反転挿入</v-btn>
+        <v-btn @click="saveTodaySchedule">保存</v-btn>
       </v-row>
     </v-container>
-    <pmSchedule @save="saveTodaySchedule" />
   </v-app>
 </template>
 
@@ -259,30 +250,35 @@ moment.lang("ja", {
   weekdaysShort: ["日", "月", "火", "水", "木", "金", "土"]
 });
 import moment from "moment";
-import pmSchedule from "~/components/pmSchedule.vue";
 
 import draggable from "vuedraggable";
 
 export default {
-  components: { draggable, pmSchedule },
+  components: { draggable },
 
-  async created() {
+  async beforeCreate() {
     const today = this.$route.params.id;
     const day = moment(this.$route.params.id).format("ddd");
-    this.$store.dispatch("schedule/fetchAbsenceUser", this.$route.params.id);
-    this.$store.dispatch("schedule/fetchTodayUsers", { day, today });
-    this.$store.dispatch("schedule/fetchFamilyTransfer", { day, today });
+    await this.$store.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
+    await this.$store.dispatch(
+      "schedule/fetchAbsenceUser",
+      this.$route.params.id
+    );
+    await this.$store.dispatch("pmSchedule/fetchPmFamilyTransfer", {
+      day,
+      today
+    });
 
     await this.$store.dispatch("car/getCarList");
     await this.$store.dispatch(
-      "schedule/fetchTodayAmTransferOderLists",
+      "pmSchedule/fetchTodayPmTransferOderLists",
       this.$route.params.id
     );
   },
 
   data: () => ({
     options: {
-      group: "myGroup",
+      group: "pmGroup",
       animation: 200
     },
     selectedItem: 1,
@@ -292,28 +288,26 @@ export default {
   }),
 
   computed: {
-    title() {
-      return moment(this.$route.params.id).format("M月 DD日 (ddd)");
-    },
-
     carList() {
       return this.$store.getters["car/fetchCarList"];
     },
 
-    todayUsers: {
+    todayPmUsers: {
       get() {
-        return this.$store.getters["schedule/todayUsers"];
+        return this.$store.getters["pmSchedule/todayPmUsers"];
       },
       set(value) {
-        this.$store.commit("schedule/fetchTodayUsers", value);
+        this.$store.commit("pmSchedule/fetchTodayPmUsers", value);
       }
     },
 
-    amTransferOderLists: {
+    pmTransferOderLists: {
       get() {
-        return { ...this.$store.getters["schedule/amTransferOderLists"] };
+        return { ...this.$store.getters["pmSchedule/pmTransferOderLists"] };
       },
-      set(value) {}
+      set(value) {
+        // this.$store.commit("pmSchedule/fetchTodayPmTransferOderLists", value);
+      }
     },
 
     absenceUser: {
@@ -323,57 +317,47 @@ export default {
       set(value) {
         // console.log(value);
         this.$store.commit("schedule/todayAbsenceUser", value);
-        this.$store.commit("pmSchedule/changeTodayPmUser", value);
       }
     },
 
-    familyTransfer: {
+    pmFamilyTransfer: {
       get() {
-        return this.$store.getters["schedule/familyTransfer"];
+        return this.$store.getters["pmSchedule/pmFamilyTransfer"];
       },
       set(value) {
-        this.$store.commit("schedule/todayFamilyTransfer", value);
+        this.$store.commit("pmSchedule/todayPmFamilyTransfer", value);
       }
     }
   },
   //
   methods: {
-    backToSchedule() {
-      this.$router.push({ name: "schedule-schedule" });
-    },
     onAdd(index) {
-      // console.log(index)
       this.moveIndex = index;
-      // this.amTransferOderList.push(amTransferOderList[index])
     },
-
     saveTodaySchedule() {
+      this.$emit("save");
       const day = this.$route.params.id;
-      const todayAmTransferOderLists = { ...this.amTransferOderLists };
-      const familyTransferList = this.familyTransfer;
+      const todayPmTransferOderLists = { ...this.pmTransferOderLists };
+      const pmFamilyTransferList = this.pmFamilyTransfer;
       const absenceUserList = this.absenceUser;
-      const todayUsersList = this.todayUsers;
+      const todayPmUsersList = this.todayPmUsers;
 
-      this.$store.dispatch("schedule/saveTodayAmTransferOderLists", {
-        todayAmTransferOderLists,
+      this.$store.dispatch("pmSchedule/saveTodayPmTransferOderLists", {
+        todayPmTransferOderLists,
         day
       });
-      this.$store.dispatch("schedule/saveTodayFamilyTransfer", {
-        familyTransferList,
+      this.$store.dispatch("pmSchedule/saveTodayPmFamilyTransfer", {
+        pmFamilyTransferList,
         day
       });
       this.$store.dispatch("schedule/saveTodayAbsenceUser", {
         absenceUserList,
         day
       });
-      this.$store.dispatch("schedule/saveTodayUsers", {
-        todayUsersList,
+      this.$store.dispatch("pmSchedule/saveTodayPmUsers", {
+        todayPmUsersList,
         day
       });
-    },
-
-    addReverseSchedule() {
-      this.saveTodaySchedule();
     }
   }
 };
