@@ -2,10 +2,10 @@ import firebase from "@/plugins/firebase";
 const fbstore = firebase.firestore();
 
 export const state = () => ({
-  amTransferOderLists: [],
-  familyTransfer: [],
+  pmTransferOderLists: [],
+  pmFamilyTransfer: [],
   absenceUser: [],
-  todayUsers: []
+  todayPmUsers: []
 });
 // ------------------Mutations-------------------------------
 export const mutations = {
@@ -14,40 +14,39 @@ export const mutations = {
     state.carList.push(car);
   },
 
-  fetchTodayAmTransferOderLists(state, list) {
-    state.amTransferOderLists = list;
+  fetchTodayPmTransferOderLists(state, list) {
+    state.pmTransferOderLists = list;
     // console.log(list);
   },
 
-  clearTodayAmTransferOderLists(state, list) {
-    const newList = new Array();
-    for (let i = 0; i < list.length; i++) {
-      newList[i] = new Array();
-    }
-    state.amTransferOderLists = newList;
+  fetchTodayPmUsers(state, todayUser) {
+    // console.log(todayUser);
+    state.todayPmUsers = _.sortBy(todayUser, user => {
+      return user.firstNameRuby;
+    });
   },
 
-  todayUsers(state, list) {
+  todayPmUsers(state, list) {
     // console.log(list);
     if (list) {
       // console.log(list);
       const lists = Object.keys(list).map(function(key) {
         return list[key];
       });
-      state.todayUsers = lists;
-      // console.log(state.todayUsers);
+      state.todayPmUsers = lists;
+      // console.log(state.todayPmUsers);
     } else {
       // console.log(state.absenceUser);
       return;
     }
   },
+  changeTodayPmUser(state, list) {
+    let user = state.todayPmUsers;
 
-  fetchTodayUsers(state, todayUser) {
-    state.todayUsers = _.sortBy(todayUser, user => {
-      return user.firstNameRuby;
-    });
-
-    // console.log();
+    for (let i = 0; i < list.length; i++) {
+      user = user.filter(a => a.id != list[i].id);
+    }
+    state.todayPmUsers = user;
   },
 
   todayAbsenceUser(state, list) {
@@ -56,6 +55,7 @@ export const mutations = {
       const lists = Object.keys(list).map(function(key) {
         return list[key];
       });
+      // console.log(lists);
       state.absenceUser = lists;
     } else {
       state.absenceUser = [];
@@ -63,70 +63,94 @@ export const mutations = {
     }
   },
 
-  todayFamilyTransfer(state, list) {
+  todayPmFamilyTransfer(state, list) {
     if (list) {
       // 配列に変換。変換しないとオブジェクトで渡されてしまい、配列じゃない！とエラーが出る
       const lists = Object.keys(list).map(function(key) {
         return list[key];
       });
       // console.log(lists);
-      state.familyTransfer = lists;
+      state.pmFamilyTransfer = lists;
     } else {
-      state.familyTransfer = [];
+      state.pmFamilyTransfer = [];
       return;
     }
+  },
+  clearTodayAmTransferOderLists(state, list) {
+    const newList = new Array();
+    for (let i = 0; i < list.length; i++) {
+      newList[i] = new Array();
+    }
+    state.pmTransferOderLists = newList;
   }
 };
 
 // --------------------Actions-------------------------
-// Savelist---------------------------------------------------------
+
 export const actions = {
-  async saveTodayAmTransferOderLists({ commit }, list) {
-    await fbstore
-      .collection(list.day)
+  async reverseSchedule({ commit, rootState }, day) {
+    const listRef = await fbstore
+      .collection(day)
       .doc("todayAmTransferOderLists")
+      .get();
+    let lists = listRef.data();
+    let pmList = Object.keys(lists).map(function(key) {
+      return lists[key];
+    });
+    for (let i = 0; i < pmList.length; i++) {
+      lists[i] = lists[i].reverse();
+    }
+    commit("todayPmFamilyTransfer", rootState.schedule.familyTransfer);
+    commit("fetchTodayPmUsers", rootState.schedule.todayUsers);
+    commit("fetchTodayPmTransferOderLists", pmList);
+  },
+  // Savelist--------------------------------------------------------------
+  async saveTodayPmTransferOderLists({ commit }, list) {
+    await fbstore
+      .collection(list.day)
+      .doc("todayPmTransferOderLists")
       .set({
-        ...list.todayAmTransferOderLists
+        ...list.todayPmTransferOderLists
       });
 
     // console.log(list);
   },
 
-  async saveTodayFamilyTransfer({ commit }, list) {
+  async saveTodayPmFamilyTransfer({ commit }, list) {
     // console.log(list);
     await fbstore
       .collection(list.day)
-      .doc("todayFamilyTransfer")
+      .doc("todayPmFamilyTransfer")
       .set({
-        ...list.familyTransferList
+        ...list.pmFamilyTransferList
       });
   },
 
-  async saveTodayAbsenceUser({ commit }, list) {
+  async saveTodayPmAbsenceUser({ commit }, list) {
     // console.log(list);
     await fbstore
       .collection(list.day)
-      .doc("todayAbsenceUser")
+      .doc("todayPmAbsenceUser")
       .set({
         ...list.absenceUserList
       });
   },
 
-  async saveTodayUsers({ commit }, list) {
+  async saveTodayPmUsers({ commit }, list) {
     // console.log(list);
     await fbstore
       .collection(list.day)
-      .doc("todayUsers")
+      .doc("todayPmUsers")
       .set({
-        ...list.todayUsersList
+        ...list.todayPmUsersList
       });
   },
-  // fetch-------------------------------------------------------------
+  // fetch----------------------------------------------------------------------------
 
-  async fetchTodayAmTransferOderLists({ rootState, commit }, day) {
+  async fetchTodayPmTransferOderLists({ rootState, commit }, day) {
     const listRef = await fbstore
       .collection(day)
-      .doc("todayAmTransferOderLists")
+      .doc("todayPmTransferOderLists")
       .get();
     const lists = listRef.data();
     // .then(snapshot => {
@@ -134,7 +158,7 @@ export const actions = {
     // console.log(lists);
     if (lists) {
       // console.log(lists);
-      commit("fetchTodayAmTransferOderLists", lists);
+      commit("fetchTodayPmTransferOderLists", lists);
     } else {
       const carList = rootState.car.carList;
       commit("clearTodayAmTransferOderLists", carList);
@@ -143,14 +167,14 @@ export const actions = {
     }
   },
 
-  async fetchTodayUsers({ commit }, day) {
+  async fetchTodayPmUsers({ commit }, day) {
     const listRef = await fbstore
       .collection(day.today)
-      .doc("todayUsers")
+      .doc("todayPmUsers")
       .get();
     const lists = listRef.data();
     if (lists) {
-      commit("todayUsers", lists);
+      commit("todayPmUsers", lists);
     } else {
       const todayUsersList = [];
       await fbstore
@@ -163,7 +187,7 @@ export const actions = {
             todayUsersList.push(user.data());
           });
         });
-      commit("fetchTodayUsers", todayUsersList);
+      commit("fetchTodayPmUsers", todayUsersList);
     }
   },
 
@@ -176,30 +200,30 @@ export const actions = {
     commit("todayAbsenceUser", lists);
   },
 
-  async fetchFamilyTransfer({ commit }, day) {
+  async fetchPmFamilyTransfer({ commit }, day) {
     const listRef = await fbstore
       .collection(day.today)
-      .doc("todayFamilyTransfer")
+      .doc("todayPmFamilyTransfer")
       .get();
     const lists = listRef.data();
-    commit("todayFamilyTransfer", lists);
+    commit("todayPmFamilyTransfer", lists);
   }
 };
 // -----------------------Getters-------------------------
 export const getters = {
-  amTransferOderLists: state => {
-    return state.amTransferOderLists;
+  pmTransferOderLists: state => {
+    return state.pmTransferOderLists;
   },
 
   absenceUser: state => {
     return state.absenceUser;
   },
 
-  todayUsers: state => {
-    return state.todayUsers;
+  todayPmUsers: state => {
+    return state.todayPmUsers;
   },
 
-  familyTransfer: state => {
-    return state.familyTransfer;
+  pmFamilyTransfer: state => {
+    return state.pmFamilyTransfer;
   }
 };
