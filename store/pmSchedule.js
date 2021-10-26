@@ -19,12 +19,11 @@ export const mutations = {
     // console.log(list);
   },
 
-  clearTodayAmTransferOderLists(state, list) {
-    const newList = new Array();
-    for (let i = 0; i < list.length; i++) {
-      newList[i] = new Array();
-    }
-    state.pmTransferOderLists = newList;
+  fetchTodayPmUsers(state, todayUser) {
+    // console.log(todayUser);
+    state.todayPmUsers = _.sortBy(todayUser, user => {
+      return user.firstNameRuby;
+    });
   },
 
   todayPmUsers(state, list) {
@@ -48,13 +47,6 @@ export const mutations = {
       user = user.filter(a => a.id != list[i].id);
     }
     state.todayPmUsers = user;
-  },
-
-  fetchTodayPmUsers(state, todayUser) {
-    // console.log(todayUser);
-    state.todayPmUsers = _.sortBy(todayUser, user => {
-      return user.firstNameRuby;
-    });
   },
 
   todayAbsenceUser(state, list) {
@@ -83,12 +75,35 @@ export const mutations = {
       state.pmFamilyTransfer = [];
       return;
     }
+  },
+  clearTodayAmTransferOderLists(state, list) {
+    const newList = new Array();
+    for (let i = 0; i < list.length; i++) {
+      newList[i] = new Array();
+    }
+    state.pmTransferOderLists = newList;
   }
 };
 
 // --------------------Actions-------------------------
 
 export const actions = {
+  async reverseSchedule({ commit, rootState }, day) {
+    const listRef = await fbstore
+      .collection(day)
+      .doc("todayAmTransferOderLists")
+      .get();
+    let lists = listRef.data();
+    let pmList = Object.keys(lists).map(function(key) {
+      return lists[key];
+    });
+    for (let i = 0; i < pmList.length; i++) {
+      lists[i] = lists[i].reverse();
+    }
+    commit("todayPmFamilyTransfer", rootState.schedule.familyTransfer);
+    commit("fetchTodayPmUsers", rootState.schedule.todayUsers);
+    commit("fetchTodayPmTransferOderLists", pmList);
+  },
   // Savelist--------------------------------------------------------------
   async saveTodayPmTransferOderLists({ commit }, list) {
     await fbstore

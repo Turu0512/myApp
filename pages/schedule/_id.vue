@@ -372,8 +372,9 @@ export default {
       });
     },
 
-    addReverseSchedule() {
-      this.saveTodaySchedule();
+    async addReverseSchedule() {
+      await this.saveTodaySchedule();
+      this.$store.dispatch("pmSchedule/reverseSchedule", this.$route.params.id);
     }
   }
 };
