@@ -4,19 +4,11 @@ const fbstore = firebase.firestore();
 export const state = () => ({
   transferUsers: [],
   editUserData: [],
-  // todayUsers: [],
+  stopUsers: [],
   amTransferOderList: []
 });
 // ------------------Mutations-------------------------------
 export const mutations = {
-  // fetchTodayUsers(state, todayUser) {
-  //   state.todayUsers = _.sortBy(todayUser, user => {
-  //     return user.firstNameRuby;
-  //   });
-
-  //   // console.log();
-  // },
-
   addUser(state, usersList) {
     console.log(usersList);
     state.transferUsers.push(usersList);
@@ -37,21 +29,6 @@ export const mutations = {
 
 // --------------------Actions-------------------------
 export const actions = {
-  // async fetchTodayUsers({ commit }, day) {
-  //   const todayUsersList = [];
-  //   await fbstore
-  //     .collection("usersList")
-  //     .where("dayOfWeek", "array-contains", day)
-  //     .get()
-  //     .then(snapShot => {
-  //       snapShot.forEach(user => {
-  //         // console.log(user.data())
-  //         todayUsersList.push(user.data());
-  //       });
-  //     });
-  //   commit("fetchTodayUsers", todayUsersList);
-  // },
-
   async addUser({ commit }, user) {
     await fbstore
       .collection("usersList")
