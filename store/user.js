@@ -10,7 +10,7 @@ export const state = () => ({
 // ------------------Mutations-------------------------------
 export const mutations = {
   addUser(state, usersList) {
-    console.log(usersList);
+    // console.log(usersList);
     state.transferUsers.push(usersList);
   },
 
@@ -24,6 +24,11 @@ export const mutations = {
     console.log(usersList);
     state.transferUsers = "";
     state.transferUsers = usersList;
+  },
+
+  setStopUsersList(state, stopUsers) {
+    state.stopUsers = "";
+    state.stopUsers = stopUsers;
   }
 };
 
@@ -47,7 +52,25 @@ export const actions = {
           });
       });
   },
+  // -----edit----------------------------------------------------------------------------------------
+  updateUser({ commit }, user) {
+    fbstore
+      .collection("usersList")
+      .doc(user.id)
+      .update({
+        ...user
+      });
+  },
 
+  async fetchEditUser({ commit }, id) {
+    const getUserRef = fbstore.collection("usersList").doc(id);
+    const getUser = await getUserRef.get();
+    const getEditUser = getUser.data();
+
+    commit("getEditUser", getEditUser);
+  },
+
+  // -----usersList--------------------------------------------------------------------
   async getUsersList({ commit }) {
     const list = [];
     await fbstore
@@ -60,13 +83,7 @@ export const actions = {
     commit("getUsersList", list);
   },
 
-  async fetchEditUser({ commit }, id) {
-    const getUserRef = fbstore.collection("usersList").doc(id);
-    const getUser = await getUserRef.get();
-    const getEditUser = getUser.data();
-
-    commit("getEditUser", getEditUser);
-  },
+  // -----stopUsers----------------------------------------------------------------------
 
   deleteUser({ commit }, user) {
     fbstore
@@ -91,17 +108,25 @@ export const actions = {
       });
   },
 
-  updateUser({ commit }, user) {
-    fbstore
-      .collection("usersList")
-      .doc(user.id)
-      .update({
-        ...user
+  async fetchStopUsers({ commit }) {
+    const list = [];
+    await fbstore
+      .collection("stopedUsersList")
+      .orderBy("firstNameRuby")
+      .get()
+      .then(snapshot => {
+        snapshot.forEach(doc => list.push(doc.data()));
       });
+    // console.log(list);
+    commit("setStopUsersList", list);
   },
 
-  saveTodaySchedule({ commit }, schedule) {
-    console.log(schedule);
+  async fetchStopUserData({ commit }, id) {
+    const getUserRef = fbstore.collection("stopedUsersList").doc(id);
+    const getUser = await getUserRef.get();
+    const getEditUser = getUser.data();
+
+    commit("getEditUser", getEditUser);
   }
 };
 
@@ -115,7 +140,7 @@ export const getters = {
     return state.editUserData;
   },
 
-  todayUsers: state => {
-    return state.todayUsers;
+  stopUsers: state => {
+    return state.stopUsers;
   }
 };

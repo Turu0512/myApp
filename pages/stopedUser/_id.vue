@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <h1 class="text-center">利用者編集</h1>
+    <h1 class="text-center">中止者編集</h1>
 
     <v-container>
       <v-row align="center">
@@ -118,11 +118,12 @@
       </v-row>
       <v-row>
         <v-col cols="12" class="pl-12">
-          ＊再表示させる場合には、「中止者一覧」より編集を行い、チェックを外してください
+          ＊利用者一覧に再表示させる場合にはチェックを外してください
         </v-col>
       </v-row>
       <v-row class="justify-center mt-10">
         <v-btn @click="editUserSave">編集</v-btn>
+        <v-btn class="ml-5" @click="deleteUser">削除</v-btn>
       </v-row>
     </v-container>
   </v-app>
@@ -131,7 +132,7 @@
 <script>
 export default {
   async created() {
-    await this.$store.dispatch("user/fetchEditUser", this.$route.params.id);
+    await this.$store.dispatch("user/fetchStopUserData", this.$route.params.id);
     console.log(this.$store.state.user.editUserData);
     const edit = this.$store.state.user.editUserData;
     edit.forEach(data => {
@@ -158,19 +159,7 @@ export default {
 
     editUser: {},
 
-    stoped: false
-
-    // users:{
-    //   displayName: "",
-    //   lastName: "",
-    //   firstName: "",
-    //   lastNameRuby: "",
-    //   lastNameRuby: "",
-    //   sex: "",
-    //   address: "",
-    //   dayOfWeek: [],
-    //   transfers: "",
-    //   },
+    stoped: true
   }),
   methods: {
     async editUserSave() {
@@ -188,6 +177,24 @@ export default {
         // console.log("return");
         // this.$store.dispatch("user/updateUser", this.editUser);
       }
+    },
+
+    deleteUser() {
+      this.$swal({
+        title: "利用者情報を削除しますか？",
+        text: "削除した場合、復元することはできません",
+        icon: "warning",
+        showCancelButton: true,
+        dangerMode: true
+      }).then(willDelete => {
+        if (willDelete.value) {
+          this.$swal("削除しました。", {
+            icon: "success"
+          });
+        } else {
+          this.$swal("取り消しました。");
+        }
+      });
     }
   }
 };
