@@ -61,7 +61,7 @@
               <td align="center">
                 <v-btn @click="editCar(i)">編集</v-btn>
               </td>
-              <td align="center"><v-btn>削除</v-btn></td>
+              <td align="center"><v-btn @click="deleteCar(i)">削除</v-btn></td>
             </tr>
           </tbody>
         </template>
@@ -89,7 +89,8 @@ export default {
     car: {
       name: "",
       max: "",
-      id: ""
+      id: "",
+      index: ""
     },
     // carList: [],
     editMode: false
@@ -112,6 +113,7 @@ export default {
       this.car.name = this.carList[i].name;
       this.car.max = this.carList[i].max;
       this.car.id = this.carList[i].id;
+      this.car.index = i;
     },
 
     saveCar() {
@@ -119,12 +121,26 @@ export default {
         alert("車両名、定員数、どちらも入力してください");
         return;
       }
+      //  else if (
+      //   this.car.name == this.carList[this.car.index].name ||
+      //   this.car.max == this.carList[this.car.index].max
+      // )
+      // {
+      //   console.log("一緒");
+      //   return;
+      // }
       const car = { ...this.car };
       console.log(car);
       this.$store.dispatch("car/saveCar", car);
       this.car.name = "";
       this.car.max = "";
       this.editMode = false;
+      this.$store.dispatch("car/getCarList");
+    },
+
+    deleteCar(i) {
+      this.car.id = this.carList[i].id;
+      this.$store.dispatch("car/deleteCar", this.car.id);
       this.$store.dispatch("car/getCarList");
     }
   },
