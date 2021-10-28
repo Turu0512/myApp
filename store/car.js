@@ -59,10 +59,20 @@ export const actions = {
       .set({
         ...car,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      })
+      });
+  },
+
+  deleteCar({ commit }, id) {
+    fbstore
+      .collection("carList")
+      .doc(id)
+      .delete()
       .then(() => {
-        commit("addCar", car);
-        console.log(car);
+        console.log(id);
+        console.log("Document successfully deleted!");
+      })
+      .catch(error => {
+        console.error("Error removing document: ", error);
       });
   }
 };
