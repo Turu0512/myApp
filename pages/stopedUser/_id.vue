@@ -122,7 +122,7 @@
         </v-col>
       </v-row>
       <v-row class="justify-center mt-10">
-        <v-btn @click="editUserSave">編集</v-btn>
+        <v-btn @click="editUserSave">保存</v-btn>
         <v-btn class="ml-5" @click="deleteUser">削除</v-btn>
       </v-row>
     </v-container>
@@ -188,6 +188,7 @@ export default {
         dangerMode: true
       }).then(willDelete => {
         if (willDelete.value) {
+          this.$store.dispatch("user/deleteStopUser", this.$route.params.id);
           this.$swal("削除しました。", {
             icon: "success"
           });

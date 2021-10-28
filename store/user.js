@@ -99,6 +99,20 @@ export const actions = {
       });
   },
 
+  deleteStopUser({ commit }, id) {
+    fbstore
+      .collection("stopedUsersList")
+      .doc(id)
+      .delete()
+      .then(() => {
+        this.$router.push({ name: "stopUser" });
+        console.log("Document successfully deleted!");
+      })
+      .catch(error => {
+        console.error("Error removing document: ", error);
+      });
+  },
+
   stopedUser({ commit }, user) {
     fbstore
       .collection("stopedUsersList")

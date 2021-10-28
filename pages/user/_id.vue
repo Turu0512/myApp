@@ -122,7 +122,7 @@
         </v-col>
       </v-row>
       <v-row class="justify-center mt-10">
-        <v-btn @click="editUserSave">編集</v-btn>
+        <v-btn @click="editUserSave">保存</v-btn>
       </v-row>
     </v-container>
   </v-app>
@@ -159,18 +159,6 @@ export default {
     editUser: {},
 
     stoped: false
-
-    // users:{
-    //   displayName: "",
-    //   lastName: "",
-    //   firstName: "",
-    //   lastNameRuby: "",
-    //   lastNameRuby: "",
-    //   sex: "",
-    //   address: "",
-    //   dayOfWeek: [],
-    //   transfers: "",
-    //   },
   }),
   methods: {
     async editUserSave() {
@@ -185,8 +173,6 @@ export default {
         await this.$store.dispatch("user/updateUser", this.editUser);
         this.editUser = "";
         this.$router.push({ name: "servisUserList" });
-        // console.log("return");
-        // this.$store.dispatch("user/updateUser", this.editUser);
       }
     }
   }
