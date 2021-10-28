@@ -45,11 +45,21 @@
           </thead>
           <tbody>
             <tr v-for="user in users" :key="user.name">
-              <td>{{ user.name }}</td>
+              <td>{{ user.firstName + " " + user.lastName }}</td>
               <td align="center">{{ user.sex }}</td>
               <td align="center">{{ user.address }}</td>
-              <td align="center">{{ user.week }}</td>
-              <td align="center"><v-btn>編集</v-btn></td>
+              <td align="center">
+                <span
+                  v-for="dayOfWeek in user.dayOfWeek"
+                  :key="dayOfWeek"
+                  class="pa-1"
+                >
+                  {{ dayOfWeek }}
+                </span>
+              </td>
+              <td align="center">
+                <v-btn @click="editUser(user)">編集</v-btn>
+              </td>
             </tr>
           </tbody>
         </template>
@@ -77,6 +87,13 @@ export default {
   computed: {
     users() {
       return this.$store.getters["user/stopUsers"];
+    }
+  },
+
+  methods: {
+    editUser(user) {
+      console.log(user.id);
+      this.$router.push({ name: "stopedUser-id", params: { id: user.id } });
     }
   }
 };

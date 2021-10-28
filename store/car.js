@@ -50,6 +50,20 @@ export const actions = {
         snapshot.forEach(doc => list.push(doc.data()));
       });
     commit("addCarList", list);
+  },
+
+  saveCar({ commit }, car) {
+    fbstore
+      .collection("carList")
+      .doc(car.id)
+      .set({
+        ...car,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      .then(() => {
+        commit("addCar", car);
+        console.log(car);
+      });
   }
 };
 
