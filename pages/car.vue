@@ -106,9 +106,6 @@ export default {
       this.$store.dispatch("car/createCar", car);
       this.car.name = "";
       this.car.max = "";
-      setTimeout(() => {
-        this.$store.dispatch("car/getCarList");
-      }, 500);
     },
 
     editCar(i) {
@@ -141,9 +138,6 @@ export default {
           (this.car.max = ""),
           (this.editMode = false)
         );
-      setTimeout(() => {
-        this.$store.dispatch("car/getCarList");
-      }, 500);
     },
 
     async deleteCar(i) {
@@ -156,9 +150,7 @@ export default {
       }).then(willDelete => {
         if (willDelete.value) {
           this.car.id = this.carList[i].id;
-          this.$store
-            .dispatch("car/deleteCar", this.car.id)
-            .then(this.$store.dispatch("car/getCarList"));
+          this.$store.dispatch("car/deleteCar", this.car.id);
           this.$swal("削除しました。", {
             icon: "success"
           });
