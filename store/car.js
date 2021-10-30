@@ -8,7 +8,6 @@ export const state = () => ({
 // ------------------Mutations-------------------------------
 export const mutations = {
   addCar(state, car) {
-    console.log(car);
     state.carList.push(car);
   },
 
@@ -20,7 +19,7 @@ export const mutations = {
 
 // --------------------Actions-------------------------
 export const actions = {
-  async createCar({ commit }, car) {
+  async createCar({ commit, dispatch }, car) {
     await fbstore
       .collection("carList")
       .add({})
@@ -35,7 +34,7 @@ export const actions = {
           })
           .then(() => {
             commit("addCar", car);
-            console.log(car, res.id);
+            dispatch("getCarList");
           });
       });
   },
@@ -52,7 +51,7 @@ export const actions = {
     commit("addCarList", list);
   },
 
-  saveCar({ commit }, car) {
+  saveCar({ commit, dispatch }, car) {
     fbstore
       .collection("carList")
       .doc(car.id)
@@ -60,9 +59,10 @@ export const actions = {
         ...car,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       });
+    dispatch("getCarList");
   },
 
-  deleteCar({ commit }, id) {
+  deleteCar({ commit, dispatch }, id) {
     fbstore
       .collection("carList")
       .doc(id)
@@ -70,6 +70,7 @@ export const actions = {
       .then(() => {
         console.log(id);
         console.log("Document successfully deleted!");
+        dispatch("getCarList");
       })
       .catch(error => {
         console.error("Error removing document: ", error);

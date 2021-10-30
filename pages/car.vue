@@ -116,7 +116,7 @@ export default {
       this.car.index = i;
     },
 
-    saveCar() {
+    async saveCar() {
       if (!this.car.name || !this.car.max) {
         alert("車両名、定員数、どちらも入力してください");
         return;
@@ -131,17 +131,33 @@ export default {
       // }
       const car = { ...this.car };
       console.log(car);
-      this.$store.dispatch("car/saveCar", car);
-      this.car.name = "";
-      this.car.max = "";
-      this.editMode = false;
-      this.$store.dispatch("car/getCarList");
+      await this.$store
+        .dispatch("car/saveCar", car)
+        .then(
+          (this.car.name = ""),
+          (this.car.max = ""),
+          (this.editMode = false)
+        );
     },
 
-    deleteCar(i) {
-      this.car.id = this.carList[i].id;
-      this.$store.dispatch("car/deleteCar", this.car.id);
-      this.$store.dispatch("car/getCarList");
+    async deleteCar(i) {
+      this.$swal({
+        title: "利用者情報を削除しますか？",
+        text: "削除した場合、復元することはできません",
+        icon: "warning",
+        showCancelButton: true,
+        dangerMode: true
+      }).then(willDelete => {
+        if (willDelete.value) {
+          this.car.id = this.carList[i].id;
+          this.$store.dispatch("car/deleteCar", this.car.id);
+          this.$swal("削除しました。", {
+            icon: "success"
+          });
+        } else {
+          this.$swal("取り消しました。");
+        }
+      });
     }
   },
 

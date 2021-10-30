@@ -4,14 +4,15 @@
     <v-container>
       <v-row class="d-flex justify-center d-inline-block">
         <v-col cols="3">
-          <v-text-field label="利用者検索" type="text">
-            <template v-slot:append-outer>
-              <v-btn color="primary">検索</v-btn>
-            </template>
+          <v-text-field
+            label="検索(名前orフリガナ)"
+            type="text"
+            v-model="filterName"
+          >
           </v-text-field>
         </v-col>
 
-        <v-radio-group row class="pa-4 mt-6 ml-5">
+        <v-radio-group row class="pa-4 mt-6 ml-5" v-model="dayOfWeek">
           <v-radio
             v-for="item in items"
             :key="item.index"
@@ -44,7 +45,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="user in users" :key="user.name">
+            <tr v-for="user in newUsersList" :key="user.name">
               <td>{{ user.firstName + " " + user.lastName }}</td>
               <td align="center">{{ user.sex }}</td>
               <td align="center">{{ user.address }}</td>
@@ -75,6 +76,7 @@ export default {
   },
   data: () => ({
     items: [
+      { week: "全て" },
       { week: "月" },
       { week: "火" },
       { week: "水" },
@@ -82,11 +84,32 @@ export default {
       { week: "金" },
       { week: "土" },
       { week: "日" }
-    ]
+    ],
+
+    filterName: "",
+    dayOfWeek: ""
   }),
   computed: {
     users() {
       return this.$store.getters["user/stopUsers"];
+    },
+
+    newUsersList() {
+      return this.users
+        .filter(item => {
+          return (
+            item.firstName.includes(this.filterName) ||
+            item.lastName.includes(this.filterName) ||
+            item.firstNameRuby.includes(this.filterName) ||
+            item.lastNameRuby.includes(this.filterName)
+          );
+        })
+        .filter(item => {
+          if (!this.dayOfWeek || this.dayOfWeek == "全て") {
+            return this.users;
+          }
+          return item.dayOfWeek.includes(this.dayOfWeek);
+        });
     }
   },
 
