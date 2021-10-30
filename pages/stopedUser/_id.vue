@@ -163,19 +163,25 @@ export default {
   }),
   methods: {
     async editUserSave() {
-      if (this.stoped) {
-        console.log(this.editUser);
-        await this.$store.dispatch("user/deleteUser", this.editUser);
-        await this.$store.dispatch("user/stopedUser", this.editUser);
+      const daysOfWeek = ["月", "火", "水", "木", "金", "土", "日"];
+      if (!this.stoped) {
+        let editDayOfWeek = this.editUser.dayOfWeek;
+        this.editUser.dayOfWeek = [...editDayOfWeek].sort(
+          (a, b) => daysOfWeek.indexOf(a) - daysOfWeek.indexOf(b)
+        );
+        await this.$store.dispatch("user/returnUsersList", this.editUser);
+        await this.$store.dispatch("user/deleteStopUser", this.editUser);
         this.editUser = "";
-        this.$router.push({ name: "servisUserList" });
+        this.$router.push({ name: "stopUser" });
         return;
       } else {
-        await this.$store.dispatch("user/updateUser", this.editUser);
+        let editDayOfWeek = this.editUser.dayOfWeek;
+        this.editUser.dayOfWeek = [...editDayOfWeek].sort(
+          (a, b) => daysOfWeek.indexOf(a) - daysOfWeek.indexOf(b)
+        );
+        await this.$store.dispatch("user/stopedUser", this.editUser);
         this.editUser = "";
-        this.$router.push({ name: "servisUserList" });
-        // console.log("return");
-        // this.$store.dispatch("user/updateUser", this.editUser);
+        this.$router.push({ name: "stopUser" });
       }
     },
 
