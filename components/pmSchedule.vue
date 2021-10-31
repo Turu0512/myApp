@@ -258,7 +258,8 @@ export default {
 
   async beforeCreate() {
     const today = this.$route.params.id;
-    const day = moment(this.$route.params.id).format("ddd");
+    const day = moment(today).format("ddd");
+
     await this.$store.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
     await this.$store.dispatch(
       "schedule/fetchAbsenceUser",
