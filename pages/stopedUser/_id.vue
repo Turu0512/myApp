@@ -166,14 +166,14 @@ export default {
       const daysOfWeek = ["月", "火", "水", "木", "金", "土", "日"];
       if (!this.stoped) {
         let editDayOfWeek = this.editUser.dayOfWeek;
+        console.log(daysOfWeek);
         this.editUser.dayOfWeek = [...editDayOfWeek].sort(
           (a, b) => daysOfWeek.indexOf(a) - daysOfWeek.indexOf(b)
         );
         await this.$store.dispatch("user/returnUsersList", this.editUser);
-        await this.$store.dispatch("user/deleteStopUser", this.editUser);
+        await this.$store.dispatch("user/deleteStopUser", this.editUser.id);
         this.editUser = "";
         this.$router.push({ name: "stopUser" });
-        return;
       } else {
         let editDayOfWeek = this.editUser.dayOfWeek;
         this.editUser.dayOfWeek = [...editDayOfWeek].sort(
