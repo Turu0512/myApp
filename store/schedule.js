@@ -178,11 +178,35 @@ export const actions = {
 
   async fetchFamilyTransfer({ commit }, day) {
     const listRef = await fbstore
-      .collection(day.today)
+      .collection(day)
       .doc("todayFamilyTransfer")
       .get();
     const lists = listRef.data();
     commit("todayFamilyTransfer", lists);
+  },
+
+  async fetch({ commit, dispatch }, days) {
+    const listRef = await fbstore
+      .collection(days.today)
+      .doc("todayUsers")
+      .get();
+    const lists = listRef.data();
+    if (!lists) {
+      this.$swal({
+        title: "データがありません"
+      });
+      return;
+    }
+    const day = days.day;
+    const today = days.today;
+    dispatch("fetchAbsenceUser", today);
+    dispatch("fetchTodayUsers", { day, today });
+    dispatch("fetchFamilyTransfer", today);
+    dispatch("fetchTodayAmTransferOderLists", today);
+    dispatch("fetchAbsenceUser", today);
+    this.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
+    this.dispatch("pmSchedule/fetchPmFamilyTransfer", { day, today });
+    this.dispatch("pmSchedule/fetchTodayPmTransferOderLists", today);
   }
 };
 // -----------------------Getters-------------------------

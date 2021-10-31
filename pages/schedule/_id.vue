@@ -1,9 +1,48 @@
 <template>
   <v-app>
     <v-container>
-      <v-btn outlined small class="ma-4" @click="backToSchedule">
-        カレンダーに戻る
-      </v-btn>
+      <v-row>
+        <v-col cols="3">
+          <v-btn outlined small class="ma-4" @click="backToSchedule">
+            カレンダーに戻る
+          </v-btn>
+        </v-col>
+        <v-col cols="4">
+          <v-menu
+            ref="menu"
+            v-model="menu"
+            :close-on-content-click="false"
+            :return-value.sync="date"
+            transition="scale-transition"
+            offset-y
+            min-width="auto"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="date"
+                label="Picker in menu"
+                prepend-icon="mdi-calendar"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+              >
+                <template v-slot:append-outer>
+                  <v-btn color="primary" @click="reuseData">反映させる</v-btn>
+                </template></v-text-field
+              >
+            </template>
+            <v-date-picker v-model="date" no-title scrollable>
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="menu = false">
+                Cancel
+              </v-btn>
+              <v-btn text color="primary" @click="$refs.menu.save(date)">
+                OK
+              </v-btn>
+            </v-date-picker>
+          </v-menu>
+        </v-col>
+      </v-row>
       <v-card>
         <v-card-title class="justify-center">
           {{ title }}
@@ -268,10 +307,10 @@ export default {
 
   async created() {
     const today = this.$route.params.id;
-    const day = moment(this.$route.params.id).format("ddd");
-    this.$store.dispatch("schedule/fetchAbsenceUser", this.$route.params.id);
+    const day = moment(today).format("ddd");
+    this.$store.dispatch("schedule/fetchAbsenceUser", today);
     this.$store.dispatch("schedule/fetchTodayUsers", { day, today });
-    this.$store.dispatch("schedule/fetchFamilyTransfer", { day, today });
+    this.$store.dispatch("schedule/fetchFamilyTransfer", today);
 
     await this.$store.dispatch("car/getCarList");
     await this.$store.dispatch(
@@ -288,7 +327,13 @@ export default {
     selectedItem: 1,
     moveIndex: "",
     moveAmTransferOderList: {},
-    drivers: []
+    drivers: [],
+    date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .substr(0, 10),
+    menu: false,
+    modal: false,
+    menu2: false
   }),
 
   computed: {
@@ -338,6 +383,23 @@ export default {
   },
   //
   methods: {
+    async reuseData() {
+      const today = this.date;
+      const day = moment(today).format("ddd");
+      console.log(day);
+      const newToday = this.$route.params.id;
+      const newDay = moment(newToday).format("ddd");
+      console.log(newDay);
+
+      if (day != newDay) {
+        this.$swal({
+          title: "同じ曜日を選択してください"
+        });
+        return;
+      }
+
+      this.$store.dispatch("schedule/fetch", { today, day });
+    },
     backToSchedule() {
       this.$router.push({ name: "schedule-schedule" });
     },

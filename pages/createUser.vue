@@ -179,6 +179,15 @@ export default {
         this.users.firstName &&
         this.users.dayOfWeek
       ) {
+        const daysOfWeek = ["月", "火", "水", "木", "金", "土", "日"];
+        let dayOfWeek = this.users.dayOfWeek;
+        console.log(dayOfWeek);
+        dayOfWeek = dayOfWeek.sort(
+          (a, b) => daysOfWeek.indexOf(a) - daysOfWeek.indexOf(b)
+        );
+        console.log(dayOfWeek);
+        this.users.dayOfWeek = dayOfWeek;
+        console.log(this.users.dayOfWeek);
         const user = { ...this.users };
         this.$store.dispatch("user/addUser", user);
         this.users.displayName = "";

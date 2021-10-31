@@ -132,23 +132,23 @@
 export default {
   async created() {
     await this.$store.dispatch("user/fetchEditUser", this.$route.params.id);
-    console.log(this.$store.state.user.editUserData);
     const edit = this.$store.state.user.editUserData;
     edit.forEach(data => {
       this.editUser = { ...data };
     });
+    console.log(this.editUser.dayOfWeek);
   },
 
   data: () => ({
     sex: ["男", "女"],
     items: [
-      { week: "月" },
-      { week: "火" },
-      { week: "水" },
-      { week: "木" },
-      { week: "金" },
-      { week: "土" },
-      { week: "日" }
+      { week: "月", index: "1" },
+      { week: "火", index: "2" },
+      { week: "水", index: "3" },
+      { week: "木", index: "4" },
+      { week: "金", index: "5" },
+      { week: "土", index: "6" },
+      { week: "日", index: "7" }
     ],
     transfers: [
       { label: "送迎あり" },
@@ -162,17 +162,25 @@ export default {
   }),
   methods: {
     async editUserSave() {
+      const daysOfWeek = ["月", "火", "水", "木", "金", "土", "日"];
+
       if (this.stoped) {
-        console.log(this.editUser);
+        let editDayOfWeek = this.editUser.dayOfWeek;
+        this.editUser.dayOfWeek = [...editDayOfWeek].sort(
+          (a, b) => daysOfWeek.indexOf(a) - daysOfWeek.indexOf(b)
+        );
         await this.$store.dispatch("user/deleteUser", this.editUser);
         await this.$store.dispatch("user/stopedUser", this.editUser);
         this.editUser = "";
-        this.$router.push({ name: "servisUserList" });
+
         return;
       } else {
+        let editDayOfWeek = this.editUser.dayOfWeek;
+        this.editUser.dayOfWeek = [...editDayOfWeek].sort(
+          (a, b) => daysOfWeek.indexOf(a) - daysOfWeek.indexOf(b)
+        );
         await this.$store.dispatch("user/updateUser", this.editUser);
         this.editUser = "";
-        this.$router.push({ name: "servisUserList" });
       }
     }
   }

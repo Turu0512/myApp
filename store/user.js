@@ -11,7 +11,9 @@ export const state = () => ({
 export const mutations = {
   addUser(state, usersList) {
     // console.log(usersList);
-    state.transferUsers.push(usersList);
+    state.transferUsers
+      .push(usersList)
+      .then(this.$router.push({ name: "servisUserList" }));
   },
 
   getEditUser(state, getEditUser) {
@@ -59,7 +61,8 @@ export const actions = {
       .doc(user.id)
       .update({
         ...user
-      });
+      })
+      .then(this.$router.push({ name: "servisUserList" }));
   },
 
   async fetchEditUser({ commit }, id) {
@@ -91,7 +94,7 @@ export const actions = {
       .doc(user.id)
       .delete()
       .then(() => {
-        console.log(user.id);
+        this.$router.push({ name: "servisUserList" });
         console.log("Document successfully deleted!");
       })
       .catch(error => {
@@ -141,6 +144,15 @@ export const actions = {
     const getEditUser = getUser.data();
 
     commit("getEditUser", getEditUser);
+  },
+
+  returnUsersList({ commit }, user) {
+    fbstore
+      .collection("usersList")
+      .doc(user.id)
+      .set({
+        ...user
+      });
   }
 };
 
