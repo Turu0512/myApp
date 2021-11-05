@@ -136,7 +136,7 @@ export default {
     edit.forEach(data => {
       this.editUser = { ...data };
     });
-    console.log(this.editUser.dayOfWeek);
+    // console.log(this.editUser.dayOfWeek);
   },
 
   data: () => ({
@@ -169,8 +169,8 @@ export default {
         this.editUser.dayOfWeek = [...editDayOfWeek].sort(
           (a, b) => daysOfWeek.indexOf(a) - daysOfWeek.indexOf(b)
         );
-        await this.$store.dispatch("user/deleteUser", this.editUser);
-        await this.$store.dispatch("user/stopedUser", this.editUser);
+        this.$store.dispatch("user/deleteUser", this.editUser);
+        this.$store.dispatch("user/stopedUser", this.editUser);
         this.editUser = "";
 
         return;

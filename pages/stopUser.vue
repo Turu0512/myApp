@@ -71,7 +71,7 @@
 
 <script>
 export default {
-  created() {
+  mounted() {
     this.$store.dispatch("user/fetchStopUsers");
   },
   data: () => ({
