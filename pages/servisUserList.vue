@@ -73,8 +73,9 @@
 
 <script>
 export default {
-  async mounted() {
-    await this.$store.dispatch("user/getUsersList");
+  created() {
+    // this.$store.dispatch("user/check");
+    this.$store.dispatch("user/getUsersList");
   },
 
   data: () => ({
@@ -99,7 +100,9 @@ export default {
     },
 
     newUsersList() {
-      return this.users
+      const users = this.users;
+      const newUsers = users.slice();
+      return newUsers
         .filter(item => {
           return (
             item.firstName.includes(this.filterName) ||
@@ -119,12 +122,12 @@ export default {
 
   methods: {
     editUser(user) {
-      console.log(user.id);
+      console.log(user);
       this.$router.push({ name: "user-id", params: { id: user.id } });
     },
 
     check() {
-      console.log(this.items[1].week);
+      this.$store.dispatch("user/check");
     }
   }
 };
