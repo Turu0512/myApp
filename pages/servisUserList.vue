@@ -100,9 +100,7 @@ export default {
     },
 
     newUsersList() {
-      const users = this.users;
-      const newUsers = users.slice();
-      return newUsers
+      return this.users
         .filter(item => {
           return (
             item.firstName.includes(this.filterName) ||

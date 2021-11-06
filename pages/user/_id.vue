@@ -136,7 +136,7 @@ export default {
     edit.forEach(data => {
       this.editUser = { ...data };
     });
-    // console.log(this.editUser.dayOfWeek);
+    // console.log(this.$store.state.user.editUserData);
   },
 
   data: () => ({

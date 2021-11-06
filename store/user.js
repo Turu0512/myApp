@@ -19,13 +19,13 @@ export const mutations = {
   getEditUser(state, getEditUser) {
     state.editUserData = [];
     state.editUserData.push(getEditUser);
-    console.log(editUser);
+    // console.log(editUser);
   },
 
   getUsersList(state, usersList) {
     console.log(usersList);
-    // state.transferUsers = [];
-    // state.transferUsers.push(usersList);
+    state.transferUsers = [];
+    state.transferUsers = usersList;
   },
 
   setStopUsersList(state, stopUsers) {
