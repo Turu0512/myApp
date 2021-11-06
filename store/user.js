@@ -3,7 +3,7 @@ const fbstore = firebase.firestore();
 
 export const state = () => ({
   transferUsers: [],
-  editUserData: [],
+  editUserData: "",
   stopUsers: [],
   amTransferOderList: [],
   loginUser: ""
@@ -17,9 +17,9 @@ export const mutations = {
   },
 
   getEditUser(state, getEditUser) {
-    state.editUserData = [];
-    state.editUserData.push(getEditUser);
-    // console.log(editUser);
+    state.editUserData = "";
+    state.editUserData = getEditUser;
+    console.log(getEditUser);
   },
 
   getUsersList(state, usersList) {
@@ -42,6 +42,11 @@ export const mutations = {
 
 // --------------------Actions-------------------------
 export const actions = {
+  setAdminUser({ commit }) {
+    firebase.auth().onAuthStateChanged(user => {
+      commit("setAdminUser", user);
+    });
+  },
   async addUser({ commit }, user) {
     const uid = firebase.auth().currentUser.uid;
 
@@ -81,13 +86,11 @@ export const actions = {
   },
 
   async fetchEditUser({ commit }, id) {
-    const users = firebase.auth().currentUser;
-    const uid = users.uid;
     const getUserRef = fbstore
       .collection("adminUser")
-      .doc(uid)
+      .doc(id.uid)
       .collection("usersList")
-      .doc(id);
+      .doc(id.id);
     const getUser = await getUserRef.get();
     const getEditUser = getUser.data();
 
@@ -95,25 +98,20 @@ export const actions = {
   },
 
   // -----usersList--------------------------------------------------------------------
-  async getUsersList({ commit }) {
-    await firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        let list = [];
-        const { uid } = user;
-        fbstore
-          .collection("adminUser")
-          .doc(uid)
-          .collection("usersList")
-          .orderBy("firstNameRuby")
-          .get()
-          .then(snapshot => {
-            snapshot.forEach(doc => {
-              list.push(doc.data());
-            });
-          });
-        commit("getUsersList", list);
-      }
-    });
+  async getUsersList({ commit }, uid) {
+    let list = [];
+    await fbstore
+      .collection("adminUser")
+      .doc(uid)
+      .collection("usersList")
+      .orderBy("firstNameRuby")
+      .get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          list.push(doc.data());
+        });
+      });
+    commit("getUsersList", list);
   },
 
   // -----stopUsers----------------------------------------------------------------------
@@ -238,7 +236,7 @@ export const getters = {
   },
 
   editUsersData: state => {
-    return state.editUserData;
+    return { ...state.editUserData };
   },
 
   stopUsers: state => {

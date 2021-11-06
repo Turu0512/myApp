@@ -53,6 +53,7 @@ export default {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         const { uid, displayName, photoURL } = user;
+        this.uid = uid;
         fbstore
           .collection("adminUser")
           .doc(uid)
@@ -72,6 +73,7 @@ export default {
   },
   name: "App",
   data: () => ({
+    uid: "",
     drawer: false,
     menus: [
       { title: "利用者一覧", icon: "mdi-web", url: "/servisUserList" },

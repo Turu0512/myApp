@@ -129,16 +129,21 @@
 </template>
 
 <script>
+import firebase from "@/plugins/firebase";
+
 export default {
   async created() {
-    await this.$store.dispatch("user/fetchEditUser", this.$route.params.id);
-    const edit = this.$store.state.user.editUserData;
-    edit.forEach(data => {
-      this.editUser = { ...data };
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        const { uid } = user;
+        this.uid = uid;
+        // this.$store.dispatch("user/check");
+      }
+      const uid = this.uid;
+      const id = this.$route.params.id;
+      this.$store.dispatch("user/fetchEditUser", { uid, id });
     });
-    // console.log(this.$store.state.user.editUserData);
   },
-
   data: () => ({
     sex: ["男", "女"],
     items: [
@@ -156,8 +161,8 @@ export default {
       { label: "途中送迎" }
     ],
 
-    editUser: {},
-
+    // editUser: {},
+    uid: "",
     stoped: false
   }),
   methods: {
@@ -182,6 +187,11 @@ export default {
         await this.$store.dispatch("user/updateUser", this.editUser);
         this.editUser = "";
       }
+    }
+  },
+  computed: {
+    editUser() {
+      return this.$store.getters["user/editUsersData"];
     }
   }
 };

@@ -72,10 +72,19 @@
 </template>
 
 <script>
+import firebase from "@/plugins/firebase";
+
 export default {
   created() {
-    // this.$store.dispatch("user/check");
-    this.$store.dispatch("user/getUsersList");
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        const { uid } = user;
+        this.uid = uid;
+        // this.$store.dispatch("user/check");
+      }
+      this.$store.dispatch("user/getUsersList", this.uid);
+      console.log(this.uid);
+    });
   },
 
   data: () => ({
