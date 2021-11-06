@@ -130,15 +130,28 @@
 </template>
 
 <script>
+import firebase from "@/plugins/firebase";
+
 export default {
   async created() {
-    await this.$store.dispatch("user/fetchStopUserData", this.$route.params.id);
-    console.log(this.$store.state.user.editUserData);
-    const edit = this.$store.state.user.editUserData;
-    edit.forEach(data => {
-      this.editUser = { ...data };
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        const { uid } = user;
+        this.uid = uid;
+        // this.$store.dispatch("user/check");
+      }
+      const uid = this.uid;
+      const id = this.$route.params.id;
+      this.$store.dispatch("user/fetchStopUserData", { uid, id });
     });
   },
+  // async created() {
+  //   await this.$store.dispatch("user/fetchStopUserData", this.$route.params.id);
+  //   console.log(this.$store.state.user.editUserData);
+  //   const edit = this.$store.state.user.editUserData;
+  //   edit.forEach(data => {
+  //     this.editUser = { ...data };
+  //   });
 
   data: () => ({
     sex: ["男", "女"],
@@ -157,10 +170,18 @@ export default {
       { label: "途中送迎" }
     ],
 
-    editUser: {},
-
+    // editUser: {},
+    uid: "",
     stoped: true
   }),
+  computed: {
+    editUser: {
+      get() {
+        return this.$store.getters["user/editUsersData"];
+      },
+      set() {}
+    }
+  },
   methods: {
     async editUserSave() {
       const daysOfWeek = ["月", "火", "水", "木", "金", "土", "日"];

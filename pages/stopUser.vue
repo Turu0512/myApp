@@ -70,10 +70,20 @@
 </template>
 
 <script>
+import firebase from "@/plugins/firebase";
+
 export default {
-  mounted() {
-    this.$store.dispatch("user/fetchStopUsers");
+  created() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        const { uid } = user;
+        this.uid = uid;
+      }
+      console.log(this.uid);
+      this.$store.dispatch("user/fetchStopUsers", this.uid);
+    });
   },
+
   data: () => ({
     items: [
       { week: "全て" },
@@ -87,7 +97,8 @@ export default {
     ],
 
     filterName: "",
-    dayOfWeek: ""
+    dayOfWeek: "",
+    uid: ""
   }),
   computed: {
     users() {

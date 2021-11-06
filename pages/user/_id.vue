@@ -190,8 +190,11 @@ export default {
     }
   },
   computed: {
-    editUser() {
-      return this.$store.getters["user/editUsersData"];
+    editUser: {
+      get() {
+        return this.$store.getters["user/editUsersData"];
+      },
+      set() {}
     }
   }
 };

@@ -100,6 +100,8 @@ export const actions = {
   // -----usersList--------------------------------------------------------------------
   async getUsersList({ commit }, uid) {
     let list = [];
+    // console.log(uid);
+
     await fbstore
       .collection("adminUser")
       .doc(uid)
@@ -165,12 +167,10 @@ export const actions = {
       });
   },
 
-  async fetchStopUsers({ commit }) {
+  async fetchStopUsers({ commit }, uid) {
     const list = [];
-    const { currentUser } = await firebase.auth();
-    let uid = currentUser.uid;
-
-    fbstore
+    console.log(uid);
+    await fbstore
       .collection("adminUser")
       .doc(uid)
       .collection("stopedUsersList")
@@ -179,18 +179,15 @@ export const actions = {
       .then(snapshot => {
         snapshot.forEach(doc => list.push(doc.data()));
       });
-    // console.log(list);
     commit("setStopUsersList", list);
   },
 
   async fetchStopUserData({ commit }, id) {
-    const uid = firebase.auth().currentUser.uid;
-
     const getUserRef = fbstore
       .collection("adminUser")
-      .doc(uid)
+      .doc(id.uid)
       .collection("stopedUsersList")
-      .doc(id);
+      .doc(id.id);
     const getUser = await getUserRef.get();
     const getEditUser = getUser.data();
 
