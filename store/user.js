@@ -74,8 +74,8 @@ export const actions = {
   async updateUser({ commit }, user) {
     const users = firebase.auth().currentUser;
     const uid = users.uid;
-    console.log(uid);
-    console.log(user);
+    // console.log(uid);
+    console.log("upde:" + uid);
 
     await fbstore
       .collection("adminUser")
@@ -236,7 +236,7 @@ export const getters = {
   },
 
   editUsersData: state => {
-    return { ...state.editUserData };
+    return state.editUserData;
   },
 
   stopUsers: state => {

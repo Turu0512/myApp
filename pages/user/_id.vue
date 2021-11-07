@@ -124,7 +124,8 @@
       <v-row class="justify-center mt-10">
         <v-btn @click="editUserSave">保存</v-btn>
       </v-row>
-      <p>{{ editUser.dayOfWeek }}</p>
+      <p>{{ editUser }}</p>
+      <p>{{ newedit }}</p>
     </v-container>
   </v-app>
 </template>
@@ -134,16 +135,19 @@ import firebase from "@/plugins/firebase";
 
 export default {
   async created() {
+    let uid = "";
+
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        const { uid } = user;
-        this.uid = uid;
+        uid = user.uid;
         // this.$store.dispatch("user/check");
       }
-      const uid = this.uid;
       const id = this.$route.params.id;
       this.$store.dispatch("user/fetchEditUser", { uid, id });
     });
+  },
+  mounted() {
+    console.log("data:" + this.$store.state.user.editUserData);
   },
   data: () => ({
     sex: ["男", "女"],
@@ -161,9 +165,9 @@ export default {
       { label: "送迎なし" },
       { label: "途中送迎" }
     ],
-
+    newedit: "",
     // editUser: {},
-    uid: "",
+    // uid: "",
     stoped: false
   }),
   methods: {
@@ -191,13 +195,14 @@ export default {
     }
   },
   computed: {
-    editUser: {
-      get() {
-        return this.$store.getters["user/editUsersData"];
-      },
-      set(value) {
-        console.log(value);
-      }
+    editUser() {
+      // get() {
+      return this.$store.getters["user/editUsersData"];
+      // },
+      // set(value) {
+      //   this.newedit = { ...value };
+      //   console.log("data:" + value);
+      // }
     }
   }
 };
