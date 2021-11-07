@@ -71,10 +71,13 @@ export const actions = {
       });
   },
   // -----edit----------------------------------------------------------------------------------------
-  updateUser({ commit }, user) {
+  async updateUser({ commit }, user) {
     const users = firebase.auth().currentUser;
     const uid = users.uid;
-    fbstore
+    console.log(uid);
+    console.log(user);
+
+    await fbstore
       .collection("adminUser")
       .doc(uid)
       .collection("usersList")

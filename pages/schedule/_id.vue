@@ -299,21 +299,26 @@ moment.lang("ja", {
 });
 import moment from "moment";
 import pmSchedule from "~/components/pmSchedule.vue";
-
+import firebase from "@/plugins/firebase";
 import draggable from "vuedraggable";
 
 export default {
   components: { draggable, pmSchedule },
 
   async created() {
+    const uid = "";
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        uid = user;
+      }
+    });
     const today = this.$route.params.id;
     const day = moment(today).format("ddd");
-    this.$store.dispatch("schedule/fetchAbsenceUser", today);
-    this.$store.dispatch("schedule/fetchTodayUsers", { day, today });
-    this.$store.dispatch("schedule/fetchFamilyTransfer", today);
-
-    await this.$store.dispatch("car/getCarList");
-    await this.$store.dispatch(
+    this.$store.dispatch("schedule/fetchAbsenceUser", { today, uid });
+    this.$store.dispatch("schedule/fetchTodayUsers", { day, today, uid });
+    this.$store.dispatch("schedule/fetchFamilyTransfer", today, uid);
+    this.$store.dispatch("car/getCarList");
+    this.$store.dispatch(
       "schedule/fetchTodayAmTransferOderLists",
       this.$route.params.id
     );
@@ -358,7 +363,7 @@ export default {
       get() {
         return { ...this.$store.getters["schedule/amTransferOderLists"] };
       },
-      set(value) {}
+      set() {}
     },
 
     absenceUser: {

@@ -143,9 +143,11 @@ export const actions = {
     }
   },
 
-  async fetchTodayUsers({ commit }, day) {
+  async fetchTodayUsers({ commit }, data) {
     const listRef = await fbstore
-      .collection(day.today)
+      .collection("adminUser")
+      .doc(data.uid)
+      .collection(data.today)
       .doc("todayUsers")
       .get();
     const lists = listRef.data();
@@ -154,8 +156,10 @@ export const actions = {
     } else {
       const todayUsersList = [];
       await fbstore
+        .collection("adminUser")
+        .doc(data.uid)
         .collection("usersList")
-        .where("dayOfWeek", "array-contains", day.day)
+        .where("dayOfWeek", "array-contains", data.day)
         .get()
         .then(snapShot => {
           snapShot.forEach(user => {
@@ -167,9 +171,11 @@ export const actions = {
     }
   },
 
-  async fetchAbsenceUser({ commit }, day) {
+  async fetchAbsenceUser({ commit }, data) {
     const listRef = await fbstore
-      .collection(day)
+      .collection("adminUser")
+      .doc(data.uid)
+      .collection(data.today)
       .doc("todayAbsenceUser")
       .get();
     const lists = listRef.data();

@@ -124,6 +124,7 @@
       <v-row class="justify-center mt-10">
         <v-btn @click="editUserSave">保存</v-btn>
       </v-row>
+      <p>{{ editUser.dayOfWeek }}</p>
     </v-container>
   </v-app>
 </template>
@@ -176,7 +177,7 @@ export default {
         );
         this.$store.dispatch("user/deleteUser", this.editUser);
         this.$store.dispatch("user/stopedUser", this.editUser);
-        this.editUser = "";
+        // this.editUser = "";
 
         return;
       } else {
@@ -185,7 +186,7 @@ export default {
           (a, b) => daysOfWeek.indexOf(a) - daysOfWeek.indexOf(b)
         );
         await this.$store.dispatch("user/updateUser", this.editUser);
-        this.editUser = "";
+        // this.editUser = "";
       }
     }
   },
@@ -194,7 +195,9 @@ export default {
       get() {
         return this.$store.getters["user/editUsersData"];
       },
-      set() {}
+      set(value) {
+        console.log(value);
+      }
     }
   }
 };
