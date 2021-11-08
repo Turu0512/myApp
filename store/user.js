@@ -103,7 +103,7 @@ export const actions = {
   // -----usersList--------------------------------------------------------------------
   async getUsersList({ commit }, uid) {
     let list = [];
-    // console.log(uid);
+    console.log("action: " + uid);
 
     await fbstore
       .collection("adminUser")

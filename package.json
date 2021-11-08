@@ -20,7 +20,8 @@
     "vue-swal": "^1.0.0",
     "vue-sweetalert2": "^5.0.2",
     "vuedraggable": "^2.24.3",
-    "vuetify": "^2.5.5"
+    "vuetify": "^2.5.5",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@mdi/font": "^6.3.95",

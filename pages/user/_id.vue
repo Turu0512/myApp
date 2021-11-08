@@ -131,24 +131,20 @@
 </template>
 
 <script>
-import firebase from "@/plugins/firebase";
-
 export default {
   async created() {
-    let uid = "";
-
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        uid = user.uid;
-        // this.$store.dispatch("user/check");
-      }
-      const id = this.$route.params.id;
-      this.$store.dispatch("user/fetchEditUser", { uid, id });
-    });
+    const uid = this.$store.state.login.loginUser.uid;
+    const id = this.$route.params.id;
+    this.$store.dispatch("user/fetchEditUser", { uid, id });
   },
   mounted() {
-    console.log("data:" + this.$store.state.user.editUserData);
+    const edit = this.$store.state.user.editUserData;
+    console.log(edit);
+    edit.forEach(data => {
+      this.editUser = { ...data };
+    });
   },
+
   data: () => ({
     sex: ["男", "女"],
     items: [
@@ -166,8 +162,7 @@ export default {
       { label: "途中送迎" }
     ],
     newedit: "",
-    // editUser: {},
-    // uid: "",
+    editUser: {},
     stoped: false
   }),
   methods: {
@@ -195,15 +190,22 @@ export default {
     }
   },
   computed: {
-    editUser() {
-      // get() {
-      return this.$store.getters["user/editUsersData"];
-      // },
-      // set(value) {
-      //   this.newedit = { ...value };
-      //   console.log("data:" + value);
-      // }
-    }
+    // editUser() {
+    //   return ;
+    // },
+    // editUser: {
+    //   get() {
+    //     const a = [this.$store.state.user.editUserData];
+    //     let b = "";
+    //     // return JSON.parse(JSON.stringify(a));
+    //     return b;
+    //     // return this.$store.state.user.editUserData;
+    //   },
+    //   set(value) {
+    //     // this.$store.commit("user/getEditUser", value);
+    //     console.log(value);
+    //   }
+    // }
   }
 };
 </script>

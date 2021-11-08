@@ -134,10 +134,10 @@ import firebase from "@/plugins/firebase";
 
 export default {
   async created() {
-    const uid = "";
+    let uid = "";
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        uid = user;
+        uid = user.uid;
       }
 
       const id = this.$route.params.id;

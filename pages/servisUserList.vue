@@ -76,16 +76,13 @@ import firebase from "@/plugins/firebase";
 
 export default {
   created() {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        const { uid } = user;
-        this.uid = uid;
-        // this.$store.dispatch("user/check");
-      }
-      this.$store.dispatch("user/getUsersList", this.uid);
-      console.log(this.uid);
-    });
+    const uid = this.$store.state.login.loginUser.uid;
+    this.$store.dispatch("user/getUsersList", uid);
   },
+  // mounted() {
+  //   const user = this.$store.state.login.loginUser;
+  //   console.log(user);
+  // },
 
   data: () => ({
     items: [

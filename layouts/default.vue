@@ -49,28 +49,8 @@ import firebase from "@/plugins/firebase";
 const fbstore = firebase.firestore();
 
 export default {
-  created() {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        const { uid, displayName, photoURL } = user;
-        this.uid = uid;
-        fbstore
-          .collection("adminUser")
-          .doc(uid)
-          .set({ name: displayName, uid: uid });
-        this.$store.commit("login/setLoginUser", {
-          uid,
-          displayName,
-          photoURL
-        });
-        if (this.$router.currentRoute.name === "login")
-          this.$router.push({ name: "/" });
-      } else {
-        this.$store.commit("login/logout");
-        this.$router.push({ name: "login" });
-      }
-    });
-  },
+  created() {},
+
   name: "App",
   data: () => ({
     uid: "",

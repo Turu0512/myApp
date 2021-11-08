@@ -59,6 +59,7 @@ export const mutations = {
       state.absenceUser = lists;
     } else {
       state.absenceUser = [];
+      console.log("errer");
       return;
     }
   },
@@ -123,9 +124,11 @@ export const actions = {
   },
   // fetch-------------------------------------------------------------
 
-  async fetchTodayAmTransferOderLists({ rootState, commit }, day) {
+  async fetchTodayAmTransferOderLists({ rootState, commit }, data) {
     const listRef = await fbstore
-      .collection(day)
+      .collection("adminUser")
+      .doc(data.uid)
+      .collection(data.today)
       .doc("todayAmTransferOderLists")
       .get();
     const lists = listRef.data();
@@ -172,9 +175,11 @@ export const actions = {
   },
 
   async fetchAbsenceUser({ commit }, data) {
+    console.log(data.today);
+    console.log(data.uid);
     const listRef = await fbstore
-      .collection("adminUser")
-      .doc(data.uid)
+      // .collection("adminUser")
+      // .doc(data.uid)
       .collection(data.today)
       .doc("todayAbsenceUser")
       .get();
@@ -182,9 +187,11 @@ export const actions = {
     commit("todayAbsenceUser", lists);
   },
 
-  async fetchFamilyTransfer({ commit }, day) {
+  async fetchFamilyTransfer({ commit }, data) {
     const listRef = await fbstore
-      .collection(day)
+      .collection("adminUser")
+      .doc(data.uid)
+      .collection(data.today)
       .doc("todayFamilyTransfer")
       .get();
     const lists = listRef.data();
@@ -209,7 +216,6 @@ export const actions = {
     dispatch("fetchTodayUsers", { day, today });
     dispatch("fetchFamilyTransfer", today);
     dispatch("fetchTodayAmTransferOderLists", today);
-    dispatch("fetchAbsenceUser", today);
     this.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
     this.dispatch("pmSchedule/fetchPmFamilyTransfer", { day, today });
     this.dispatch("pmSchedule/fetchTodayPmTransferOderLists", today);

@@ -305,23 +305,26 @@ import draggable from "vuedraggable";
 export default {
   components: { draggable, pmSchedule },
 
-  async created() {
-    const uid = "";
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        uid = user;
-      }
-    });
+  created() {
+    let uid = "";
     const today = this.$route.params.id;
     const day = moment(today).format("ddd");
-    this.$store.dispatch("schedule/fetchAbsenceUser", { today, uid });
-    this.$store.dispatch("schedule/fetchTodayUsers", { day, today, uid });
-    this.$store.dispatch("schedule/fetchFamilyTransfer", today, uid);
-    this.$store.dispatch("car/getCarList");
-    this.$store.dispatch(
-      "schedule/fetchTodayAmTransferOderLists",
-      this.$route.params.id
-    );
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        uid = user.uid;
+        // console.log(uid);
+        // this.$store.dispatch("schedule/fetchTodayUsers", { day, today, uid });
+        // this.$store.dispatch("schedule/fetchFamilyTransfer", today, uid);
+        // this.$store.dispatch("schedule/fetchTodayAmTransferOderLists", {
+        //   today,
+        //   uid
+        // });
+        this.$store.dispatch("car/getCarList");
+        console.log(uid);
+        this.$store.dispatch("schedule/fetchAbsenceUser", { today, uid });
+      }
+    });
   },
 
   data: () => ({
@@ -363,7 +366,9 @@ export default {
       get() {
         return { ...this.$store.getters["schedule/amTransferOderLists"] };
       },
-      set() {}
+      set() {
+        // this.$store.commit("schedule/fetchTodayAmTransferOderLists", value);
+      }
     },
 
     absenceUser: {
