@@ -135,10 +135,8 @@ export default {
   async created() {
     const uid = this.$store.state.login.loginUser.uid;
     const id = this.$route.params.id;
-    this.$store.dispatch("user/fetchEditUser", { uid, id });
-  },
-  mounted() {
-    const edit = this.$store.state.user.editUserData;
+    await this.$store.dispatch("user/fetchEditUser", { uid, id });
+    const edit = [this.$store.state.user.editUserData];
     console.log(edit);
     edit.forEach(data => {
       this.editUser = { ...data };

@@ -77,6 +77,8 @@ import firebase from "@/plugins/firebase";
 export default {
   created() {
     const uid = this.$store.state.login.loginUser.uid;
+    console.log(uid);
+
     this.$store.dispatch("user/getUsersList", uid);
   },
   // mounted() {

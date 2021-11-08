@@ -42,13 +42,8 @@ export const mutations = {
 
 // --------------------Actions-------------------------
 export const actions = {
-  setAdminUser({ commit }) {
-    firebase.auth().onAuthStateChanged(user => {
-      commit("setAdminUser", user);
-    });
-  },
   async addUser({ commit }, user) {
-    const uid = firebase.auth().currentUser.uid;
+    const uid = await firebase.auth().currentUser.uid;
 
     await fbstore
       .collection("adminUser")
@@ -66,13 +61,13 @@ export const actions = {
           })
           .then(() => {
             commit("addUser", user);
-            console.log(user, res.id);
+            // console.log(user, res.id);
           });
       });
   },
   // -----edit----------------------------------------------------------------------------------------
   async updateUser({ commit }, user) {
-    const users = firebase.auth().currentUser;
+    const users = await firebase.auth().currentUser;
     const uid = users.uid;
     // console.log(uid);
     console.log("upde:" + uid);
