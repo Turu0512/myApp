@@ -93,20 +93,6 @@
         </v-radio-group>
       </v-row>
 
-      <!-- <v-row align="center">
-        <v-col cols="2" class="pa-0" align="center">
-          <v-subheader class="d-inline-block pa-4" align="center"
-            >持参品</v-subheader
-          >
-        </v-col>
-        <v-col cols="5">
-          <v-text-field
-            label="持参するものがあれば入力してください"
-            placeholder="例：杖"
-          ></v-text-field>
-        </v-col> -->
-      <!-- </v-row> -->
-
       <v-row>
         <v-col cols="2">
           <v-subheader class="text-center">中止</v-subheader>
@@ -122,6 +108,7 @@
         </v-col>
       </v-row>
       <v-row class="justify-center mt-10">
+        <v-btn @click="cancel">戻る</v-btn>
         <v-btn @click="editUserSave">保存</v-btn>
         <v-btn class="ml-5" @click="deleteUser">削除</v-btn>
       </v-row>
@@ -182,6 +169,21 @@ export default {
     }
   },
   methods: {
+    cancel() {
+      this.$swal({
+        title: "利用中止者一覧に戻りますか？",
+        text: "保存していない内容は復元できません",
+        icon: "warning",
+        showCancelButton: true,
+        dangerMode: true
+      }).then(ok => {
+        if (ok.value) {
+          this.$router.push({ name: "stopUser" });
+        } else {
+          return;
+        }
+      });
+    },
     async editUserSave() {
       const daysOfWeek = ["月", "火", "水", "木", "金", "土", "日"];
       if (!this.stoped) {

@@ -42,9 +42,9 @@ export const mutations = {
 
 // --------------------Actions-------------------------
 export const actions = {
-  async addUser({ commit }, user) {
-    const uid = await firebase.auth().currentUser.uid;
-
+  async addUser({ rootState, commit }, user) {
+    const uid = rootState.login.loginUser.uid;
+    console.log(uid);
     await fbstore
       .collection("adminUser")
       .doc(uid)
@@ -96,9 +96,10 @@ export const actions = {
   },
 
   // -----usersList--------------------------------------------------------------------
-  async getUsersList({ commit }, uid) {
+  async getUsersList({ rootState, commit }) {
     let list = [];
-    console.log("action: " + uid);
+    const uid = rootState.login.loginUser.uid;
+    // console.log("action: " + uid);
 
     await fbstore
       .collection("adminUser")

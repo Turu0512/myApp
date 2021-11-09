@@ -2,6 +2,14 @@
   <v-app>
     <h1 class="text-center">利用者一覧</h1>
     <v-container>
+      <v-col>
+        <v-btn outlined small class="ma-4" @click="toCreateUserPage">
+          利用者登録
+        </v-btn>
+        <v-btn outlined small class="ma-4" @click="toStopUserPage">
+          利用中止者一覧
+        </v-btn>
+      </v-col>
       <v-row class="d-flex justify-center d-inline-block">
         <v-col cols="3">
           <v-text-field
@@ -77,14 +85,10 @@ import firebase from "@/plugins/firebase";
 export default {
   created() {
     const uid = this.$store.state.login.loginUser.uid;
-    console.log(uid);
+    // console.log(uid);
 
     this.$store.dispatch("user/getUsersList", uid);
   },
-  // mounted() {
-  //   const user = this.$store.state.login.loginUser;
-  //   console.log(user);
-  // },
 
   data: () => ({
     items: [
@@ -127,13 +131,20 @@ export default {
   },
 
   methods: {
+    toCreateUserPage() {
+      this.$router.push({ name: "createUser" });
+    },
+    toStopUserPage() {
+      this.$router.push({ name: "stopUser" });
+    },
     editUser(user) {
-      console.log(user);
+      // console.log(user);
       this.$router.push({ name: "user-id", params: { id: user.id } });
     },
 
-    check() {
-      this.$store.dispatch("user/check");
+    async check() {
+      const uid = await firebase.auth().currentUser.uid;
+      console.log(uid);
     }
   }
 };

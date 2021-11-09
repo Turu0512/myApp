@@ -2,6 +2,11 @@
   <v-app>
     <h1 class="text-center">利用中止者一覧</h1>
     <v-container>
+      <v-col>
+        <v-btn outlined small class="ma-4" @click="toServisUserListPage">
+          利用者一覧へ戻る
+        </v-btn>
+      </v-col>
       <v-row class="d-flex justify-center d-inline-block">
         <v-col cols="3">
           <v-text-field
@@ -74,14 +79,10 @@ import firebase from "@/plugins/firebase";
 
 export default {
   created() {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        const { uid } = user;
-        this.uid = uid;
-      }
-      console.log(this.uid);
-      this.$store.dispatch("user/fetchStopUsers", this.uid);
-    });
+    const uid = this.$store.state.login.loginUser.uid;
+    console.log(uid);
+
+    this.$store.dispatch("user/fetchStopUsers", uid);
   },
 
   data: () => ({
@@ -125,6 +126,24 @@ export default {
   },
 
   methods: {
+    cancel() {
+      this.$swal({
+        title: "利用者一覧に戻りますか？",
+        text: "保存していない内容は復元できません",
+        icon: "warning",
+        showCancelButton: true,
+        dangerMode: true
+      }).then(ok => {
+        if (ok.value) {
+          this.$router.push({ name: "stopUser" });
+        } else {
+          return;
+        }
+      });
+    },
+    toServisUserListPage() {
+      this.$router.push({ name: "servisUserList" });
+    },
     editUser(user) {
       console.log(user.id);
       this.$router.push({ name: "stopedUser-id", params: { id: user.id } });

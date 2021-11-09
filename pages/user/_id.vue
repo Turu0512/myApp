@@ -122,6 +122,8 @@
         </v-col>
       </v-row>
       <v-row class="justify-center mt-10">
+        <v-btn @click="cancel">戻る</v-btn>
+
         <v-btn @click="editUserSave">保存</v-btn>
       </v-row>
       <p>{{ editUser }}</p>
@@ -164,6 +166,21 @@ export default {
     stoped: false
   }),
   methods: {
+    cancel() {
+      this.$swal({
+        title: "利用者一覧に戻りますか？",
+        text: "保存していない内容は復元できません",
+        icon: "warning",
+        showCancelButton: true,
+        dangerMode: true
+      }).then(ok => {
+        if (ok.value) {
+          this.$router.push({ name: "servisUserList" });
+        } else {
+          return;
+        }
+      });
+    },
     async editUserSave() {
       const daysOfWeek = ["月", "火", "水", "木", "金", "土", "日"];
 

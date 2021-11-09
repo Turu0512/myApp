@@ -49,24 +49,16 @@ import firebase from "@/plugins/firebase";
 const fbstore = firebase.firestore();
 
 export default {
-  created() {},
-
   name: "App",
   data: () => ({
-    uid: "",
     drawer: false,
     menus: [
       { title: "利用者一覧", icon: "mdi-web", url: "/servisUserList" },
-      { title: "利用者登録", icon: "mdi-home", url: "/createUser" },
       { title: "送迎表", icon: "mdi-heart", url: "/schedule/schedule" },
+
+      { title: "車両一覧", icon: "mdi-information-variant", url: "/car" },
       {
-        title: "中止者一覧",
-        icon: "mdi-information-variant",
-        url: "/stopUser"
-      },
-      { title: "車両管理", icon: "mdi-information-variant", url: "/car" },
-      {
-        title: "閲覧アカウント作成",
+        title: "ドライバー  一覧",
         icon: "mdi-information-variant",
         url: "/about"
       }
@@ -76,6 +68,7 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch("login/logoutFb");
+      this.$router.push({ name: "login" });
     }
   }
 };
