@@ -7,7 +7,7 @@ export const state = () => ({
 export const mutations = {
   setLoginUser(state, user) {
     state.loginUser = user;
-    console.log("auth" + user);
+    // console.log("auth" + user);
 
     // console.log(state.loginUser)
   },

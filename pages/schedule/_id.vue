@@ -306,25 +306,13 @@ export default {
   components: { draggable, pmSchedule },
 
   created() {
-    let uid = "";
     const today = this.$route.params.id;
     const day = moment(today).format("ddd");
+    const uid = this.$store.state.login.loginUser.uid;
 
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        uid = user.uid;
-        // console.log(uid);
-        // this.$store.dispatch("schedule/fetchTodayUsers", { day, today, uid });
-        // this.$store.dispatch("schedule/fetchFamilyTransfer", today, uid);
-        // this.$store.dispatch("schedule/fetchTodayAmTransferOderLists", {
-        //   today,
-        //   uid
-        // });
-        this.$store.dispatch("car/getCarList");
-        console.log(uid);
-        this.$store.dispatch("schedule/fetchAbsenceUser", { today, uid });
-      }
-    });
+    this.$store.dispatch("car/getCarList");
+    console.log(uid);
+    this.$store.dispatch("schedule/fetchAbsenceUser", { today, uid });
   },
 
   data: () => ({
@@ -341,7 +329,8 @@ export default {
       .substr(0, 10),
     menu: false,
     modal: false,
-    menu2: false
+    menu2: false,
+    uid: this.$store.state.login.loginUser.uid
   }),
 
   computed: {
@@ -391,7 +380,6 @@ export default {
       }
     }
   },
-  //
   methods: {
     async reuseData() {
       const today = this.date;

@@ -11,7 +11,12 @@
       </v-list-item>
       <v-divider />
       <v-list nav>
-        <v-list-item v-for="menu in menus" :key="menu.title" :to="menu.url">
+        <v-list-item
+          v-for="menu in menus"
+          :key="menu.title"
+          :to="menu.url"
+          @click="callAction(menus.action)"
+        >
           <v-list-item-icon>
             <v-icon>{{ menu.icon }}</v-icon>
           </v-list-item-icon>
@@ -37,7 +42,6 @@
 
       <v-toolbar-title>送迎くん</v-toolbar-title>
     </v-app-bar>
-
     <v-main>
       <router-view></router-view>
     </v-main>
@@ -54,7 +58,12 @@ export default {
     drawer: false,
     menus: [
       { title: "利用者一覧", icon: "mdi-web", url: "/servisUserList" },
-      { title: "送迎表", icon: "mdi-heart", url: "/schedule/schedule" },
+      {
+        title: "送迎表",
+        icon: "mdi-heart",
+        url: { name: "schedule-id", params: { id: "date" } },
+        action: "toSchedule"
+      },
 
       { title: "車両一覧", icon: "mdi-information-variant", url: "/car" },
       {
@@ -69,6 +78,12 @@ export default {
     logout() {
       this.$store.dispatch("login/logoutFb");
       this.$router.push({ name: "login" });
+    },
+    toSchedule() {
+      console.log(value);
+    },
+    callAction(action) {
+      this[action];
     }
   }
 };
