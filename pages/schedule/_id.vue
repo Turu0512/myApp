@@ -347,7 +347,8 @@ export default {
         return this.$store.getters["schedule/todayUsers"];
       },
       set(value) {
-        this.$store.commit("schedule/fetchTodayUsers", value);
+        console.log("today" + value);
+        this.$store.commit("schedule/fetchTodayUsers", { value, uid });
       }
     },
 

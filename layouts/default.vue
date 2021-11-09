@@ -51,17 +51,27 @@
 <script>
 import firebase from "@/plugins/firebase";
 const fbstore = firebase.firestore();
+import moment from "moment";
 
 export default {
+  created() {
+    // this.value = moment().format("yyyy-MM-DD");
+    console.log(this.value);
+  },
   name: "App",
   data: () => ({
+    value: moment().format("yyyy-MM-DD (ddd)"),
+
     drawer: false,
     menus: [
       { title: "利用者一覧", icon: "mdi-web", url: "/servisUserList" },
       {
         title: "送迎表",
         icon: "mdi-heart",
-        url: { name: "schedule-id", params: { id: "date" } },
+        url: {
+          name: "schedule-id",
+          params: { id: moment().format("yyyy-MM-DD") }
+        },
         action: "toSchedule"
       },
 

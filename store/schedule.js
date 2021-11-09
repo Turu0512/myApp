@@ -147,6 +147,7 @@ export const actions = {
   },
 
   async fetchTodayUsers({ commit }, data) {
+    console.log(data);
     const listRef = await fbstore
       .collection("adminUser")
       .doc(data.uid)
@@ -178,8 +179,8 @@ export const actions = {
     console.log(data.today);
     console.log(data.uid);
     const listRef = await fbstore
-      // .collection("adminUser")
-      // .doc(data.uid)
+      .collection("adminUser")
+      .doc(data.uid)
       .collection(data.today)
       .doc("todayAbsenceUser")
       .get();
