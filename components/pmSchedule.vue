@@ -255,6 +255,7 @@ import moment from "moment";
 import draggable from "vuedraggable";
 
 export default {
+  props:["day"],
   components: { draggable },
 
   async beforeCreate() {
@@ -291,7 +292,7 @@ export default {
     moveIndex: "",
     moveAmTransferOderList: {},
     drivers: [],
-    pmTransferOderLists: []
+    pmTransferOderLists: [],
   }),
 
   computed: {
@@ -385,6 +386,32 @@ export default {
       });
 
       this.$store.dispatch("pmSchedule/temporarilySavedCalendarEvent", day);
+    }
+  },
+  watch:{
+    async day(){
+      const today = this.$route.params.id;
+    const day = moment(today).format("ddd");
+
+    this.$store.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
+    // this.$store.dispatch("schedule/fetchAbsenceUser", this.$route.params.id);
+    this.$store.dispatch("pmSchedule/fetchPmFamilyTransfer", {
+      day,
+      today
+    });
+
+    this.$store.dispatch("car/getCarList");
+    await this.$store.dispatch(
+      "pmSchedule/fetchTodayPmTransferOderLists",
+      this.$route.params.id
+    );
+    const pmTransferOderLists = [
+      this.$store.state.pmSchedule.pmTransferOderLists
+    ];
+    console.log(pmTransferOderLists);
+    pmTransferOderLists.forEach(data => {
+      this.pmTransferOderLists = { ...data };
+    });
     }
   }
 };

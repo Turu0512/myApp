@@ -4,7 +4,7 @@
       <div>
         <v-sheet tile height="6vh" color="grey" class="d-flex align-center">
           <v-btn outlined small class="ma-4" @click="setToday">
-            今日
+            当日に戻る
           </v-btn>
           <v-btn icon @click="$refs.calendar.prev()">
             <v-icon>mdi-chevron-left</v-icon>
@@ -19,7 +19,6 @@
             ref="calendar"
             v-model="value"
             :events="events"
-            :event-color="getEventColor"
             locale="ja-jp"
             :day-format="timestamp => new Date(timestamp.date).getDate()"
             :month-format="
@@ -43,7 +42,7 @@ export default {
     console.log(this.$store.state.pmSchedule.eventData);
   },
   data: () => ({
-    value: moment().format("yyyy-MM-DD (ddd)")
+    value: moment().format("yyyy-MM-DD")
   }),
   computed: {
     title() {
@@ -56,6 +55,7 @@ export default {
   methods: {
     setToday() {
       this.value = moment().format("yyyy-MM-DD");
+      this.$router.push({ name: "schedule-id", params: { id: this.value } });
     },
     showEvent({ event }) {
       alert(`clicked ${event.name}`);
@@ -63,10 +63,6 @@ export default {
     viewDay(date) {
       console.log(date);
       this.$router.push({ name: "schedule-id", params: { id: date } });
-    },
-
-    getEventColor(event) {
-      return event.color;
     }
   }
 };

@@ -292,7 +292,7 @@
         <v-btn @click="check">チェック</v-btn>
       </v-row>
     </v-container>
-    <pmSchedule @save="saveTodaySchedule" />
+    <pmSchedule @save="saveTodaySchedule" :day="day" />
   </v-app>
 </template>
 
@@ -352,8 +352,9 @@ export default {
     menu: false,
     modal: false,
     menu2: false,
-    amTransferOderLists: []
-    // uid: this.$store.state.login.loginUser.uid
+    amTransferOderLists: [],
+    day: ""
+    // id: this.$route
   }),
 
   computed: {
@@ -374,17 +375,6 @@ export default {
         this.$store.commit("schedule/fetchTodayUsers", value);
       }
     },
-
-    // amTransferOderLists: {
-    //   get() {
-    //     return this.$store.getters["schedule/amTransferOderLists"];
-    //   },
-    //   set(value) {
-    //     console.log("am" + value);
-
-    //     this.$store.commit("schedule/fetchTodayAmTransferOderLists", value);
-    //   }
-    // },
 
     absenceUser: {
       get() {
@@ -471,27 +461,78 @@ export default {
       this.$store.dispatch("pmSchedule/reverseSchedule", this.$route.params.id);
     },
 
-    yesterday() {
-      const dayData = this.$route.params.id;
-      const day = moment(dayData) - 86400000;
-      const day2 = moment(day).format("yyyy-MM-DD");
-      this.$router.push({ name: "schedule-id", params: { id: day2 } });
-      setTimeout(function() {
-        location.reload();
-      });
-    },
+    // yesterday() {
+    //   const dayData = this.$route.params.id;
+    //   const day = moment(dayData) - 86400000;
+    //   const day2 = moment(day).format("yyyy-MM-DD");
+    //   this.$router.push({ name: "schedule-id", params: { id: day2 } });
+    //   setTimeout(function() {
+    //     location.reload();
+    //   });
+    // },
+    //   tomorrow() {
+    //     const dayData = this.$route.params.id;
+    //     const day = moment(dayData) + 86400000;
+    //     const day2 = moment(day).format("yyyy-MM-DD");
+    //     this.$router.push({ name: "schedule-id", params: { id: day2 } });
+    //     setTimeout(function() {
+    //       location.reload();
+    //     });
+    //   },
     tomorrow() {
       const dayData = this.$route.params.id;
       const day = moment(dayData) + 86400000;
       const day2 = moment(day).format("yyyy-MM-DD");
-      this.$router.push({ name: "schedule-id", params: { id: day2 } });
-      setTimeout(function() {
-        location.reload();
-      });
+      this.$route.params.id = day2;
+      this.day = day2;
+
+      // this.$router.push({ name: "schedule-id", params: { id: day2 } });
+      // setTimeout(function() {
+      //   location.reload();
+      // });
+    },
+    yesterday() {
+      const dayData = this.$route.params.id;
+      const day = moment(dayData) - 86400000;
+      const day2 = moment(day).format("yyyy-MM-DD");
+      this.day = day2;
+
+      // this.$router.push({ name: "schedule-id", params: { id: day2 } });
+      // setTimeout(function() {
+      //   location.reload();
+      // });
     },
     check() {
-      console.log(this.date);
-      console.log(this.$store.state.pmSchedule.eventData[0].start);
+      console.log(this.id);
+    }
+  },
+  watch: {
+    async day() {
+      this.$route.params.id = this.day;
+      console.log(this.$route.params.id);
+      this.$router.push({
+        name: "schedule-id",
+        params: { id: this.$route.params.id }
+      });
+
+      const today = this.$route.params.id;
+      const day = moment(today).format("ddd");
+      this.$store.dispatch("car/getCarList");
+      this.$store.dispatch("schedule/fetchAbsenceUser", today);
+      this.$store.dispatch("schedule/fetchTodayUsers", { day, today });
+      this.$store.dispatch("schedule/fetchFamilyTransfer", today);
+      await this.$store.dispatch(
+        "schedule/fetchTodayAmTransferOderLists",
+        today
+      );
+      const amTransferOderLists = [
+        this.$store.state.schedule.amTransferOderLists
+      ];
+      // console.log(amTransferOderLists);
+      amTransferOderLists.forEach(data => {
+        this.amTransferOderLists = { ...data };
+      });
+      this.$store.dispatch("pmSchedule/fetchCalendarEvent");
     }
   }
 };

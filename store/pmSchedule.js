@@ -186,12 +186,12 @@ export const actions = {
     //   list.push(snapshot.data());
     // console.log(lists);
     if (lists) {
-      // console.log(lists);
+      console.log(lists);
       commit("fetchTodayPmTransferOderLists", lists);
     } else {
       const carList = rootState.car.carList;
       commit("clearTodayAmTransferOderLists", carList);
-      // console.log("error");
+      console.log("pmtr error");
       return;
     }
   },
@@ -262,7 +262,7 @@ export const actions = {
       .collection("calendarEvent")
       .doc(day)
       .set({
-        name: "作成完了",
+        name: "作成済",
         start: day,
         color: "blue"
       });
@@ -278,7 +278,7 @@ export const actions = {
       .set({
         name: "作成中",
         start: day,
-        color: "blue"
+        color: "red"
       });
   },
 
@@ -293,7 +293,7 @@ export const actions = {
       .then(snapshot => {
         snapshot.forEach(doc => eventData.push(doc.data()));
       });
-    console.log(eventData);
+    // console.log(eventData);
     commit("fetchCalendarEvent", eventData);
   }
 };
