@@ -191,7 +191,7 @@ export const actions = {
     } else {
       const carList = rootState.car.carList;
       commit("clearTodayAmTransferOderLists", carList);
-      console.log("pmtr error");
+      // console.log("pmtr error");
       return;
     }
   },

@@ -59,7 +59,7 @@ export const mutations = {
       state.absenceUser = lists;
     } else {
       state.absenceUser = [];
-      console.log("errer");
+      // console.log("errer");
       return;
     }
   },
@@ -150,16 +150,13 @@ export const actions = {
       .doc("todayAmTransferOderLists")
       .get();
     const lists = listRef.data();
-    // .then(snapshot => {
-    //   list.push(snapshot.data());
-    // console.log(lists);
     if (lists) {
       console.log("fetch" + lists);
       commit("fetchTodayAmTransferOderLists", lists);
     } else {
       const carList = rootState.car.carList;
       commit("clearTodayAmTransferOderLists", carList);
-      console.log("fetch" + "error");
+      // console.log("fetch" + "error");
       return;
     }
   },

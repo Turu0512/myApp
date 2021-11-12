@@ -277,7 +277,7 @@ export default {
     const pmTransferOderLists = [
       this.$store.state.pmSchedule.pmTransferOderLists
     ];
-    console.log(pmTransferOderLists);
+    // console.log(pmTransferOderLists);
     pmTransferOderLists.forEach(data => {
       this.pmTransferOderLists = { ...data };
     });
@@ -408,7 +408,7 @@ export default {
     const pmTransferOderLists = [
       this.$store.state.pmSchedule.pmTransferOderLists
     ];
-    console.log(pmTransferOderLists);
+    // console.log(pmTransferOderLists);
     pmTransferOderLists.forEach(data => {
       this.pmTransferOderLists = { ...data };
     });
