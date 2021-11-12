@@ -3,7 +3,7 @@ const fbstore = firebase.firestore();
 
 export const state = () => ({
   transferUsers: [],
-  editUserData: [],
+  editUserData: "",
   stopUsers: [],
   amTransferOderList: [],
   loginUser: ""
@@ -17,15 +17,15 @@ export const mutations = {
   },
 
   getEditUser(state, getEditUser) {
-    state.editUserData = [];
-    state.editUserData.push(getEditUser);
-    console.log(editUser);
+    state.editUserData = "";
+    state.editUserData = getEditUser;
+    console.log(getEditUser);
   },
 
   getUsersList(state, usersList) {
     console.log(usersList);
-    // state.transferUsers = [];
-    // state.transferUsers.push(usersList);
+    state.transferUsers = [];
+    state.transferUsers = usersList;
   },
 
   setStopUsersList(state, stopUsers) {
@@ -42,9 +42,9 @@ export const mutations = {
 
 // --------------------Actions-------------------------
 export const actions = {
-  async addUser({ commit }, user) {
-    const uid = firebase.auth().currentUser.uid;
-
+  async addUser({ rootState, commit }, user) {
+    const uid = rootState.login.loginUser.uid;
+    console.log(uid);
     await fbstore
       .collection("adminUser")
       .doc(uid)
@@ -61,15 +61,18 @@ export const actions = {
           })
           .then(() => {
             commit("addUser", user);
-            console.log(user, res.id);
+            // console.log(user, res.id);
           });
       });
   },
   // -----edit----------------------------------------------------------------------------------------
-  updateUser({ commit }, user) {
-    const users = firebase.auth().currentUser;
+  async updateUser({ commit }, user) {
+    const users = await firebase.auth().currentUser;
     const uid = users.uid;
-    fbstore
+    // console.log(uid);
+    console.log("upde:" + uid);
+
+    await fbstore
       .collection("adminUser")
       .doc(uid)
       .collection("usersList")
@@ -81,13 +84,11 @@ export const actions = {
   },
 
   async fetchEditUser({ commit }, id) {
-    const users = firebase.auth().currentUser;
-    const uid = users.uid;
     const getUserRef = fbstore
       .collection("adminUser")
-      .doc(uid)
+      .doc(id.uid)
       .collection("usersList")
-      .doc(id);
+      .doc(id.id);
     const getUser = await getUserRef.get();
     const getEditUser = getUser.data();
 
@@ -95,25 +96,23 @@ export const actions = {
   },
 
   // -----usersList--------------------------------------------------------------------
-  async getUsersList({ commit }) {
-    await firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        let list = [];
-        const { uid } = user;
-        fbstore
-          .collection("adminUser")
-          .doc(uid)
-          .collection("usersList")
-          .orderBy("firstNameRuby")
-          .get()
-          .then(snapshot => {
-            snapshot.forEach(doc => {
-              list.push(doc.data());
-            });
-          });
-        commit("getUsersList", list);
-      }
-    });
+  async getUsersList({ rootState, commit }) {
+    let list = [];
+    const uid = rootState.login.loginUser.uid;
+    // console.log("action: " + uid);
+
+    await fbstore
+      .collection("adminUser")
+      .doc(uid)
+      .collection("usersList")
+      .orderBy("firstNameRuby")
+      .get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          list.push(doc.data());
+        });
+      });
+    commit("getUsersList", list);
   },
 
   // -----stopUsers----------------------------------------------------------------------
@@ -167,12 +166,10 @@ export const actions = {
       });
   },
 
-  async fetchStopUsers({ commit }) {
+  async fetchStopUsers({ commit }, uid) {
     const list = [];
-    const { currentUser } = await firebase.auth();
-    let uid = currentUser.uid;
-
-    fbstore
+    console.log(uid);
+    await fbstore
       .collection("adminUser")
       .doc(uid)
       .collection("stopedUsersList")
@@ -181,18 +178,15 @@ export const actions = {
       .then(snapshot => {
         snapshot.forEach(doc => list.push(doc.data()));
       });
-    // console.log(list);
     commit("setStopUsersList", list);
   },
 
   async fetchStopUserData({ commit }, id) {
-    const uid = firebase.auth().currentUser.uid;
-
     const getUserRef = fbstore
       .collection("adminUser")
-      .doc(uid)
+      .doc(id.uid)
       .collection("stopedUsersList")
-      .doc(id);
+      .doc(id.id);
     const getUser = await getUserRef.get();
     const getEditUser = getUser.data();
 

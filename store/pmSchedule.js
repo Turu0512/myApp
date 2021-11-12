@@ -5,7 +5,8 @@ export const state = () => ({
   pmTransferOderLists: [],
   pmFamilyTransfer: [],
   absenceUser: [],
-  todayPmUsers: []
+  todayPmUsers: [],
+  eventData: []
 });
 // ------------------Mutations-------------------------------
 export const mutations = {
@@ -49,19 +50,19 @@ export const mutations = {
     state.todayPmUsers = user;
   },
 
-  todayAbsenceUser(state, list) {
-    if (list) {
-      // 配列に変換。変換しないとオブジェクトで渡されてしまい、配列じゃない！とエラーが出る
-      const lists = Object.keys(list).map(function(key) {
-        return list[key];
-      });
-      // console.log(lists);
-      state.absenceUser = lists;
-    } else {
-      state.absenceUser = [];
-      return;
-    }
-  },
+  // todayAbsenceUser(state, list) {
+  //   if (list) {
+  //     // 配列に変換。変換しないとオブジェクトで渡されてしまい、配列じゃない！とエラーが出る
+  //     const lists = Object.keys(list).map(function(key) {
+  //       return list[key];
+  //     });
+  //     // console.log(lists);
+  //     state.absenceUser = lists;
+  //   } else {
+  //     state.absenceUser = [];
+  //     return;
+  //   }
+  // },
 
   todayPmFamilyTransfer(state, list) {
     if (list) {
@@ -82,14 +83,22 @@ export const mutations = {
       newList[i] = new Array();
     }
     state.pmTransferOderLists = newList;
+  },
+
+  fetchCalendarEvent(state, eventData) {
+    state.eventData = eventData;
   }
 };
 
 // --------------------Actions-------------------------
 
 export const actions = {
-  async reverseSchedule({ commit, rootState }, day) {
+  async reverseSchedule({ rootState, commit }, day) {
+    const uid = rootState.login.loginUser.uid;
+
     const listRef = await fbstore
+      .collection("adminUser")
+      .doc(uid)
       .collection(day)
       .doc("todayAmTransferOderLists")
       .get();
@@ -105,8 +114,12 @@ export const actions = {
     commit("fetchTodayPmTransferOderLists", pmList);
   },
   // Savelist--------------------------------------------------------------
-  async saveTodayPmTransferOderLists({ commit }, list) {
+  async saveTodayPmTransferOderLists({ rootState, commit }, list) {
+    const uid = rootState.login.loginUser.uid;
+
     await fbstore
+      .collection("adminUser")
+      .doc(uid)
       .collection(list.day)
       .doc("todayPmTransferOderLists")
       .set({
@@ -116,9 +129,13 @@ export const actions = {
     // console.log(list);
   },
 
-  async saveTodayPmFamilyTransfer({ commit }, list) {
+  async saveTodayPmFamilyTransfer({ rootState, commit }, list) {
     // console.log(list);
+    const uid = rootState.login.loginUser.uid;
+
     await fbstore
+      .collection("adminUser")
+      .doc(uid)
       .collection(list.day)
       .doc("todayPmFamilyTransfer")
       .set({
@@ -126,19 +143,27 @@ export const actions = {
       });
   },
 
-  async saveTodayPmAbsenceUser({ commit }, list) {
-    // console.log(list);
-    await fbstore
-      .collection(list.day)
-      .doc("todayPmAbsenceUser")
-      .set({
-        ...list.absenceUserList
-      });
-  },
+  // async saveTodayPmAbsenceUser({ rootState, commit }, list) {
+  //   // console.log(list);
+  //   const uid = rootState.login.loginUser.uid;
 
-  async saveTodayPmUsers({ commit }, list) {
+  //   await fbstore
+  //     .collection("adminUser")
+  //     .doc(uid)
+  //     .collection(list.day)
+  //     .doc("todayPmAbsenceUser")
+  //     .set({
+  //       ...list.absenceUserList
+  //     });
+  // },
+
+  async saveTodayPmUsers({ rootState, commit }, list) {
     // console.log(list);
+    const uid = rootState.login.loginUser.uid;
+
     await fbstore
+      .collection("adminUser")
+      .doc(uid)
       .collection(list.day)
       .doc("todayPmUsers")
       .set({
@@ -148,7 +173,11 @@ export const actions = {
   // fetch----------------------------------------------------------------------------
 
   async fetchTodayPmTransferOderLists({ rootState, commit }, day) {
+    const uid = rootState.login.loginUser.uid;
+
     const listRef = await fbstore
+      .collection("adminUser")
+      .doc(uid)
       .collection(day)
       .doc("todayPmTransferOderLists")
       .get();
@@ -157,18 +186,22 @@ export const actions = {
     //   list.push(snapshot.data());
     // console.log(lists);
     if (lists) {
-      // console.log(lists);
+      console.log(lists);
       commit("fetchTodayPmTransferOderLists", lists);
     } else {
       const carList = rootState.car.carList;
       commit("clearTodayAmTransferOderLists", carList);
-      // console.log("error");
+      // console.log("pmtr error");
       return;
     }
   },
 
-  async fetchTodayPmUsers({ commit }, day) {
+  async fetchTodayPmUsers({ rootState, commit }, day) {
+    const uid = rootState.login.loginUser.uid;
+
     const listRef = await fbstore
+      .collection("adminUser")
+      .doc(uid)
       .collection(day.today)
       .doc("todayPmUsers")
       .get();
@@ -178,6 +211,8 @@ export const actions = {
     } else {
       const todayUsersList = [];
       await fbstore
+        .collection("adminUser")
+        .doc(uid)
         .collection("usersList")
         .where("dayOfWeek", "array-contains", day.day)
         .get()
@@ -191,22 +226,75 @@ export const actions = {
     }
   },
 
-  async fetchAbsenceUser({ commit }, day) {
-    const listRef = await fbstore
-      .collection(day)
-      .doc("todayAbsenceUser")
-      .get();
-    const lists = listRef.data();
-    commit("todayAbsenceUser", lists);
-  },
+  // async fetchAbsenceUser({ rootState, commit }, day) {
+  //   const uid = rootState.login.loginUser.uid;
 
-  async fetchPmFamilyTransfer({ commit }, day) {
+  //   const listRef = await fbstore
+  //     .collection("adminUser")
+  //     .doc(uid)
+  //     .collection(day)
+  //     .doc("todayAbsenceUser")
+  //     .get();
+  //   const lists = listRef.data();
+  //   commit("todayAbsenceUser", lists);
+  // },
+
+  async fetchPmFamilyTransfer({ rootState, commit }, day) {
+    const uid = rootState.login.loginUser.uid;
+
     const listRef = await fbstore
+      .collection("adminUser")
+      .doc(uid)
       .collection(day.today)
       .doc("todayPmFamilyTransfer")
       .get();
     const lists = listRef.data();
     commit("todayPmFamilyTransfer", lists);
+  },
+
+  // CalendarEvent-----------------------------------------------------------
+  saveCalendarEvent({ rootState, commit }, day) {
+    const uid = rootState.login.loginUser.uid;
+
+    fbstore
+      .collection("adminUser")
+      .doc(uid)
+      .collection("calendarEvent")
+      .doc(day)
+      .set({
+        name: "作成済",
+        start: day,
+        color: "blue"
+      });
+  },
+  temporarilySavedCalendarEvent({ rootState, commit }, day) {
+    const uid = rootState.login.loginUser.uid;
+
+    fbstore
+      .collection("adminUser")
+      .doc(uid)
+      .collection("calendarEvent")
+      .doc(day)
+      .set({
+        name: "作成中",
+        start: day,
+        color: "red"
+      });
+  },
+
+  async fetchCalendarEvent({ rootState, commit }) {
+    const uid = rootState.login.loginUser.uid;
+    const eventData = [];
+    await fbstore
+      .collection("adminUser")
+      .doc(uid)
+      .collection("calendarEvent")
+      .get()
+      .then(snapshot => {
+        snapshot.forEach(doc => eventData.push(doc.data()));
+      });
+    // console.log(eventData);
+    commit("fetchCalendarEvent", eventData);
   }
 };
 // -----------------------Getters-------------------------
@@ -215,9 +303,9 @@ export const getters = {
     return state.pmTransferOderLists;
   },
 
-  absenceUser: state => {
-    return state.absenceUser;
-  },
+  // absenceUser: state => {
+  //   return state.absenceUser;
+  // },
 
   todayPmUsers: state => {
     return state.todayPmUsers;

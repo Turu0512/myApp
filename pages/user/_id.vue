@@ -122,8 +122,12 @@
         </v-col>
       </v-row>
       <v-row class="justify-center mt-10">
+        <v-btn @click="cancel">戻る</v-btn>
+
         <v-btn @click="editUserSave">保存</v-btn>
       </v-row>
+      <p>{{ editUser }}</p>
+      <p>{{ newedit }}</p>
     </v-container>
   </v-app>
 </template>
@@ -131,12 +135,14 @@
 <script>
 export default {
   async created() {
-    await this.$store.dispatch("user/fetchEditUser", this.$route.params.id);
-    const edit = this.$store.state.user.editUserData;
+    const uid = this.$store.state.login.loginUser.uid;
+    const id = this.$route.params.id;
+    await this.$store.dispatch("user/fetchEditUser", { uid, id });
+    const edit = [this.$store.state.user.editUserData];
+    console.log(edit);
     edit.forEach(data => {
       this.editUser = { ...data };
     });
-    // console.log(this.editUser.dayOfWeek);
   },
 
   data: () => ({
@@ -155,12 +161,26 @@ export default {
       { label: "送迎なし" },
       { label: "途中送迎" }
     ],
-
+    newedit: "",
     editUser: {},
-
     stoped: false
   }),
   methods: {
+    cancel() {
+      this.$swal({
+        title: "利用者一覧に戻りますか？",
+        text: "保存していない内容は復元できません",
+        icon: "warning",
+        showCancelButton: true,
+        dangerMode: true
+      }).then(ok => {
+        if (ok.value) {
+          this.$router.push({ name: "servisUserList" });
+        } else {
+          return;
+        }
+      });
+    },
     async editUserSave() {
       const daysOfWeek = ["月", "火", "水", "木", "金", "土", "日"];
 
@@ -171,7 +191,7 @@ export default {
         );
         this.$store.dispatch("user/deleteUser", this.editUser);
         this.$store.dispatch("user/stopedUser", this.editUser);
-        this.editUser = "";
+        // this.editUser = "";
 
         return;
       } else {
@@ -180,9 +200,27 @@ export default {
           (a, b) => daysOfWeek.indexOf(a) - daysOfWeek.indexOf(b)
         );
         await this.$store.dispatch("user/updateUser", this.editUser);
-        this.editUser = "";
+        // this.editUser = "";
       }
     }
+  },
+  computed: {
+    // editUser() {
+    //   return ;
+    // },
+    // editUser: {
+    //   get() {
+    //     const a = [this.$store.state.user.editUserData];
+    //     let b = "";
+    //     // return JSON.parse(JSON.stringify(a));
+    //     return b;
+    //     // return this.$store.state.user.editUserData;
+    //   },
+    //   set(value) {
+    //     // this.$store.commit("user/getEditUser", value);
+    //     console.log(value);
+    //   }
+    // }
   }
 };
 </script>

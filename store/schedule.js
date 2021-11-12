@@ -59,6 +59,7 @@ export const mutations = {
       state.absenceUser = lists;
     } else {
       state.absenceUser = [];
+      // console.log("errer");
       return;
     }
   },
@@ -81,8 +82,12 @@ export const mutations = {
 // --------------------Actions-------------------------
 // Savelist---------------------------------------------------------
 export const actions = {
-  async saveTodayAmTransferOderLists({ commit }, list) {
+  async saveTodayAmTransferOderLists({ rootState, commit }, list) {
+    const uid = rootState.login.loginUser.uid;
+
     await fbstore
+      .collection("adminUser")
+      .doc(uid)
       .collection(list.day)
       .doc("todayAmTransferOderLists")
       .set({
@@ -92,9 +97,13 @@ export const actions = {
     // console.log(list);
   },
 
-  async saveTodayFamilyTransfer({ commit }, list) {
+  async saveTodayFamilyTransfer({ rootState, commit }, list) {
     // console.log(list);
+    const uid = rootState.login.loginUser.uid;
+
     await fbstore
+      .collection("adminUser")
+      .doc(uid)
       .collection(list.day)
       .doc("todayFamilyTransfer")
       .set({
@@ -102,9 +111,13 @@ export const actions = {
       });
   },
 
-  async saveTodayAbsenceUser({ commit }, list) {
+  async saveTodayAbsenceUser({ rootState, commit }, list) {
     // console.log(list);
+    const uid = rootState.login.loginUser.uid;
+
     await fbstore
+      .collection("adminUser")
+      .doc(uid)
       .collection(list.day)
       .doc("todayAbsenceUser")
       .set({
@@ -112,9 +125,13 @@ export const actions = {
       });
   },
 
-  async saveTodayUsers({ commit }, list) {
+  async saveTodayUsers({ rootState, commit }, list) {
     // console.log(list);
+    const uid = rootState.login.loginUser.uid;
+
     await fbstore
+      .collection("adminUser")
+      .doc(uid)
       .collection(list.day)
       .doc("todayUsers")
       .set({
@@ -123,29 +140,35 @@ export const actions = {
   },
   // fetch-------------------------------------------------------------
 
-  async fetchTodayAmTransferOderLists({ rootState, commit }, day) {
+  async fetchTodayAmTransferOderLists({ rootState, commit }, today) {
+    const uid = rootState.login.loginUser.uid;
+
     const listRef = await fbstore
-      .collection(day)
+      .collection("adminUser")
+      .doc(uid)
+      .collection(today)
       .doc("todayAmTransferOderLists")
       .get();
     const lists = listRef.data();
-    // .then(snapshot => {
-    //   list.push(snapshot.data());
-    // console.log(lists);
     if (lists) {
-      // console.log(lists);
+      console.log("fetch" + lists);
       commit("fetchTodayAmTransferOderLists", lists);
     } else {
       const carList = rootState.car.carList;
       commit("clearTodayAmTransferOderLists", carList);
-      // console.log("error");
+      // console.log("fetch" + "error");
       return;
     }
   },
 
-  async fetchTodayUsers({ commit }, day) {
+  async fetchTodayUsers({ rootState, commit }, data) {
+    const uid = rootState.login.loginUser.uid;
+    console.log(uid);
+
     const listRef = await fbstore
-      .collection(day.today)
+      .collection("adminUser")
+      .doc(uid)
+      .collection(data.today)
       .doc("todayUsers")
       .get();
     const lists = listRef.data();
@@ -154,8 +177,10 @@ export const actions = {
     } else {
       const todayUsersList = [];
       await fbstore
+        .collection("adminUser")
+        .doc(uid)
         .collection("usersList")
-        .where("dayOfWeek", "array-contains", day.day)
+        .where("dayOfWeek", "array-contains", data.day)
         .get()
         .then(snapShot => {
           snapShot.forEach(user => {
@@ -167,26 +192,38 @@ export const actions = {
     }
   },
 
-  async fetchAbsenceUser({ commit }, day) {
+  async fetchAbsenceUser({ rootState, commit }, today) {
+    const uid = rootState.login.loginUser.uid;
+
     const listRef = await fbstore
-      .collection(day)
+      .collection("adminUser")
+      .doc(uid)
+      .collection(today)
       .doc("todayAbsenceUser")
       .get();
     const lists = listRef.data();
     commit("todayAbsenceUser", lists);
   },
 
-  async fetchFamilyTransfer({ commit }, day) {
+  async fetchFamilyTransfer({ rootState, commit }, today) {
+    const uid = rootState.login.loginUser.uid;
+
     const listRef = await fbstore
-      .collection(day)
+      .collection("adminUser")
+      .doc(uid)
+      .collection(today)
       .doc("todayFamilyTransfer")
       .get();
     const lists = listRef.data();
     commit("todayFamilyTransfer", lists);
   },
 
-  async fetch({ commit, dispatch }, days) {
+  async fetch({ rootState, commit, dispatch }, days) {
+    const uid = rootState.login.loginUser.uid;
+
     const listRef = await fbstore
+      .collection("adminUser")
+      .doc(uid)
       .collection(days.today)
       .doc("todayUsers")
       .get();
@@ -203,7 +240,6 @@ export const actions = {
     dispatch("fetchTodayUsers", { day, today });
     dispatch("fetchFamilyTransfer", today);
     dispatch("fetchTodayAmTransferOderLists", today);
-    dispatch("fetchAbsenceUser", today);
     this.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
     this.dispatch("pmSchedule/fetchPmFamilyTransfer", { day, today });
     this.dispatch("pmSchedule/fetchTodayPmTransferOderLists", today);

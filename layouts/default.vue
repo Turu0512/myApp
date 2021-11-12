@@ -37,7 +37,6 @@
 
       <v-toolbar-title>送迎くん</v-toolbar-title>
     </v-app-bar>
-
     <v-main>
       <router-view></router-view>
     </v-main>
@@ -47,44 +46,33 @@
 <script>
 import firebase from "@/plugins/firebase";
 const fbstore = firebase.firestore();
+import moment from "moment";
 
 export default {
-  created() {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        const { uid, displayName, photoURL } = user;
-        fbstore
-          .collection("adminUser")
-          .doc(uid)
-          .set({ name: displayName, uid: uid });
-        this.$store.commit("login/setLoginUser", {
-          uid,
-          displayName,
-          photoURL
-        });
-        if (this.$router.currentRoute.name === "login")
-          this.$router.push({ name: "/" });
-      } else {
-        this.$store.commit("login/logout");
-        this.$router.push({ name: "login" });
-      }
-    });
-  },
+  // created() {
+  //   // this.value = moment().format("yyyy-MM-DD");
+  //   console.log(this.value);
+  // },
   name: "App",
   data: () => ({
+    // value: moment().format("yyyy-MM-DD (ddd)"),
+
     drawer: false,
     menus: [
       { title: "利用者一覧", icon: "mdi-web", url: "/servisUserList" },
-      { title: "利用者登録", icon: "mdi-home", url: "/createUser" },
-      { title: "送迎表", icon: "mdi-heart", url: "/schedule/schedule" },
       {
-        title: "中止者一覧",
-        icon: "mdi-information-variant",
-        url: "/stopUser"
+        title: "送迎表",
+        icon: "mdi-heart",
+        url: {
+          name: "schedule-id",
+          params: { id: moment().format("yyyy-MM-DD") }
+        },
+        action: "toSchedule"
       },
-      { title: "車両管理", icon: "mdi-information-variant", url: "/car" },
+
+      { title: "車両一覧", icon: "mdi-information-variant", url: "/car" },
       {
-        title: "閲覧アカウント作成",
+        title: "ドライバー  一覧",
         icon: "mdi-information-variant",
         url: "/about"
       }
@@ -94,6 +82,10 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch("login/logoutFb");
+      this.$router.push({ name: "login" });
+    },
+    toSchedule() {
+      console.log(value);
     }
   }
 };

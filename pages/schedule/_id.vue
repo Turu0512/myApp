@@ -4,7 +4,7 @@
       <v-row>
         <v-col cols="3">
           <v-btn outlined small class="ma-4" @click="backToSchedule">
-            カレンダーに戻る
+            カレンダーを表示する
           </v-btn>
         </v-col>
         <v-col cols="4">
@@ -18,7 +18,10 @@
             min-width="auto"
           >
             <template v-slot:activator="{ on, attrs }">
-              <v-text-field
+              <v-btn v-model="date" readonly v-bind="attrs" v-on="on"
+                >過去データを呼び出す</v-btn
+              >
+              <!-- <v-text-field
                 v-model="date"
                 label="Picker in menu"
                 prepend-icon="mdi-calendar"
@@ -29,14 +32,20 @@
                 <template v-slot:append-outer>
                   <v-btn color="primary" @click="reuseData">反映させる</v-btn>
                 </template></v-text-field
-              >
+              > -->
             </template>
-            <v-date-picker v-model="date" no-title scrollable>
+            <v-date-picker
+              v-model="date"
+              no-title
+              scrollable
+              :events="eventList"
+            >
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="menu = false">
                 Cancel
               </v-btn>
-              <v-btn text color="primary" @click="$refs.menu.save(date)">
+              <v-btn text color="primary" @click="reuseData">
+                <!-- <v-btn text color="primary" @click="$refs.menu.save(date)"> -->
                 OK
               </v-btn>
             </v-date-picker>
@@ -45,7 +54,9 @@
       </v-row>
       <v-card>
         <v-card-title class="justify-center">
+          <v-btn @click="yesterday">前日</v-btn>
           {{ title }}
+          <v-btn @click="tomorrow">翌日</v-btn>
         </v-card-title>
       </v-card>
       <v-row>
@@ -225,6 +236,31 @@
               </v-list-item-group>
             </v-list>
           </v-card>
+          <!-- 家族送迎ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
+          <v-list class="user" dense>
+            <v-subheader>家族送迎</v-subheader>
+            <v-list-item-group color="primary" class="pa-0">
+              <draggable
+                group="myGroup"
+                @start="drag = true"
+                @end="drag = false"
+                :options="options"
+                v-model="familyTransfer"
+              >
+                <v-list-item
+                  v-for="(item, index) in familyTransfer"
+                  :key="index"
+                  class="original"
+                >
+                  <v-list-item-content class="pa-0">
+                    <v-list-item-title
+                      v-text="item.displayName"
+                    ></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </draggable>
+            </v-list-item-group>
+          </v-list>
           <!-- 休みーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
           <v-card width="150" tile class="pt-2">
             <v-list class="user" dense>
@@ -250,37 +286,13 @@
                 </draggable>
               </v-list-item-group>
             </v-list>
-            <!-- 家族送迎ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
-            <v-list class="user" dense>
-              <v-subheader>家族送迎</v-subheader>
-              <v-list-item-group color="primary" class="pa-0">
-                <draggable
-                  group="myGroup"
-                  @start="drag = true"
-                  @end="drag = false"
-                  :options="options"
-                  v-model="familyTransfer"
-                >
-                  <v-list-item
-                    v-for="(item, index) in familyTransfer"
-                    :key="index"
-                    class="original"
-                  >
-                    <v-list-item-content class="pa-0">
-                      <v-list-item-title
-                        v-text="item.displayName"
-                      ></v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </draggable>
-              </v-list-item-group>
-            </v-list>
           </v-card>
         </v-col>
         <v-btn @click="addReverseSchedule">反転挿入</v-btn>
+        <v-btn @click="check">チェック</v-btn>
       </v-row>
     </v-container>
-    <pmSchedule @save="saveTodaySchedule" />
+    <pmSchedule @save="saveTodaySchedule" :day="day" />
   </v-app>
 </template>
 
@@ -299,7 +311,6 @@ moment.lang("ja", {
 });
 import moment from "moment";
 import pmSchedule from "~/components/pmSchedule.vue";
-
 import draggable from "vuedraggable";
 
 export default {
@@ -308,15 +319,22 @@ export default {
   async created() {
     const today = this.$route.params.id;
     const day = moment(today).format("ddd");
+    // const uid = this.$store.state.login.loginUser.uid;
+    // console.log(uid);
+    this.$store.dispatch("car/getCarList");
     this.$store.dispatch("schedule/fetchAbsenceUser", today);
     this.$store.dispatch("schedule/fetchTodayUsers", { day, today });
     this.$store.dispatch("schedule/fetchFamilyTransfer", today);
-
-    await this.$store.dispatch("car/getCarList");
-    await this.$store.dispatch(
-      "schedule/fetchTodayAmTransferOderLists",
-      this.$route.params.id
-    );
+    await this.$store.dispatch("schedule/fetchTodayAmTransferOderLists", today);
+    const amTransferOderLists = [
+      this.$store.state.schedule.amTransferOderLists
+    ];
+    // console.log(amTransferOderLists);
+    amTransferOderLists.forEach(data => {
+      this.amTransferOderLists = { ...data };
+    });
+    this.$store.dispatch("pmSchedule/fetchCalendarEvent");
+    this.$store.dispatch("pmSchedule/fetchCalendarEvent");
   },
 
   data: () => ({
@@ -333,7 +351,10 @@ export default {
       .substr(0, 10),
     menu: false,
     modal: false,
-    menu2: false
+    menu2: false,
+    amTransferOderLists: [],
+    day: ""
+    // id: this.$route
   }),
 
   computed: {
@@ -350,15 +371,9 @@ export default {
         return this.$store.getters["schedule/todayUsers"];
       },
       set(value) {
+        console.log("today" + value);
         this.$store.commit("schedule/fetchTodayUsers", value);
       }
-    },
-
-    amTransferOderLists: {
-      get() {
-        return { ...this.$store.getters["schedule/amTransferOderLists"] };
-      },
-      set(value) {}
     },
 
     absenceUser: {
@@ -379,9 +394,16 @@ export default {
       set(value) {
         this.$store.commit("schedule/todayFamilyTransfer", value);
       }
+    },
+    eventList() {
+      const event = this.$store.state.pmSchedule.eventData;
+      const eventList = [];
+      for (let i = 0; i < event.length; i++) {
+        eventList.push(event[i].start);
+      }
+      return eventList;
     }
   },
-  //
   methods: {
     async reuseData() {
       const today = this.date;
@@ -437,6 +459,80 @@ export default {
     async addReverseSchedule() {
       await this.saveTodaySchedule();
       this.$store.dispatch("pmSchedule/reverseSchedule", this.$route.params.id);
+    },
+
+    // yesterday() {
+    //   const dayData = this.$route.params.id;
+    //   const day = moment(dayData) - 86400000;
+    //   const day2 = moment(day).format("yyyy-MM-DD");
+    //   this.$router.push({ name: "schedule-id", params: { id: day2 } });
+    //   setTimeout(function() {
+    //     location.reload();
+    //   });
+    // },
+    //   tomorrow() {
+    //     const dayData = this.$route.params.id;
+    //     const day = moment(dayData) + 86400000;
+    //     const day2 = moment(day).format("yyyy-MM-DD");
+    //     this.$router.push({ name: "schedule-id", params: { id: day2 } });
+    //     setTimeout(function() {
+    //       location.reload();
+    //     });
+    //   },
+    tomorrow() {
+      const dayData = this.$route.params.id;
+      const day = moment(dayData) + 86400000;
+      const day2 = moment(day).format("yyyy-MM-DD");
+      this.$route.params.id = day2;
+      this.day = day2;
+
+      // this.$router.push({ name: "schedule-id", params: { id: day2 } });
+      // setTimeout(function() {
+      //   location.reload();
+      // });
+    },
+    yesterday() {
+      const dayData = this.$route.params.id;
+      const day = moment(dayData) - 86400000;
+      const day2 = moment(day).format("yyyy-MM-DD");
+      this.day = day2;
+
+      // this.$router.push({ name: "schedule-id", params: { id: day2 } });
+      // setTimeout(function() {
+      //   location.reload();
+      // });
+    },
+    check() {
+      console.log(this.id);
+    }
+  },
+  watch: {
+    async day() {
+      this.$route.params.id = this.day;
+      console.log(this.$route.params.id);
+      this.$router.push({
+        name: "schedule-id",
+        params: { id: this.$route.params.id }
+      });
+
+      const today = this.$route.params.id;
+      const day = moment(today).format("ddd");
+      this.$store.dispatch("car/getCarList");
+      this.$store.dispatch("schedule/fetchAbsenceUser", today);
+      this.$store.dispatch("schedule/fetchTodayUsers", { day, today });
+      this.$store.dispatch("schedule/fetchFamilyTransfer", today);
+      await this.$store.dispatch(
+        "schedule/fetchTodayAmTransferOderLists",
+        today
+      );
+      const amTransferOderLists = [
+        this.$store.state.schedule.amTransferOderLists
+      ];
+      // console.log(amTransferOderLists);
+      amTransferOderLists.forEach(data => {
+        this.amTransferOderLists = { ...data };
+      });
+      this.$store.dispatch("pmSchedule/fetchCalendarEvent");
     }
   }
 };

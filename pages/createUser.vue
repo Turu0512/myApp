@@ -133,6 +133,7 @@
       </v-row> -->
 
       <v-row class="justify-center mt-10">
+        <v-btn @click="cancel">戻る</v-btn>
         <v-btn @click="createUser">登録</v-btn>
       </v-row>
     </v-container>
@@ -203,6 +204,20 @@ export default {
         alert("表示名、姓、名、利用日は必ず入力してください");
         return;
       }
+    },
+    cancel() {
+      this.$swal({
+        title: "利用者一覧に戻りますか？",
+        icon: "warning",
+        showCancelButton: true,
+        dangerMode: true
+      }).then(ok => {
+        if (ok.value) {
+          this.$router.push({ name: "servisUserList" });
+        } else {
+          return;
+        }
+      });
     }
   }
 };

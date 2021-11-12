@@ -179,7 +179,7 @@
             </v-list>
           </v-card>
           <!-- 休みーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
-          <v-card width="150" tile class="pt-2">
+          <!-- <v-card width="150" tile class="pt-2">
             <v-list class="user" dense>
               <v-subheader>休み</v-subheader>
               <v-list-item-group class="pa-0" color="primary">
@@ -202,7 +202,7 @@
                   </v-list-item>
                 </draggable>
               </v-list-item-group>
-            </v-list>
+            </v-list> -->
             <!-- 家族送迎ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
             <v-list class="user" dense>
               <v-subheader>家族送迎</v-subheader>
@@ -230,6 +230,7 @@
             </v-list>
           </v-card>
         </v-col>
+        <v-btn @click="temporarilySaved">一時保存</v-btn>
         <v-btn @click="saveTodaySchedule">保存</v-btn>
       </v-row>
     </v-container>
@@ -254,27 +255,32 @@ import moment from "moment";
 import draggable from "vuedraggable";
 
 export default {
+  props:["day"],
   components: { draggable },
 
   async beforeCreate() {
     const today = this.$route.params.id;
     const day = moment(today).format("ddd");
 
-    await this.$store.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
-    await this.$store.dispatch(
-      "schedule/fetchAbsenceUser",
-      this.$route.params.id
-    );
-    await this.$store.dispatch("pmSchedule/fetchPmFamilyTransfer", {
+    this.$store.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
+    // this.$store.dispatch("schedule/fetchAbsenceUser", this.$route.params.id);
+    this.$store.dispatch("pmSchedule/fetchPmFamilyTransfer", {
       day,
       today
     });
 
-    await this.$store.dispatch("car/getCarList");
+    this.$store.dispatch("car/getCarList");
     await this.$store.dispatch(
       "pmSchedule/fetchTodayPmTransferOderLists",
       this.$route.params.id
     );
+    const pmTransferOderLists = [
+      this.$store.state.pmSchedule.pmTransferOderLists
+    ];
+    // console.log(pmTransferOderLists);
+    pmTransferOderLists.forEach(data => {
+      this.pmTransferOderLists = { ...data };
+    });
   },
 
   data: () => ({
@@ -285,7 +291,8 @@ export default {
     selectedItem: 1,
     moveIndex: "",
     moveAmTransferOderList: {},
-    drivers: []
+    drivers: [],
+    pmTransferOderLists: [],
   }),
 
   computed: {
@@ -302,24 +309,15 @@ export default {
       }
     },
 
-    pmTransferOderLists: {
-      get() {
-        return { ...this.$store.getters["pmSchedule/pmTransferOderLists"] };
-      },
-      set(value) {
-        // this.$store.commit("pmSchedule/fetchTodayPmTransferOderLists", value);
-      }
-    },
-
-    absenceUser: {
-      get() {
-        return this.$store.getters["schedule/absenceUser"];
-      },
-      set(value) {
-        // console.log(value);
-        this.$store.commit("schedule/todayAbsenceUser", value);
-      }
-    },
+    // absenceUser: {
+    //   get() {
+    //     return this.$store.getters["schedule/absenceUser"];
+    //   },
+    //   set(value) {
+    //     // console.log(value);
+    //     this.$store.commit("schedule/todayAbsenceUser", value);
+    //   }
+    // },
 
     pmFamilyTransfer: {
       get() {
@@ -340,7 +338,7 @@ export default {
       const day = this.$route.params.id;
       const todayPmTransferOderLists = { ...this.pmTransferOderLists };
       const pmFamilyTransferList = this.pmFamilyTransfer;
-      const absenceUserList = this.absenceUser;
+      // const absenceUserList = this.absenceUser;
       const todayPmUsersList = this.todayPmUsers;
 
       this.$store.dispatch("pmSchedule/saveTodayPmTransferOderLists", {
@@ -351,14 +349,69 @@ export default {
         pmFamilyTransferList,
         day
       });
-      this.$store.dispatch("schedule/saveTodayAbsenceUser", {
-        absenceUserList,
-        day
-      });
+      // this.$store.dispatch("schedule/saveTodayAbsenceUser", {
+      //   absenceUserList,
+      //   day
+      // });
       this.$store.dispatch("pmSchedule/saveTodayPmUsers", {
         todayPmUsersList,
         day
       });
+
+      this.$store.dispatch("pmSchedule/saveCalendarEvent", day);
+    },
+    temporarilySaved() {
+      this.$emit("save");
+      const day = this.$route.params.id;
+      const todayPmTransferOderLists = { ...this.pmTransferOderLists };
+      const pmFamilyTransferList = this.pmFamilyTransfer;
+      // const absenceUserList = this.absenceUser;
+      const todayPmUsersList = this.todayPmUsers;
+
+      this.$store.dispatch("pmSchedule/saveTodayPmTransferOderLists", {
+        todayPmTransferOderLists,
+        day
+      });
+      this.$store.dispatch("pmSchedule/saveTodayPmFamilyTransfer", {
+        pmFamilyTransferList,
+        day
+      });
+      // this.$store.dispatch("schedule/saveTodayAbsenceUser", {
+      //   absenceUserList,
+      //   day
+      // });
+      this.$store.dispatch("pmSchedule/saveTodayPmUsers", {
+        todayPmUsersList,
+        day
+      });
+
+      this.$store.dispatch("pmSchedule/temporarilySavedCalendarEvent", day);
+    }
+  },
+  watch:{
+    async day(){
+      const today = this.$route.params.id;
+    const day = moment(today).format("ddd");
+
+    this.$store.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
+    // this.$store.dispatch("schedule/fetchAbsenceUser", this.$route.params.id);
+    this.$store.dispatch("pmSchedule/fetchPmFamilyTransfer", {
+      day,
+      today
+    });
+
+    this.$store.dispatch("car/getCarList");
+    await this.$store.dispatch(
+      "pmSchedule/fetchTodayPmTransferOderLists",
+      this.$route.params.id
+    );
+    const pmTransferOderLists = [
+      this.$store.state.pmSchedule.pmTransferOderLists
+    ];
+    // console.log(pmTransferOderLists);
+    pmTransferOderLists.forEach(data => {
+      this.pmTransferOderLists = { ...data };
+    });
     }
   }
 };

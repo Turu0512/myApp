@@ -71,18 +71,11 @@
 </template>
 
 <script>
-// import firebase from "@/plugins/firebase";
-// const fbstore = firebase.firestore();
 export default {
-  async mounted() {
+  async created() {
+    const uid = this.$store.state.login.loginUser.uid;
+    this.uid = uid;
     await this.$store.dispatch("car/getCarList");
-    // await fbstore
-    //   .collection("carList")
-    //   .orderBy("timestamp")
-    //   .get()
-    //   .then(snapshot => {
-    //     snapshot.forEach(doc => this.carList.push(doc.data()));
-    //   });
   },
 
   data: () => ({
@@ -93,7 +86,8 @@ export default {
       index: ""
     },
     // carList: [],
-    editMode: false
+    editMode: false,
+    uid: ""
   }),
 
   methods: {
@@ -102,8 +96,9 @@ export default {
         alert("車両名、定員数、どちらも入力してください");
         return;
       }
+      const uid = this.uid;
       const car = { ...this.car };
-      this.$store.dispatch("car/createCar", car);
+      this.$store.dispatch("car/createCar", { car, uid });
       this.car.name = "";
       this.car.max = "";
     },
@@ -121,14 +116,6 @@ export default {
         alert("車両名、定員数、どちらも入力してください");
         return;
       }
-      //  else if (
-      //   this.car.name == this.carList[this.car.index].name ||
-      //   this.car.max == this.carList[this.car.index].max
-      // )
-      // {
-      //   console.log("一緒");
-      //   return;
-      // }
       const car = { ...this.car };
       console.log(car);
       await this.$store

@@ -4,7 +4,7 @@
       <div>
         <v-sheet tile height="6vh" color="grey" class="d-flex align-center">
           <v-btn outlined small class="ma-4" @click="setToday">
-            今日
+            当日に戻る
           </v-btn>
           <v-btn icon @click="$refs.calendar.prev()">
             <v-icon>mdi-chevron-left</v-icon>
@@ -19,13 +19,11 @@
             ref="calendar"
             v-model="value"
             :events="events"
-            :event-color="getEventColor"
             locale="ja-jp"
             :day-format="timestamp => new Date(timestamp.date).getDate()"
             :month-format="
               timestamp => new Date(timestamp.date).getMonth() + 1 + ' /'
             "
-            @change="getEvents"
             @click:event="showEvent"
             @click:date="viewDay(value)"
           ></v-calendar>
@@ -39,18 +37,25 @@
 import moment from "moment";
 
 export default {
+  created() {
+    this.$store.dispatch("pmSchedule/fetchCalendarEvent");
+    console.log(this.$store.state.pmSchedule.eventData);
+  },
   data: () => ({
-    events: [],
-    value: moment().format("yyyy-MM-DD (ddd)")
+    value: moment().format("yyyy-MM-DD")
   }),
   computed: {
     title() {
       return moment(this.value).format("yyyy年 M月");
+    },
+    events() {
+      return this.$store.state.pmSchedule.eventData;
     }
   },
   methods: {
     setToday() {
       this.value = moment().format("yyyy-MM-DD");
+      this.$router.push({ name: "schedule-id", params: { id: this.value } });
     },
     showEvent({ event }) {
       alert(`clicked ${event.name}`);
@@ -58,21 +63,6 @@ export default {
     viewDay(date) {
       console.log(date);
       this.$router.push({ name: "schedule-id", params: { id: date } });
-    },
-    getEvents() {
-      const events = [
-        {
-          name: "完了",
-          start: new Date("2021-10-03T01:00:00"), // 開始時刻
-          // end: new Date("2021-11-03T02:00:00"), // 終了時刻
-          color: "blue",
-          timed: false // 終日ならfalse
-        }
-      ];
-      this.events = events;
-    },
-    getEventColor(event) {
-      return event.color;
     }
   }
 };

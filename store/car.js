@@ -19,29 +19,37 @@ export const mutations = {
 
 // --------------------Actions-------------------------
 export const actions = {
-  async createCar({ commit, dispatch }, car) {
+  async createCar({ commit, dispatch }, data) {
     await fbstore
+      .collection("adminUser")
+      .doc(data.uid)
       .collection("carList")
       .add({})
       .then(res => {
         fbstore
+          .collection("adminUser")
+          .doc(data.uid)
           .collection("carList")
           .doc(res.id)
           .set({
-            ...car,
+            ...data.car,
             id: res.id,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
           })
           .then(() => {
-            commit("addCar", car);
+            commit("addCar", data.car);
             dispatch("getCarList");
           });
       });
   },
 
-  async getCarList({ commit }) {
+  async getCarList({ rootState, commit }) {
     const list = [];
+    const uid = rootState.login.loginUser.uid;
+
     await fbstore
+      .collection("adminUser")
+      .doc(uid)
       .collection("carList")
       .orderBy("timestamp")
       .get()
@@ -51,8 +59,12 @@ export const actions = {
     commit("addCarList", list);
   },
 
-  saveCar({ commit, dispatch }, car) {
+  saveCar({ rootState, commit, dispatch }, car) {
+    const uid = rootState.login.loginUser.uid;
+
     fbstore
+      .collection("adminUser")
+      .doc(uid)
       .collection("carList")
       .doc(car.id)
       .set({
@@ -62,8 +74,12 @@ export const actions = {
     dispatch("getCarList");
   },
 
-  deleteCar({ commit, dispatch }, id) {
+  deleteCar({ rootState, commit, dispatch }, id) {
+    const uid = rootState.login.loginUser.uid;
+
     fbstore
+      .collection("adminUser")
+      .doc(uid)
       .collection("carList")
       .doc(id)
       .delete()
