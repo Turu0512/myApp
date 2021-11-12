@@ -25,7 +25,6 @@
             :month-format="
               timestamp => new Date(timestamp.date).getMonth() + 1 + ' /'
             "
-            @change="getEvents"
             @click:event="showEvent"
             @click:date="viewDay(value)"
           ></v-calendar>
@@ -39,13 +38,19 @@
 import moment from "moment";
 
 export default {
+  created() {
+    this.$store.dispatch("pmSchedule/fetchCalendarEvent");
+    console.log(this.$store.state.pmSchedule.eventData);
+  },
   data: () => ({
-    events: [],
     value: moment().format("yyyy-MM-DD (ddd)")
   }),
   computed: {
     title() {
       return moment(this.value).format("yyyy年 M月");
+    },
+    events() {
+      return this.$store.state.pmSchedule.eventData;
     }
   },
   methods: {
@@ -59,18 +64,7 @@ export default {
       console.log(date);
       this.$router.push({ name: "schedule-id", params: { id: date } });
     },
-    getEvents() {
-      const events = [
-        {
-          name: "完了",
-          start: new Date("2021-10-03T01:00:00"), // 開始時刻
-          // end: new Date("2021-11-03T02:00:00"), // 終了時刻
-          color: "blue",
-          timed: false // 終日ならfalse
-        }
-      ];
-      this.events = events;
-    },
+
     getEventColor(event) {
       return event.color;
     }

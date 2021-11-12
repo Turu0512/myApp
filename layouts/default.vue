@@ -11,12 +11,7 @@
       </v-list-item>
       <v-divider />
       <v-list nav>
-        <v-list-item
-          v-for="menu in menus"
-          :key="menu.title"
-          :to="menu.url"
-          @click="callAction(menus.action)"
-        >
+        <v-list-item v-for="menu in menus" :key="menu.title" :to="menu.url">
           <v-list-item-icon>
             <v-icon>{{ menu.icon }}</v-icon>
           </v-list-item-icon>
@@ -54,13 +49,13 @@ const fbstore = firebase.firestore();
 import moment from "moment";
 
 export default {
-  created() {
-    // this.value = moment().format("yyyy-MM-DD");
-    console.log(this.value);
-  },
+  // created() {
+  //   // this.value = moment().format("yyyy-MM-DD");
+  //   console.log(this.value);
+  // },
   name: "App",
   data: () => ({
-    value: moment().format("yyyy-MM-DD (ddd)"),
+    // value: moment().format("yyyy-MM-DD (ddd)"),
 
     drawer: false,
     menus: [
@@ -91,9 +86,6 @@ export default {
     },
     toSchedule() {
       console.log(value);
-    },
-    callAction(action) {
-      this[action];
     }
   }
 };
