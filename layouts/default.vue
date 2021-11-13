@@ -74,7 +74,7 @@ export default {
       {
         title: "ドライバー  一覧",
         icon: "mdi-information-variant",
-        url: "/about"
+        url: "/driver"
       }
     ]
   }),

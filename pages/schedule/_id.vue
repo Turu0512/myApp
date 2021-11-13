@@ -318,9 +318,9 @@ export default {
 
   async created() {
     const today = this.$route.params.id;
+    this.day = today;
     const day = moment(today).format("ddd");
-    // const uid = this.$store.state.login.loginUser.uid;
-    // console.log(uid);
+
     this.$store.dispatch("car/getCarList");
     this.$store.dispatch("schedule/fetchAbsenceUser", today);
     this.$store.dispatch("schedule/fetchTodayUsers", { day, today });
@@ -329,12 +329,25 @@ export default {
     const amTransferOderLists = [
       this.$store.state.schedule.amTransferOderLists
     ];
-    // console.log(amTransferOderLists);
     amTransferOderLists.forEach(data => {
       this.amTransferOderLists = { ...data };
     });
     this.$store.dispatch("pmSchedule/fetchCalendarEvent");
     this.$store.dispatch("pmSchedule/fetchCalendarEvent");
+  },
+  mounted() {
+    console.log(this.$route);
+    console.log(this.$route.params);
+    console.log("this.$route.params.id", this.$route.params.id);
+    console.log("this.$route.query", this.$route.query.id);
+    window.addEventListener("beforeunload", () => {
+      this.test();
+    });
+  },
+  destroyed() {
+    window.removeEventListener("beforeunload", () => {
+      this.test();
+    });
   },
 
   data: () => ({
@@ -354,12 +367,11 @@ export default {
     menu2: false,
     amTransferOderLists: [],
     day: ""
-    // id: this.$route
   }),
 
   computed: {
     title() {
-      return moment(this.$route.params.id).format("M月 DD日 (ddd)");
+      return moment(this.day).format("M月 DD日 (ddd)");
     },
 
     carList() {
@@ -405,6 +417,11 @@ export default {
     }
   },
   methods: {
+    test() {
+      const day = encodeURIComponent(JSON.stringify(this.day));
+      this.$router.push({ path: "schedule", query: { id: day } });
+    },
+
     async reuseData() {
       const today = this.date;
       const day = moment(today).format("ddd");
@@ -480,11 +497,12 @@ export default {
     //     });
     //   },
     tomorrow() {
-      const dayData = this.$route.params.id;
+      const dayData = this.day;
       const day = moment(dayData) + 86400000;
       const day2 = moment(day).format("yyyy-MM-DD");
-      this.$route.params.id = day2;
       this.day = day2;
+      this.$route.query.id = day2;
+      console.log(this.$route.query.id);
 
       // this.$router.push({ name: "schedule-id", params: { id: day2 } });
       // setTimeout(function() {
@@ -492,7 +510,7 @@ export default {
       // });
     },
     yesterday() {
-      const dayData = this.$route.params.id;
+      const dayData = this.day;
       const day = moment(dayData) - 86400000;
       const day2 = moment(day).format("yyyy-MM-DD");
       this.day = day2;
@@ -508,14 +526,7 @@ export default {
   },
   watch: {
     async day() {
-      this.$route.params.id = this.day;
-      console.log(this.$route.params.id);
-      this.$router.push({
-        name: "schedule-id",
-        params: { id: this.$route.params.id }
-      });
-
-      const today = this.$route.params.id;
+      const today = this.day;
       const day = moment(today).format("ddd");
       this.$store.dispatch("car/getCarList");
       this.$store.dispatch("schedule/fetchAbsenceUser", today);

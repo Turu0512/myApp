@@ -163,7 +163,7 @@ export const actions = {
 
   async fetchTodayUsers({ rootState, commit }, data) {
     const uid = rootState.login.loginUser.uid;
-    console.log(uid);
+    // console.log(uid);
 
     const listRef = await fbstore
       .collection("adminUser")

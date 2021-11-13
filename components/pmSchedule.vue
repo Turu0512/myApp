@@ -390,7 +390,7 @@ export default {
   },
   watch:{
     async day(){
-      const today = this.$route.params.id;
+      const today = this.day;
     const day = moment(today).format("ddd");
 
     this.$store.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
