@@ -2,90 +2,90 @@ import firebase from "@/plugins/firebase";
 const fbstore = firebase.firestore();
 
 export const state = () => ({
-  carList: []
+  driverList: []
 });
 // ------------------Mutations-------------------------------
 export const mutations = {
-  addCar(state, car) {
-    state.carList.push(car);
+  addDriver(state, driver) {
+    state.driverList.push(driver);
   },
 
-  addCarList(state, list) {
-    state.carList = list;
+  addDriverList(state, list) {
+    state.driverList = list;
     // console.log(list)
   }
 };
 
 // --------------------Actions-------------------------
 export const actions = {
-  async createCar({ commit, dispatch }, data) {
+  async createDriver({ commit, dispatch }, data) {
     await fbstore
       .collection("adminUser")
       .doc(data.uid)
-      .collection("carList")
+      .collection("driverList")
       .add({})
       .then(res => {
         fbstore
           .collection("adminUser")
           .doc(data.uid)
-          .collection("carList")
+          .collection("driverList")
           .doc(res.id)
           .set({
-            ...data.car,
+            ...data.driver,
             id: res.id,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
           })
           .then(() => {
-            commit("addCar", data.car);
-            dispatch("getCarList");
+            commit("addDriver", data.driver);
+            dispatch("getDriverList");
           });
       });
   },
 
-  async getCarList({ rootState, commit }) {
+  async getDriverList({ rootState, commit }) {
     const list = [];
     const uid = rootState.login.loginUser.uid;
 
     await fbstore
       .collection("adminUser")
       .doc(uid)
-      .collection("carList")
+      .collection("driverList")
       .orderBy("timestamp")
       .get()
       .then(snapshot => {
         snapshot.forEach(doc => list.push(doc.data()));
       });
-    commit("addCarList", list);
+    commit("addDriverList", list);
   },
 
-  saveCar({ rootState, commit, dispatch }, car) {
+  saveDriver({ rootState, commit, dispatch }, driver) {
     const uid = rootState.login.loginUser.uid;
 
     fbstore
       .collection("adminUser")
       .doc(uid)
-      .collection("carList")
-      .doc(car.id)
+      .collection("driverList")
+      .doc(driver.id)
       .set({
-        ...car,
+        ...driver,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       });
-    dispatch("getCarList");
+    dispatch("getDriverList");
   },
 
-  deleteCar({ rootState, commit, dispatch }, id) {
+  deleteDriver({ rootState, commit, dispatch }, id) {
     const uid = rootState.login.loginUser.uid;
 
     fbstore
       .collection("adminUser")
       .doc(uid)
-      .collection("carList")
+      .collection("driverList")
       .doc(id)
       .delete()
       .then(() => {
         console.log(id);
         console.log("Document successfully deleted!");
-        dispatch("getCarList");
+        dispatch("getDriverList");
       })
       .catch(error => {
         console.error("Error removing document: ", error);
@@ -96,6 +96,6 @@ export const actions = {
 // -----------------------Getters-------------------------
 export const getters = {
   fetchCarList: state => {
-    return state.carList;
+    return state.driverList;
   }
 };

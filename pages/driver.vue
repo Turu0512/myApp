@@ -13,7 +13,7 @@
         <v-col cols="4">
           <v-text-field
             label="送迎表に表示する名前を入力してください"
-            v-model="car.name"
+            v-model="driver.displayName"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -24,11 +24,11 @@
         <v-col cols="4">
           <v-text-field
             label="ドライバーの名前を入力してください"
-            v-model="car.max"
+            v-model="driver.name"
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-btn v-if="!editMode" @click="createCar">
+      <v-btn v-if="!editMode" @click="createDriver">
         ドライバー追加
       </v-btn>
       <v-btn v-else @click="saveCar">保存</v-btn>
@@ -53,15 +53,17 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(car, i) in carList" :key="i">
-              <td>{{ car.name }}</td>
+            <tr v-for="(driver, i) in driverList" :key="i">
+              <td>{{ driver.name }}</td>
 
-              <td align="center">{{ car.max }}</td>
+              <td align="center">{{ driver.displayName }}</td>
 
               <td align="center">
-                <v-btn @click="editCar(i)">編集</v-btn>
+                <v-btn @click="editDriver(i)">編集</v-btn>
               </td>
-              <td align="center"><v-btn @click="deleteCar(i)">削除</v-btn></td>
+              <td align="center">
+                <v-btn @click="deleteDriver(i)">削除</v-btn>
+              </td>
             </tr>
           </tbody>
         </template>
@@ -75,69 +77,95 @@ export default {
   async created() {
     const uid = this.$store.state.login.loginUser.uid;
     this.uid = uid;
-    await this.$store.dispatch("car/getCarList");
+    await this.$store.dispatch("driver/getDriverList");
   },
 
   data: () => ({
-    car: {
+    driver: {
       name: "",
-      max: "",
+      displayName: "",
       id: "",
       index: ""
     },
-    // carList: [],
+    // driverList: [],
     editMode: false,
     uid: ""
   }),
 
   methods: {
-    createCar() {
-      if (!this.car.name || !this.car.max) {
-        alert("車両名、定員数、どちらも入力してください");
+    createDriver() {
+      if (!this.driver.name || !this.driver.displayName) {
+        alert("表示名、ドライバー名、どちらも入力してください");
         return;
       }
+      const driverList = [...this.driverList];
+      const driverName = driverList.filter(
+        driver => driver.displayName == this.driver.displayName
+      );
+      if (driverName.length != 0) {
+        this.$swal({
+          title: "同じ表示名のドライバー",
+          text: "既に存在する表示名を登録することはできません",
+          icon: "warning",
+          dangerMode: true
+        });
+        return;
+      }
+      const driver = { ...this.driver };
       const uid = this.uid;
-      const car = { ...this.car };
-      this.$store.dispatch("car/createCar", { car, uid });
-      this.car.name = "";
-      this.car.max = "";
+      this.$store.dispatch("driver/createDriver", { driver, uid });
+      this.driver.name = "";
+      this.driver.displayName = "";
     },
 
-    editCar(i) {
+    editDriver(i) {
       this.editMode = true;
-      this.car.name = this.carList[i].name;
-      this.car.max = this.carList[i].max;
-      this.car.id = this.carList[i].id;
-      this.car.index = i;
+      this.driver.name = this.driverList[i].name;
+      this.driver.displayName = this.driverList[i].displayName;
+      this.driver.id = this.driverList[i].id;
+      this.driver.index = i;
     },
 
     async saveCar() {
-      if (!this.car.name || !this.car.max) {
-        alert("車両名、定員数、どちらも入力してください");
+      if (!this.driver.name || !this.driver.displayName) {
+        alert("表示名、ドライバー名、どちらも入力してください");
         return;
       }
-      const car = { ...this.car };
-      console.log(car);
+      const driverList = [...this.driverList];
+      const driverName = driverList.filter(
+        driver => driver.displayName == this.driver.displayName
+      );
+      if (driverName.length != 0) {
+        this.$swal({
+          title: "同じ表示名のドライバー",
+          text: "既に存在する表示名を登録することはできません",
+          icon: "warning",
+          dangerMode: true
+        });
+        return;
+      }
+      const driver = { ...this.driver };
+      console.log(driver);
       await this.$store
-        .dispatch("car/saveCar", car)
+        .dispatch("driver/saveDriver", driver)
         .then(
-          (this.car.name = ""),
-          (this.car.max = ""),
+          (this.driver.name = ""),
+          (this.driver.displayName = ""),
           (this.editMode = false)
         );
     },
 
-    async deleteCar(i) {
+    async deleteDriver(i) {
       this.$swal({
-        title: "利用者情報を削除しますか？",
+        title: "ドライバー情報を削除しますか？",
         text: "削除した場合、復元することはできません",
         icon: "warning",
         showCancelButton: true,
         dangerMode: true
       }).then(willDelete => {
         if (willDelete.value) {
-          this.car.id = this.carList[i].id;
-          this.$store.dispatch("car/deleteCar", this.car.id);
+          this.driver.id = this.driverList[i].id;
+          this.$store.dispatch("driver/deleteDriver", this.driver.id);
           this.$swal("削除しました。", {
             icon: "success"
           });
@@ -149,8 +177,8 @@ export default {
   },
 
   computed: {
-    carList() {
-      return this.$store.getters["car/fetchCarList"];
+    driverList() {
+      return this.$store.getters["driver/fetchCarList"];
     }
   }
 };
