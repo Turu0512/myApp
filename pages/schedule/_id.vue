@@ -338,20 +338,20 @@ export default {
     this.$store.dispatch("pmSchedule/fetchCalendarEvent");
     this.$store.dispatch("pmSchedule/fetchCalendarEvent");
   },
-  mounted() {
-    console.log(this.$route);
-    console.log(this.$route.params);
-    console.log("this.$route.params.id", this.$route.params.id);
-    console.log("this.$route.query", this.$route.query.id);
-    window.addEventListener("beforeunload", () => {
-      this.test();
-    });
-  },
-  destroyed() {
-    window.removeEventListener("beforeunload", () => {
-      this.test();
-    });
-  },
+  // mounted() {
+  //   console.log(this.$route);
+  //   console.log(this.$route.params);
+  //   console.log("this.$route.params.id", this.$route.params.id);
+  //   console.log("this.$route.query", this.$route.query.id);
+  //   window.addEventListener("beforeunload", () => {
+  //     this.test();
+  //   });
+  // },
+  // destroyed() {
+  //   window.removeEventListener("beforeunload", () => {
+  //     this.test();
+  //   });
+  // },
 
   data: () => ({
     options: {
@@ -546,7 +546,7 @@ export default {
       // this.$route.query.id = day2;
       // console.log(this.$route.query.id);
 
-      this.$router.push({ name: "schedule-id", params: { id: day2 } });
+      // this.$router.push({ name: "schedule-id", params: { id: day2 } });
       // setTimeout(function() {
       //   location.reload();
       // });
@@ -557,7 +557,7 @@ export default {
       const day2 = moment(day).format("yyyy-MM-DD");
       this.day = day2;
 
-      this.$router.push({ name: "schedule-id", params: { id: day2 } });
+      // this.$router.push({ name: "schedule-id", params: { id: day2 } });
       // setTimeout(function() {
       //   location.reload();
       // });
@@ -569,6 +569,12 @@ export default {
 
   watch: {
     async day() {
+      this.$route.params.id = this.day;
+      console.log(this.$route.params.id);
+      this.$router.push({
+        name: "schedule-id",
+        params: { id: this.$route.params.id }
+      });
       const today = this.day;
       console.log(today);
       const day = moment(today).format("ddd");
