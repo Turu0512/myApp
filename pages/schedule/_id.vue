@@ -6,6 +6,7 @@
           <v-btn outlined small class="ma-4" @click="backToSchedule">
             カレンダーを表示する
           </v-btn>
+          <input type="button" value="印刷" onclick="print()" />
         </v-col>
         <v-col cols="4">
           <v-menu
@@ -90,6 +91,8 @@
                     >定員：{{ car.max }} 名</v-card-subtitle
                   >
                   <v-select
+                    v-model="driverSchedule[index]"
+                    @change="checkDriver"
                     :items="drivers"
                     label="ドライバー"
                     class="pa-0 ma-0 text-caption mt-n1"
@@ -318,10 +321,11 @@ export default {
 
   async created() {
     const today = this.$route.params.id;
+    this.day = today;
     const day = moment(today).format("ddd");
-    // const uid = this.$store.state.login.loginUser.uid;
-    // console.log(uid);
     this.$store.dispatch("car/getCarList");
+    this.$store.dispatch("driver/getDriverList");
+    this.$store.dispatch("driver/fetchTodayDriver", today);
     this.$store.dispatch("schedule/fetchAbsenceUser", today);
     this.$store.dispatch("schedule/fetchTodayUsers", { day, today });
     this.$store.dispatch("schedule/fetchFamilyTransfer", today);
@@ -329,13 +333,26 @@ export default {
     const amTransferOderLists = [
       this.$store.state.schedule.amTransferOderLists
     ];
-    // console.log(amTransferOderLists);
     amTransferOderLists.forEach(data => {
       this.amTransferOderLists = { ...data };
     });
     this.$store.dispatch("pmSchedule/fetchCalendarEvent");
     this.$store.dispatch("pmSchedule/fetchCalendarEvent");
   },
+  // mounted() {
+  //   console.log(this.$route);
+  //   console.log(this.$route.params);
+  //   console.log("this.$route.params.id", this.$route.params.id);
+  //   console.log("this.$route.query", this.$route.query.id);
+  //   window.addEventListener("beforeunload", () => {
+  //     this.test();
+  //   });
+  // },
+  // destroyed() {
+  //   window.removeEventListener("beforeunload", () => {
+  //     this.test();
+  //   });
+  // },
 
   data: () => ({
     options: {
@@ -345,7 +362,7 @@ export default {
     selectedItem: 1,
     moveIndex: "",
     moveAmTransferOderList: {},
-    drivers: [],
+
     date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
       .substr(0, 10),
@@ -354,12 +371,12 @@ export default {
     menu2: false,
     amTransferOderLists: [],
     day: ""
-    // id: this.$route
+    // driverSchedule: []
   }),
 
   computed: {
     title() {
-      return moment(this.$route.params.id).format("M月 DD日 (ddd)");
+      return moment(this.day).format("M月 DD日 (ddd)");
     },
 
     carList() {
@@ -402,9 +419,45 @@ export default {
         eventList.push(event[i].start);
       }
       return eventList;
+    },
+    drivers() {
+      const drivers = this.$store.getters["driver/fetchDriverList"];
+      const driverName = [];
+      drivers.forEach(driver => {
+        driverName.push(driver.displayName);
+      });
+      return driverName;
+    },
+
+    driverSchedule() {
+      const driverSchedule = { ...this.$store.state.driver.driverSchedule };
+      const newDriverSchedule = Object.values(driverSchedule);
+      return newDriverSchedule;
     }
   },
+
   methods: {
+    test() {
+      const day = this.day;
+      // const day = encodeURIComponent(JSON.stringify(this.day));
+
+      // this.$router.push({ path: "schedule", query: { id: day } });
+      this.$router.push({ name: "schedule-id", params: { id: day } });
+    },
+
+    checkDriver(value) {
+      const drivers = [...this.driverSchedule];
+      const driver = drivers.filter(driver => driver == value);
+      if (driver.length > 1) {
+        this.$swal({
+          title: "既に選択されてい名前です",
+          text: "間違いがないか確認してください",
+          icon: "warning",
+          dangerMode: true
+        });
+      }
+    },
+
     async reuseData() {
       const today = this.date;
       const day = moment(today).format("ddd");
@@ -437,6 +490,7 @@ export default {
       const familyTransferList = this.familyTransfer;
       const absenceUserList = this.absenceUser;
       const todayUsersList = this.todayUsers;
+      const todayDriver = this.driverSchedule;
 
       this.$store.dispatch("schedule/saveTodayAmTransferOderLists", {
         todayAmTransferOderLists,
@@ -454,11 +508,16 @@ export default {
         todayUsersList,
         day
       });
+      this.$store.dispatch("driver/saveTodayDriver", {
+        todayDriver,
+        day
+      });
     },
 
     async addReverseSchedule() {
       await this.saveTodaySchedule();
       this.$store.dispatch("pmSchedule/reverseSchedule", this.$route.params.id);
+      this.$store.dispatch("driver/copyAmDriver", this.$route.params.id);
     },
 
     // yesterday() {
@@ -480,11 +539,13 @@ export default {
     //     });
     //   },
     tomorrow() {
-      const dayData = this.$route.params.id;
+      const dayData = this.day;
       const day = moment(dayData) + 86400000;
       const day2 = moment(day).format("yyyy-MM-DD");
-      this.$route.params.id = day2;
       this.day = day2;
+
+      // this.$route.query.id = day2;
+      // console.log(this.$route.query.id);
 
       // this.$router.push({ name: "schedule-id", params: { id: day2 } });
       // setTimeout(function() {
@@ -492,7 +553,7 @@ export default {
       // });
     },
     yesterday() {
-      const dayData = this.$route.params.id;
+      const dayData = this.day;
       const day = moment(dayData) - 86400000;
       const day2 = moment(day).format("yyyy-MM-DD");
       this.day = day2;
@@ -503,9 +564,10 @@ export default {
       // });
     },
     check() {
-      console.log(this.id);
+      console.log(this.driverSchedule);
     }
   },
+
   watch: {
     async day() {
       this.$route.params.id = this.day;
@@ -514,13 +576,15 @@ export default {
         name: "schedule-id",
         params: { id: this.$route.params.id }
       });
-
-      const today = this.$route.params.id;
+      const today = this.day;
+      console.log(today);
       const day = moment(today).format("ddd");
       this.$store.dispatch("car/getCarList");
       this.$store.dispatch("schedule/fetchAbsenceUser", today);
       this.$store.dispatch("schedule/fetchTodayUsers", { day, today });
       this.$store.dispatch("schedule/fetchFamilyTransfer", today);
+      this.$store.dispatch("driver/fetchTodayDriver", today);
+
       await this.$store.dispatch(
         "schedule/fetchTodayAmTransferOderLists",
         today

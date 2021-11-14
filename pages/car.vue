@@ -129,7 +129,7 @@ export default {
 
     async deleteCar(i) {
       this.$swal({
-        title: "利用者情報を削除しますか？",
+        title: "車両情報を削除しますか？",
         text: "削除した場合、復元することはできません",
         icon: "warning",
         showCancelButton: true,

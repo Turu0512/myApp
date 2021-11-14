@@ -84,6 +84,7 @@ export const mutations = {
 export const actions = {
   async saveTodayAmTransferOderLists({ rootState, commit }, list) {
     const uid = rootState.login.loginUser.uid;
+    console.log(uid);
 
     await fbstore
       .collection("adminUser")
@@ -93,8 +94,6 @@ export const actions = {
       .set({
         ...list.todayAmTransferOderLists
       });
-
-    // console.log(list);
   },
 
   async saveTodayFamilyTransfer({ rootState, commit }, list) {
@@ -138,6 +137,7 @@ export const actions = {
         ...list.todayUsersList
       });
   },
+
   // fetch-------------------------------------------------------------
 
   async fetchTodayAmTransferOderLists({ rootState, commit }, today) {
@@ -163,7 +163,7 @@ export const actions = {
 
   async fetchTodayUsers({ rootState, commit }, data) {
     const uid = rootState.login.loginUser.uid;
-    console.log(uid);
+    // console.log(uid);
 
     const listRef = await fbstore
       .collection("adminUser")

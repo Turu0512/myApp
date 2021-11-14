@@ -32,6 +32,8 @@
                     >定員：{{ car.max }} 名</v-card-subtitle
                   >
                   <v-select
+                  v-model="pmDriverSchedule[index]"
+                  @change="checkDriver"
                     :items="drivers"
                     label="ドライバー"
                     class="pa-0 ma-0 text-caption mt-n1"
@@ -261,7 +263,8 @@ export default {
   async beforeCreate() {
     const today = this.$route.params.id;
     const day = moment(today).format("ddd");
-
+    this.$store.dispatch("driver/getDriverList");
+    this.$store.dispatch("driver/fetchTodayPmDriver", today);
     this.$store.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
     // this.$store.dispatch("schedule/fetchAbsenceUser", this.$route.params.id);
     this.$store.dispatch("pmSchedule/fetchPmFamilyTransfer", {
@@ -291,13 +294,28 @@ export default {
     selectedItem: 1,
     moveIndex: "",
     moveAmTransferOderList: {},
-    drivers: [],
     pmTransferOderLists: [],
+    // pmDriverSchedule:[]
   }),
 
   computed: {
     carList() {
       return this.$store.getters["car/fetchCarList"];
+    },
+    drivers() {
+      const drivers = this.$store.getters["driver/fetchDriverList"];
+      const driverName = [];
+      drivers.forEach(driver => {
+        driverName.push(driver.displayName);
+      });
+      return driverName;
+    },
+
+    pmDriverSchedule(){
+      const driverSchedule = { ...this.$store.state.driver.pmDriverSchedule };
+      const newDriverSchedule = Object.values(driverSchedule);
+      return newDriverSchedule;
+    
     },
 
     todayPmUsers: {
@@ -340,6 +358,8 @@ export default {
       const pmFamilyTransferList = this.pmFamilyTransfer;
       // const absenceUserList = this.absenceUser;
       const todayPmUsersList = this.todayPmUsers;
+      const todayPmDriver = this.pmDriverSchedule;
+
 
       this.$store.dispatch("pmSchedule/saveTodayPmTransferOderLists", {
         todayPmTransferOderLists,
@@ -358,8 +378,14 @@ export default {
         day
       });
 
+      this.$store.dispatch("driver/saveTodayPmDriver", {
+        todayPmDriver,
+        day
+      });
+
       this.$store.dispatch("pmSchedule/saveCalendarEvent", day);
     },
+
     temporarilySaved() {
       this.$emit("save");
       const day = this.$route.params.id;
@@ -367,6 +393,8 @@ export default {
       const pmFamilyTransferList = this.pmFamilyTransfer;
       // const absenceUserList = this.absenceUser;
       const todayPmUsersList = this.todayPmUsers;
+      const todayPmDriver = this.pmDriverSchedule;
+
 
       this.$store.dispatch("pmSchedule/saveTodayPmTransferOderLists", {
         todayPmTransferOderLists,
@@ -386,11 +414,29 @@ export default {
       });
 
       this.$store.dispatch("pmSchedule/temporarilySavedCalendarEvent", day);
-    }
+      this.$store.dispatch("driver/saveTodayPmDriver", {
+        todayPmDriver,
+        day
+      });
+    },
+
+    checkDriver(value) {
+
+      const drivers = [...this.pmDriverSchedule];
+      const driver = drivers.filter(driver => driver == value);
+      if (driver.length > 1) {
+        this.$swal({
+          title: "既に選択されてい名前です",
+          text: "間違いがないか確認してください",
+          icon: "warning",
+          dangerMode: true
+        });
+      }
+    },
   },
   watch:{
     async day(){
-      const today = this.$route.params.id;
+      const today = this.day;
     const day = moment(today).format("ddd");
 
     this.$store.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
@@ -399,6 +445,8 @@ export default {
       day,
       today
     });
+    this.$store.dispatch("driver/fetchTodayPmDriver", today);
+
 
     this.$store.dispatch("car/getCarList");
     await this.$store.dispatch(

@@ -2,8 +2,7 @@ import firebase from "@/plugins/firebase";
 const fbstore = firebase.firestore();
 
 export const state = () => ({
-  carList: [],
-  car: "aaa"
+  carList: []
 });
 // ------------------Mutations-------------------------------
 export const mutations = {
@@ -46,7 +45,6 @@ export const actions = {
   async getCarList({ rootState, commit }) {
     const list = [];
     const uid = rootState.login.loginUser.uid;
-
     await fbstore
       .collection("adminUser")
       .doc(uid)
