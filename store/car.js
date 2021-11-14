@@ -45,7 +45,6 @@ export const actions = {
   async getCarList({ rootState, commit }) {
     const list = [];
     const uid = rootState.login.loginUser.uid;
-
     await fbstore
       .collection("adminUser")
       .doc(uid)

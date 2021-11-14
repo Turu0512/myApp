@@ -77,7 +77,7 @@ export default {
   async created() {
     const uid = this.$store.state.login.loginUser.uid;
     this.uid = uid;
-    await this.$store.dispatch("driver/getDriverList");
+    this.$store.dispatch("driver/getDriverList");
   },
 
   data: () => ({
@@ -178,7 +178,7 @@ export default {
 
   computed: {
     driverList() {
-      return this.$store.getters["driver/fetchCarList"];
+      return this.$store.getters["driver/fetchDriverList"];
     }
   }
 };
