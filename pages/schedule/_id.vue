@@ -6,6 +6,7 @@
           <v-btn outlined small class="ma-4" @click="backToSchedule">
             カレンダーを表示する
           </v-btn>
+          <input type="button" value="印刷" onclick="print()" />
         </v-col>
         <v-col cols="4">
           <v-menu
