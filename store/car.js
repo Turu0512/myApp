@@ -72,8 +72,36 @@ export const actions = {
       .then(snapshot => {
         snapshot.forEach(doc => list.push(doc.data()));
       });
-    // commit("addCarList", list);
+    commit("addCarList", list);
     commit("addAmCarList", list);
+    commit("addPmCarList", list);
+  },
+  async getPlainAmCarList({ rootState, commit }) {
+    const list = [];
+    const uid = rootState.login.loginUser.uid;
+    await fbstore
+      .collection("adminUser")
+      .doc(uid)
+      .collection("carList")
+      .orderBy("timestamp")
+      .get()
+      .then(snapshot => {
+        snapshot.forEach(doc => list.push(doc.data()));
+      });
+    commit("addAmCarList", list);
+  },
+  async getPlainPmCarList({ rootState, commit }) {
+    const list = [];
+    const uid = rootState.login.loginUser.uid;
+    await fbstore
+      .collection("adminUser")
+      .doc(uid)
+      .collection("carList")
+      .orderBy("timestamp")
+      .get()
+      .then(snapshot => {
+        snapshot.forEach(doc => list.push(doc.data()));
+      });
     commit("addPmCarList", list);
   },
 
@@ -138,10 +166,10 @@ export const actions = {
     const list = listRef.data();
     if (list) {
       const newList = Object.values(list);
-      // console.log(newList);
+      console.log(newList);
       commit("addAmCarList", newList);
     } else {
-      dispatch("getCarList");
+      dispatch("getPlainAmCarList");
       console.log("fetch" + "error");
       return;
     }
@@ -162,7 +190,7 @@ export const actions = {
       // console.log("fetch" + list);
       commit("addPmCarList", newList);
     } else {
-      dispatch("getCarList");
+      dispatch("getPlainPmCarList");
       console.log("fetch" + "error");
       return;
     }

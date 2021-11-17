@@ -521,6 +521,7 @@ export default {
       );
       this.$store.dispatch("driver/copyAmDriver", this.$route.params.id);
       this.$refs.pmSchedule.fetchTodayPmTransferOderLists();
+      this.$store.commit("car/addPmCarList", this.amCar);
     },
 
     tomorrow() {
