@@ -161,15 +161,15 @@ export const actions = {
       .collection("adminUser")
       .doc(uid)
       .collection(today)
-      .doc("todayDriver")
+      .doc("todayAmDriver")
       .get();
     const lists = listRef.data();
     if (lists) {
       console.log("fetch" + lists);
       commit("fetchTodayPmDriver", lists);
     } else {
-      commit("clearTodayDriver");
-      // console.log("fetch" + "error");
+      // commit("clearTodayDriver");
+      console.log("fetch" + "error");
       return;
     }
   },

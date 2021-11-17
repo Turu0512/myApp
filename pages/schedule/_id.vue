@@ -2,11 +2,11 @@
   <v-app>
     <v-container>
       <v-row>
-        <v-col cols="3">
+        <v-col cols="3" class="noprint">
           <v-btn outlined small class="ma-4" @click="backToSchedule">
             カレンダーを表示する
           </v-btn>
-          <input type="button" value="印刷" onclick="print()" />
+          <v-btn @click="print">印刷</v-btn>
         </v-col>
         <v-col cols="4">
           <v-menu
@@ -19,21 +19,14 @@
             min-width="auto"
           >
             <template v-slot:activator="{ on, attrs }">
-              <v-btn v-model="date" readonly v-bind="attrs" v-on="on"
-                >過去データを呼び出す</v-btn
-              >
-              <!-- <v-text-field
+              <v-btn
                 v-model="date"
-                label="Picker in menu"
-                prepend-icon="mdi-calendar"
                 readonly
                 v-bind="attrs"
                 v-on="on"
+                class="noprint"
+                >過去データを呼び出す</v-btn
               >
-                <template v-slot:append-outer>
-                  <v-btn color="primary" @click="reuseData">反映させる</v-btn>
-                </template></v-text-field
-              > -->
             </template>
             <v-date-picker
               v-model="date"
@@ -55,9 +48,9 @@
       </v-row>
       <v-card>
         <v-card-title class="justify-center">
-          <v-btn @click="yesterday">前日</v-btn>
+          <v-btn @click="yesterday" class="noprint">前日</v-btn>
           {{ title }}
-          <v-btn @click="tomorrow">翌日</v-btn>
+          <v-btn @click="tomorrow" class="noprint">翌日</v-btn>
         </v-card-title>
       </v-card>
       <v-row>
@@ -128,19 +121,6 @@
                   class="ml-2"
                 >
                   施設
-                  <!-- <v-btn
-                    max-height="24px"
-                    max-width="24px"
-                    fab
-                    dark
-                    color="indigo"
-                    x-small
-                    class="mt-1"
-                  >
-                    <v-icon dark>
-                      mdi-plus
-                    </v-icon>
-                  </v-btn> -->
                 </v-sheet>
                 <v-btn
                   max-height="24px"
@@ -150,6 +130,7 @@
                   x-small
                   color="primary"
                   @click="deleteCar(index)"
+                  class="noprint"
                 >
                   <v-icon dark>
                     mdi-close
@@ -171,11 +152,17 @@
           <!-- dialog------------------------------------------------------------------ -->
           <v-dialog v-model="dialog" scrollable max-width="300px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark v-bind="attrs" v-on="on">
+              <v-btn
+                color="primary"
+                dark
+                v-bind="attrs"
+                v-on="on"
+                class="noprint"
+              >
                 車両追加
               </v-btn>
             </template>
-            <v-card>
+            <v-card class="noprint">
               <v-card-title>車両選択</v-card-title>
               <v-divider></v-divider>
               <v-card-text style="height: 300px;">
@@ -203,7 +190,7 @@
         </v-col>
 
         <v-col cols="2">
-          <v-card width="150" tile>
+          <v-card width="150" tile class="noprint">
             <v-list class="user" dense>
               <v-subheader>利用者一覧</v-subheader>
               <v-list-item-group class="pa-0" color="primary">
@@ -280,8 +267,8 @@
             </v-list>
           </v-card>
         </v-col>
-        <v-btn @click="addReverseSchedule">反転挿入</v-btn>
-        <v-btn @click="check">チェック</v-btn>
+        <v-btn @click="addReverseSchedule" class="noprint">反転挿入</v-btn>
+        <!-- <v-btn @click="check">チェック</v-btn> -->
       </v-row>
     </v-container>
     <pmSchedule @save="saveTodaySchedule" :day="day" ref="pmSchedule" />
@@ -327,20 +314,6 @@ export default {
     console.log(this.amTransferOderLists);
     this.$store.dispatch("pmSchedule/fetchCalendarEvent");
   },
-  // mounted() {
-  //   console.log(this.$route);
-  //   console.log(this.$route.params);
-  //   console.log("this.$route.params.id", this.$route.params.id);
-  //   console.log("this.$route.query", this.$route.query.id);
-  //   window.addEventListener("beforeunload", () => {
-  //     this.test();
-  //   });
-  // },
-  // destroyed() {
-  //   window.removeEventListener("beforeunload", () => {
-  //     this.test();
-  //   });
-  // },
 
   data: () => ({
     options: {
@@ -568,8 +541,9 @@ export default {
       console.log(newAm);
     },
 
-    check() {
-      console.log(this.driverSchedule);
+    async print() {
+      await this.$emit("drawer");
+      window.print();
     }
   },
 
@@ -620,5 +594,10 @@ export default {
 
 .v-list-item {
   min-height: 5px !important;
+}
+@media print {
+  .noprint {
+    display: none;
+  }
 }
 </style>
