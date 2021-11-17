@@ -252,7 +252,7 @@
         <v-btn @click="check">チェック</v-btn>
       </v-row>
     </v-container>
-    <pmSchedule @save="saveTodaySchedule" :day="day" />
+    <pmSchedule @save="saveTodaySchedule" :day="day" ref="pmSchedule" />
   </v-app>
 </template>
 
@@ -478,8 +478,12 @@ export default {
 
     async addReverseSchedule() {
       await this.saveTodaySchedule();
-      this.$store.dispatch("pmSchedule/reverseSchedule", this.$route.params.id);
+      await this.$store.dispatch(
+        "pmSchedule/reverseSchedule",
+        this.$route.params.id
+      );
       this.$store.dispatch("driver/copyAmDriver", this.$route.params.id);
+      this.$refs.pmSchedule.fetchTodayPmTransferOderLists();
     },
 
     tomorrow() {

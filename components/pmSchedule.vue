@@ -236,7 +236,7 @@ export default {
     const pmTransferOderLists = [
       this.$store.state.pmSchedule.pmTransferOderLists
     ];
-    // console.log(pmTransferOderLists);
+    console.log(pmTransferOderLists);
     pmTransferOderLists.forEach(data => {
       this.pmTransferOderLists = { ...data };
     });
@@ -301,7 +301,8 @@ export default {
       }
     }
   },
-  //
+
+  // methods-----------------------------------------------------------------------
   methods: {
     onAdd(index) {
       this.moveIndex = index;
@@ -410,6 +411,16 @@ export default {
       newCarList.splice(i, 1);
       console.log(i);
       this.$store.commit("car/addPmCarList", newCarList);
+    },
+
+    async fetchTodayPmTransferOderLists() {
+      const pmTransferOderLists = [
+        this.$store.state.pmSchedule.pmTransferOderLists
+      ];
+      console.log(pmTransferOderLists);
+      pmTransferOderLists.forEach(data => {
+        this.pmTransferOderLists = { ...data };
+      });
     }
   },
   watch: {
