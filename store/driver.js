@@ -3,7 +3,7 @@ const fbstore = firebase.firestore();
 
 export const state = () => ({
   driverList: [],
-  driverSchedule: [],
+  amDriverSchedule: [],
   pmDriverSchedule: []
 });
 // ------------------Mutations-------------------------------
@@ -16,15 +16,15 @@ export const mutations = {
     state.driverList = list;
     // console.log(list)
   },
-  fetchTodayDriver(state, list) {
-    state.driverSchedule = list;
+  fetchTodayAmDriver(state, list) {
+    state.amDriverSchedule = list;
   },
   fetchTodayPmDriver(state, list) {
     state.pmDriverSchedule = list;
   },
 
-  clearTodayDriver(state) {
-    state.driverSchedule = [];
+  clearTodayAmDriver(state) {
+    state.amDriverSchedule = [];
   },
   clearTodayPmDriver(state) {
     state.pmDriverSchedule = [];
@@ -106,7 +106,9 @@ export const actions = {
         console.error("Error removing document: ", error);
       });
   },
-  async saveTodayDriver({ rootState, commit }, list) {
+
+  // schedule--------------------------------------------------------------------------
+  async saveTodayAmDriver({ rootState, commit }, list) {
     // console.log(list);
     const uid = rootState.login.loginUser.uid;
 
@@ -114,9 +116,9 @@ export const actions = {
       .collection("adminUser")
       .doc(uid)
       .collection(list.day)
-      .doc("todayDriver")
+      .doc("todayAmDriver")
       .set({
-        ...list.todayDriver
+        ...list.todayAmDriver
       });
   },
   async saveTodayPmDriver({ rootState, commit }, list) {
@@ -133,21 +135,21 @@ export const actions = {
       });
   },
 
-  async fetchTodayDriver({ rootState, commit }, today) {
+  async fetchTodayAmDriver({ rootState, commit }, today) {
     const uid = rootState.login.loginUser.uid;
 
     const listRef = await fbstore
       .collection("adminUser")
       .doc(uid)
       .collection(today)
-      .doc("todayDriver")
+      .doc("todayAmDriver")
       .get();
     const lists = listRef.data();
     if (lists) {
-      console.log("fetch" + lists);
-      commit("fetchTodayDriver", lists);
+      // console.log("fetch" + lists);
+      commit("fetchTodayAmDriver", lists);
     } else {
-      commit("clearTodayDriver");
+      commit("clearTodayAmDriver");
       // console.log("fetch" + "error");
       return;
     }
@@ -182,7 +184,7 @@ export const actions = {
       .get();
     const lists = listRef.data();
     if (lists) {
-      console.log("fetch" + lists);
+      // console.log("fetch" + lists);
       commit("fetchTodayPmDriver", lists);
     } else {
       commit("clearTodayPmDriver");

@@ -17,7 +17,7 @@ export const mutations = {
 
   fetchTodayPmTransferOderLists(state, list) {
     state.pmTransferOderLists = list;
-    // console.log(list);
+    console.log(list);
   },
 
   fetchTodayPmUsers(state, todayUser) {
@@ -186,7 +186,7 @@ export const actions = {
     //   list.push(snapshot.data());
     // console.log(lists);
     if (lists) {
-      console.log(lists);
+      // console.log(lists);
       commit("fetchTodayPmTransferOderLists", lists);
     } else {
       const carList = rootState.car.carList;

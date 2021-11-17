@@ -68,7 +68,7 @@
           <!-- -------------------main---------------------------------------- -->
           <div class="d-flex flex-column">
             <v-col
-              v-for="(car, index) in carList"
+              v-for="(car, index) in amCar"
               :key="index"
               class="pa-2 pt-5"
               outlined
@@ -101,50 +101,7 @@
                     solo
                   ></v-select>
                 </v-card>
-                <!--<v-card
-                  v-for="n in car.max * 2 - 1"
-                  :key="n.id"
-                  outlined
-                  tile
-                  min-width="30px"
-                  class="pa-0 align-self-center"
-                >
-                  <v-col
-                    cols="3"
-                    v-if="n % 2 != 0"
-                    class="pa-0"
-                    width="58px"
-                    :key="car.id"
-                  >
-                    <draggable
-                      class="d-flex flex-row pa-1"
-                      group="myGroup"
-                      @start="drag = true"
-                      @end="
-                        drag = false;
-                        
-                      "
-                      :options="options"
-                      @add="onAdd(index)"
-                      v-model="amTransferOderLists[index]"
-                      :data-column-id="index"
-                    >
-                      <v-list-item
-                        class="pa-0"
-                        dense
-                        v-for="(item, i) in amTransferOderLists[index]"
-                        :key="i"
-                        :data-column-id="index"
-                        >{{ item.displayName }}
-                      </v-list-item>
-                    </draggable>
-                  </v-col>
-                  <v-card v-else>
-                    <div>
-                      →
-                    </div>
-                  </v-card>
-                </v-card> -->
+
                 <draggable
                   class="d-flex flex-row pa-1"
                   group="myGroup"
@@ -185,19 +142,19 @@
                     </v-icon>
                   </v-btn> -->
                 </v-sheet>
-                <!-- <v-btn
+                <v-btn
                   max-height="24px"
                   max-width="24px"
                   fab
                   dark
                   x-small
                   color="primary"
-                  @click="carDelete"
+                  @click="deleteCar(index)"
                 >
                   <v-icon dark>
                     mdi-close
                   </v-icon>
-                </v-btn> -->
+                </v-btn>
               </v-card>
             </v-col>
           </div>
@@ -323,9 +280,10 @@ export default {
     const today = this.$route.params.id;
     this.day = today;
     const day = moment(today).format("ddd");
-    this.$store.dispatch("car/getCarList");
+    // this.$store.dispatch("car/getCarList");
+    this.$store.dispatch("car/fetchTodayAmCarList", today);
     this.$store.dispatch("driver/getDriverList");
-    this.$store.dispatch("driver/fetchTodayDriver", today);
+    this.$store.dispatch("driver/fetchTodayAmDriver", today);
     this.$store.dispatch("schedule/fetchAbsenceUser", today);
     this.$store.dispatch("schedule/fetchTodayUsers", { day, today });
     this.$store.dispatch("schedule/fetchFamilyTransfer", today);
@@ -336,7 +294,6 @@ export default {
     amTransferOderLists.forEach(data => {
       this.amTransferOderLists = { ...data };
     });
-    this.$store.dispatch("pmSchedule/fetchCalendarEvent");
     this.$store.dispatch("pmSchedule/fetchCalendarEvent");
   },
   // mounted() {
@@ -379,8 +336,8 @@ export default {
       return moment(this.day).format("M月 DD日 (ddd)");
     },
 
-    carList() {
-      return this.$store.getters["car/fetchCarList"];
+    amCar() {
+      return this.$store.state.car.amCarList;
     },
 
     todayUsers: {
@@ -430,7 +387,7 @@ export default {
     },
 
     driverSchedule() {
-      const driverSchedule = { ...this.$store.state.driver.driverSchedule };
+      const driverSchedule = { ...this.$store.state.driver.amDriverSchedule };
       const newDriverSchedule = Object.values(driverSchedule);
       return newDriverSchedule;
     }
@@ -490,7 +447,8 @@ export default {
       const familyTransferList = this.familyTransfer;
       const absenceUserList = this.absenceUser;
       const todayUsersList = this.todayUsers;
-      const todayDriver = this.driverSchedule;
+      const todayAmDriver = this.driverSchedule;
+      const amCarList = this.amCar;
 
       this.$store.dispatch("schedule/saveTodayAmTransferOderLists", {
         todayAmTransferOderLists,
@@ -508,8 +466,12 @@ export default {
         todayUsersList,
         day
       });
-      this.$store.dispatch("driver/saveTodayDriver", {
-        todayDriver,
+      this.$store.dispatch("driver/saveTodayAmDriver", {
+        todayAmDriver,
+        day
+      });
+      this.$store.dispatch("car/saveTodayAmCarList", {
+        amCarList,
         day
       });
     },
@@ -520,49 +482,34 @@ export default {
       this.$store.dispatch("driver/copyAmDriver", this.$route.params.id);
     },
 
-    // yesterday() {
-    //   const dayData = this.$route.params.id;
-    //   const day = moment(dayData) - 86400000;
-    //   const day2 = moment(day).format("yyyy-MM-DD");
-    //   this.$router.push({ name: "schedule-id", params: { id: day2 } });
-    //   setTimeout(function() {
-    //     location.reload();
-    //   });
-    // },
-    //   tomorrow() {
-    //     const dayData = this.$route.params.id;
-    //     const day = moment(dayData) + 86400000;
-    //     const day2 = moment(day).format("yyyy-MM-DD");
-    //     this.$router.push({ name: "schedule-id", params: { id: day2 } });
-    //     setTimeout(function() {
-    //       location.reload();
-    //     });
-    //   },
     tomorrow() {
       const dayData = this.day;
       const day = moment(dayData) + 86400000;
       const day2 = moment(day).format("yyyy-MM-DD");
       this.day = day2;
-
-      // this.$route.query.id = day2;
-      // console.log(this.$route.query.id);
-
-      // this.$router.push({ name: "schedule-id", params: { id: day2 } });
-      // setTimeout(function() {
-      //   location.reload();
-      // });
     },
     yesterday() {
       const dayData = this.day;
       const day = moment(dayData) - 86400000;
       const day2 = moment(day).format("yyyy-MM-DD");
       this.day = day2;
-
-      // this.$router.push({ name: "schedule-id", params: { id: day2 } });
-      // setTimeout(function() {
-      //   location.reload();
-      // });
     },
+
+    deleteCar(i) {
+      if (this.amTransferOderLists[i].length > 0) {
+        this.$swal({
+          title: "データが存在します",
+          text: "元の位置に戻すか、別な車両に動かしてください",
+          icon: "warning",
+          dangerMode: true
+        });
+        return;
+      }
+      const newCarList = [...this.amCar];
+      newCarList.splice(i, 1);
+      this.$store.commit("car/addAmCarList", newCarList);
+    },
+
     check() {
       console.log(this.driverSchedule);
     }
@@ -571,7 +518,7 @@ export default {
   watch: {
     async day() {
       this.$route.params.id = this.day;
-      console.log(this.$route.params.id);
+      // console.log(this.$route.params.id);
       this.$router.push({
         name: "schedule-id",
         params: { id: this.$route.params.id }
@@ -579,11 +526,13 @@ export default {
       const today = this.day;
       console.log(today);
       const day = moment(today).format("ddd");
-      this.$store.dispatch("car/getCarList");
+      // this.$store.dispatch("car/getCarList");
+      this.$store.dispatch("car/fetchTodayAmCarList", today);
+
       this.$store.dispatch("schedule/fetchAbsenceUser", today);
       this.$store.dispatch("schedule/fetchTodayUsers", { day, today });
       this.$store.dispatch("schedule/fetchFamilyTransfer", today);
-      this.$store.dispatch("driver/fetchTodayDriver", today);
+      this.$store.dispatch("driver/fetchTodayAmDriver", today);
 
       await this.$store.dispatch(
         "schedule/fetchTodayAmTransferOderLists",

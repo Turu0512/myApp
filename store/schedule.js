@@ -84,7 +84,7 @@ export const mutations = {
 export const actions = {
   async saveTodayAmTransferOderLists({ rootState, commit }, list) {
     const uid = rootState.login.loginUser.uid;
-    console.log(uid);
+    // console.log(uid);
 
     await fbstore
       .collection("adminUser")
@@ -151,7 +151,7 @@ export const actions = {
       .get();
     const lists = listRef.data();
     if (lists) {
-      console.log("fetch" + lists);
+      console.log(lists);
       commit("fetchTodayAmTransferOderLists", lists);
     } else {
       const carList = rootState.car.carList;
