@@ -168,6 +168,38 @@
             dense
             solo
           ></v-select> -->
+          <!-- dialog------------------------------------------------------------------ -->
+          <v-dialog v-model="dialog" scrollable max-width="300px">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="primary" dark v-bind="attrs" v-on="on">
+                車両追加
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title>車両選択</v-card-title>
+              <v-divider></v-divider>
+              <v-card-text style="height: 300px;">
+                <v-radio-group
+                  v-model="dialogm1"
+                  column
+                  v-for="(car, i) in carList"
+                  :key="i"
+                >
+                  <v-radio :label="car.name" :value="car.name"></v-radio>
+                </v-radio-group>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-btn color="blue darken-1" text @click="dialog = false">
+                  Close
+                </v-btn>
+                <v-btn color="blue darken-1" text @click="addCar">
+                  Save
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <!-- dialog------------------------------------------------------------------ -->
         </v-col>
 
         <v-col cols="2">
@@ -280,7 +312,7 @@ export default {
     const today = this.$route.params.id;
     this.day = today;
     const day = moment(today).format("ddd");
-    // this.$store.dispatch("car/getCarList");
+    this.$store.dispatch("car/fetchCarList");
     this.$store.dispatch("car/fetchTodayAmCarList", today);
     this.$store.dispatch("driver/getDriverList");
     this.$store.dispatch("driver/fetchTodayAmDriver", today);
@@ -288,12 +320,11 @@ export default {
     this.$store.dispatch("schedule/fetchTodayUsers", { day, today });
     this.$store.dispatch("schedule/fetchFamilyTransfer", today);
     await this.$store.dispatch("schedule/fetchTodayAmTransferOderLists", today);
-    const amTransferOderLists = [
-      this.$store.state.schedule.amTransferOderLists
-    ];
+    const amTransferOderLists = this.$store.state.schedule.amTransferOderLists;
     amTransferOderLists.forEach(data => {
-      this.amTransferOderLists = { ...data };
+      this.amTransferOderLists.push(data);
     });
+    console.log(this.amTransferOderLists);
     this.$store.dispatch("pmSchedule/fetchCalendarEvent");
   },
   // mounted() {
@@ -316,6 +347,8 @@ export default {
       group: "myGroup",
       animation: 200
     },
+    dialogm1: "",
+    dialog: false,
     selectedItem: 1,
     moveIndex: "",
     moveAmTransferOderList: {},
@@ -390,6 +423,10 @@ export default {
       const driverSchedule = { ...this.$store.state.driver.amDriverSchedule };
       const newDriverSchedule = Object.values(driverSchedule);
       return newDriverSchedule;
+    },
+
+    carList() {
+      return this.$store.getters["car/fetchCarList"];
     }
   },
 
@@ -512,6 +549,22 @@ export default {
       const newCarList = [...this.amCar];
       newCarList.splice(i, 1);
       this.$store.commit("car/addAmCarList", newCarList);
+    },
+
+    addCar() {
+      this.dialog = false;
+      let newCarList = [...this.$store.state.car.carList];
+      const car = newCarList.filter(car => car.name == this.dialogm1);
+      let addCar = "";
+      car.forEach(car => (addCar = car));
+      // newCarList.push(addCar);
+      this.$store.commit("car/pushAmCarList", addCar);
+      // this.$store.dispatch("schedule/addAmNewList");
+      const am = this.amTransferOderLists;
+      const newAm = Object.values(am);
+      newAm.push([]);
+      this.amTransferOderLists = newAm;
+      console.log(newAm);
     },
 
     check() {

@@ -3,8 +3,8 @@ const fbstore = firebase.firestore();
 
 export const state = () => ({
   carList: [],
-  pmCarList: [],
-  amCarList: []
+  amCarList: [],
+  pmCarList: []
 });
 // ------------------Mutations-------------------------------
 export const mutations = {
@@ -18,11 +18,19 @@ export const mutations = {
   },
   addAmCarList(state, list) {
     state.amCarList = list;
-    console.log(list);
+    // console.log(list);
+  },
+  pushAmCarList(state, list) {
+    state.amCarList[state.amCarList.length] = list;
+    console.log(state.amCarList);
   },
   addPmCarList(state, list) {
     state.pmCarList = list;
     console.log("pm" + list);
+  },
+  pushPmCarList(state, list) {
+    state.pmCarList[state.pmCarList.length] = list;
+    console.log(state.pmCarList);
   }
 };
 
@@ -69,6 +77,21 @@ export const actions = {
     commit("addPmCarList", list);
   },
 
+  async fetchCarList({ rootState, commit }) {
+    const list = [];
+    const uid = rootState.login.loginUser.uid;
+    await fbstore
+      .collection("adminUser")
+      .doc(uid)
+      .collection("carList")
+      .orderBy("timestamp")
+      .get()
+      .then(snapshot => {
+        snapshot.forEach(doc => list.push(doc.data()));
+      });
+    commit("addCarList", list);
+  },
+
   saveCar({ rootState, commit, dispatch }, car) {
     const uid = rootState.login.loginUser.uid;
 
@@ -112,10 +135,11 @@ export const actions = {
       .collection(today)
       .doc("todayAmCarList")
       .get();
-    const lists = listRef.data();
-    if (lists) {
-      console.log("hakka");
-      commit("addAmCarList", lists);
+    const list = listRef.data();
+    if (list) {
+      const newList = Object.values(list);
+      // console.log(newList);
+      commit("addAmCarList", newList);
     } else {
       dispatch("getCarList");
       console.log("fetch" + "error");
@@ -131,10 +155,12 @@ export const actions = {
       .collection(today)
       .doc("todayPmCarList")
       .get();
-    const lists = listRef.data();
-    if (lists) {
-      console.log("fetch" + lists);
-      commit("addPmCarList", lists);
+    const list = listRef.data();
+    if (list) {
+      const newList = Object.values(list);
+
+      // console.log("fetch" + list);
+      commit("addPmCarList", newList);
     } else {
       dispatch("getCarList");
       console.log("fetch" + "error");

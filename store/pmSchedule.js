@@ -17,7 +17,7 @@ export const mutations = {
 
   fetchTodayPmTransferOderLists(state, list) {
     state.pmTransferOderLists = list;
-    console.log(list);
+    // console.log(list);
   },
 
   fetchTodayPmUsers(state, todayUser) {
@@ -28,7 +28,7 @@ export const mutations = {
   },
 
   todayPmUsers(state, list) {
-    console.log(list);
+    // console.log(list);
     if (list) {
       // console.log(list);
       const lists = Object.keys(list).map(function(key) {

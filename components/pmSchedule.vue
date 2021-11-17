@@ -100,15 +100,38 @@
             </v-col>
           </div>
 
-          <!-- <v-select
-            item-text="name"
-            :items="carList"
-            label="車両追加"
-            class="pa-0 ma-0 text-caption"
-            height="5"
-            dense
-            solo
-          ></v-select> -->
+          <!-- dialog------------------------------------------------------------------ -->
+          <v-dialog v-model="dialog" scrollable max-width="300px">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="primary" dark v-bind="attrs" v-on="on">
+                車両追加
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title>車両選択</v-card-title>
+              <v-divider></v-divider>
+              <v-card-text style="height: 300px;">
+                <v-radio-group
+                  v-model="dialogm1"
+                  column
+                  v-for="(car, i) in carList"
+                  :key="i"
+                >
+                  <v-radio :label="car.name" :value="car.name"></v-radio>
+                </v-radio-group>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-btn color="blue darken-1" text @click="dialog = false">
+                  Close
+                </v-btn>
+                <v-btn color="blue darken-1" text @click="addCar">
+                  Save
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <!-- dialog------------------------------------------------------------------ -->
         </v-col>
 
         <v-col cols="2">
@@ -236,7 +259,7 @@ export default {
     const pmTransferOderLists = [
       this.$store.state.pmSchedule.pmTransferOderLists
     ];
-    console.log(pmTransferOderLists);
+    // console.log(pmTransferOderLists);
     pmTransferOderLists.forEach(data => {
       this.pmTransferOderLists = { ...data };
     });
@@ -247,6 +270,8 @@ export default {
       group: "pmGroup",
       animation: 200
     },
+    dialogm1: "",
+    dialog: false,
     selectedItem: 1,
     moveIndex: "",
     moveAmTransferOderList: {},
@@ -299,6 +324,10 @@ export default {
       set(value) {
         this.$store.commit("pmSchedule/todayPmFamilyTransfer", value);
       }
+    },
+
+    carList() {
+      return this.$store.getters["car/fetchCarList"];
     }
   },
 
@@ -421,6 +450,22 @@ export default {
       pmTransferOderLists.forEach(data => {
         this.pmTransferOderLists = { ...data };
       });
+    },
+    addCar() {
+      this.dialog = false;
+      let newCarList = [...this.$store.state.car.carList];
+      const car = newCarList.filter(car => car.name == this.dialogm1);
+      let addCar = "";
+      car.forEach(car => (addCar = car));
+      // newCarList.push(addCar);
+      this.$store.commit("car/pushPmCarList", addCar);
+      // this.$store.dispatch("pmSchedule/addPmNewList");
+      console.log(this.pmTransferOderLists);
+      const pm = this.pmTransferOderLists;
+      const newPm = Object.values(pm);
+      newPm.push([]);
+      this.pmTransferOderLists = newPm;
+      console.log(newPm);
     }
   },
   watch: {
