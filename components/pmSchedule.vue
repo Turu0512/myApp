@@ -91,6 +91,7 @@
                   x-small
                   color="primary"
                   @click="deleteCar(index)"
+                  class="noprint"
                 >
                   <v-icon dark>
                     mdi-close
@@ -103,12 +104,18 @@
           <!-- dialog------------------------------------------------------------------ -->
           <v-dialog v-model="dialog" scrollable max-width="300px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark v-bind="attrs" v-on="on">
+              <v-btn
+                color="primary"
+                dark
+                v-bind="attrs"
+                v-on="on"
+                class="noprint"
+              >
                 車両追加
               </v-btn>
             </template>
             <v-card>
-              <v-card-title>車両選択</v-card-title>
+              <v-card-title class="noprint">車両選択</v-card-title>
               <v-divider></v-divider>
               <v-card-text style="height: 300px;">
                 <v-radio-group
@@ -134,7 +141,7 @@
           <!-- dialog------------------------------------------------------------------ -->
         </v-col>
 
-        <v-col cols="2">
+        <v-col cols="2" class="noprint">
           <v-card width="150" tile>
             <v-list class="user" dense>
               <v-subheader>利用者一覧</v-subheader>
@@ -211,8 +218,8 @@
             </v-list-item-group>
           </v-list>
         </v-col>
-        <v-btn @click="temporarilySaved">一時保存</v-btn>
-        <v-btn @click="saveTodaySchedule">保存</v-btn>
+        <v-btn @click="temporarilySaved" class="noprint">一時保存</v-btn>
+        <v-btn @click="saveTodaySchedule" class="noprint">保存</v-btn>
       </v-row>
     </v-container>
   </v-app>

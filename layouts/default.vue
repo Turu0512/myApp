@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer v-model="drawer" app clipped>
+    <v-navigation-drawer v-model="drawer" app clipped class="noprint">
       <v-list-item>
         <v-list-item-title class="title">
           Application
@@ -32,13 +32,13 @@
       <!--  -->
     </v-navigation-drawer>
 
-    <v-app-bar app clippedLeft>
+    <v-app-bar app clippedLeft class="noprint">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>送迎くん</v-toolbar-title>
     </v-app-bar>
     <v-main>
-      <router-view></router-view>
+      <router-view @drawer="drawer = false"></router-view>
     </v-main>
   </v-app>
 </template>
@@ -49,14 +49,8 @@ const fbstore = firebase.firestore();
 import moment from "moment";
 
 export default {
-  // created() {
-  //   // this.value = moment().format("yyyy-MM-DD");
-  //   console.log(this.value);
-  // },
   name: "App",
   data: () => ({
-    // value: moment().format("yyyy-MM-DD (ddd)"),
-
     drawer: false,
     menus: [
       { title: "利用者一覧", icon: "mdi-web", url: "/servisUserList" },
