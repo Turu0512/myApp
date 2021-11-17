@@ -9,7 +9,7 @@
           <!-- -------------------main---------------------------------------- -->
           <div class="d-flex flex-column">
             <v-col
-              v-for="(car, index) in carList"
+              v-for="(car, index) in pmCar"
               :key="index"
               class="pa-2 pt-5"
               outlined
@@ -32,8 +32,8 @@
                     >定員：{{ car.max }} 名</v-card-subtitle
                   >
                   <v-select
-                  v-model="pmDriverSchedule[index]"
-                  @change="checkDriver"
+                    v-model="pmDriverSchedule[index]"
+                    @change="checkDriver"
                     :items="drivers"
                     label="ドライバー"
                     class="pa-0 ma-0 text-caption mt-n1"
@@ -42,50 +42,7 @@
                     solo
                   ></v-select>
                 </v-card>
-                <!--<v-card
-                  v-for="n in car.max * 2 - 1"
-                  :key="n.id"
-                  outlined
-                  tile
-                  min-width="30px"
-                  class="pa-0 align-self-center"
-                >
-                  <v-col
-                    cols="3"
-                    v-if="n % 2 != 0"
-                    class="pa-0"
-                    width="58px"
-                    :key="car.id"
-                  >
-                    <draggable
-                      class="d-flex flex-row pa-1"
-                      group="pmGroup"
-                      @start="drag = true"
-                      @end="
-                        drag = false;
-                        
-                      "
-                      :options="options"
-                      @add="onAdd(index)"
-                      v-model="amTransferOderLists[index]"
-                      :data-column-id="index"
-                    >
-                      <v-list-item
-                        class="pa-0"
-                        dense
-                        v-for="(item, i) in amTransferOderLists[index]"
-                        :key="i"
-                        :data-column-id="index"
-                        >{{ item.displayName }}
-                      </v-list-item>
-                    </draggable>
-                  </v-col>
-                  <v-card v-else>
-                    <div>
-                      →
-                    </div>
-                  </v-card>
-                </v-card> -->
+
                 <draggable
                   class="d-flex flex-row pa-1"
                   group="pmGroup"
@@ -126,32 +83,55 @@
                     </v-icon>
                   </v-btn> -->
                 </v-sheet>
-                <!-- <v-btn
+                <v-btn
                   max-height="24px"
                   max-width="24px"
                   fab
                   dark
                   x-small
                   color="primary"
-                  @click="carDelete"
+                  @click="deleteCar(index)"
                 >
                   <v-icon dark>
                     mdi-close
                   </v-icon>
-                </v-btn> -->
+                </v-btn>
               </v-card>
             </v-col>
           </div>
 
-          <!-- <v-select
-            item-text="name"
-            :items="carList"
-            label="車両追加"
-            class="pa-0 ma-0 text-caption"
-            height="5"
-            dense
-            solo
-          ></v-select> -->
+          <!-- dialog------------------------------------------------------------------ -->
+          <v-dialog v-model="dialog" scrollable max-width="300px">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="primary" dark v-bind="attrs" v-on="on">
+                車両追加
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title>車両選択</v-card-title>
+              <v-divider></v-divider>
+              <v-card-text style="height: 300px;">
+                <v-radio-group
+                  v-model="dialogm1"
+                  column
+                  v-for="(car, i) in carList"
+                  :key="i"
+                >
+                  <v-radio :label="car.name" :value="car.name"></v-radio>
+                </v-radio-group>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-btn color="blue darken-1" text @click="dialog = false">
+                  Close
+                </v-btn>
+                <v-btn color="blue darken-1" text @click="addCar">
+                  Save
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <!-- dialog------------------------------------------------------------------ -->
         </v-col>
 
         <v-col cols="2">
@@ -205,32 +185,31 @@
                 </draggable>
               </v-list-item-group>
             </v-list> -->
-            <!-- 家族送迎ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
-            <v-list class="user" dense>
-              <v-subheader>家族送迎</v-subheader>
-              <v-list-item-group color="primary" class="pa-0">
-                <draggable
-                  group="pmGroup"
-                  @start="drag = true"
-                  @end="drag = false"
-                  :options="options"
-                  v-model="pmFamilyTransfer"
+          <!-- 家族送迎ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
+          <v-list class="user" dense>
+            <v-subheader>家族送迎</v-subheader>
+            <v-list-item-group color="primary" class="pa-0">
+              <draggable
+                group="pmGroup"
+                @start="drag = true"
+                @end="drag = false"
+                :options="options"
+                v-model="pmFamilyTransfer"
+              >
+                <v-list-item
+                  v-for="(item, index) in pmFamilyTransfer"
+                  :key="index"
+                  class="original"
                 >
-                  <v-list-item
-                    v-for="(item, index) in pmFamilyTransfer"
-                    :key="index"
-                    class="original"
-                  >
-                    <v-list-item-content class="pa-0">
-                      <v-list-item-title
-                        v-text="item.displayName"
-                      ></v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </draggable>
-              </v-list-item-group>
-            </v-list>
-          </v-card>
+                  <v-list-item-content class="pa-0">
+                    <v-list-item-title
+                      v-text="item.displayName"
+                    ></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </draggable>
+            </v-list-item-group>
+          </v-list>
         </v-col>
         <v-btn @click="temporarilySaved">一時保存</v-btn>
         <v-btn @click="saveTodaySchedule">保存</v-btn>
@@ -257,7 +236,7 @@ import moment from "moment";
 import draggable from "vuedraggable";
 
 export default {
-  props:["day"],
+  props: ["day"],
   components: { draggable },
 
   async beforeCreate() {
@@ -265,6 +244,7 @@ export default {
     const day = moment(today).format("ddd");
     this.$store.dispatch("driver/getDriverList");
     this.$store.dispatch("driver/fetchTodayPmDriver", today);
+    this.$store.dispatch("car/fetchTodayPmCarList", today);
     this.$store.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
     // this.$store.dispatch("schedule/fetchAbsenceUser", this.$route.params.id);
     this.$store.dispatch("pmSchedule/fetchPmFamilyTransfer", {
@@ -272,7 +252,6 @@ export default {
       today
     });
 
-    this.$store.dispatch("car/getCarList");
     await this.$store.dispatch(
       "pmSchedule/fetchTodayPmTransferOderLists",
       this.$route.params.id
@@ -291,16 +270,18 @@ export default {
       group: "pmGroup",
       animation: 200
     },
+    dialogm1: "",
+    dialog: false,
     selectedItem: 1,
     moveIndex: "",
     moveAmTransferOderList: {},
-    pmTransferOderLists: [],
+    pmTransferOderLists: []
     // pmDriverSchedule:[]
   }),
 
   computed: {
-    carList() {
-      return this.$store.getters["car/fetchCarList"];
+    pmCar() {
+      return this.$store.state.car.pmCarList;
     },
     drivers() {
       const drivers = this.$store.getters["driver/fetchDriverList"];
@@ -311,11 +292,10 @@ export default {
       return driverName;
     },
 
-    pmDriverSchedule(){
+    pmDriverSchedule() {
       const driverSchedule = { ...this.$store.state.driver.pmDriverSchedule };
       const newDriverSchedule = Object.values(driverSchedule);
       return newDriverSchedule;
-    
     },
 
     todayPmUsers: {
@@ -344,9 +324,14 @@ export default {
       set(value) {
         this.$store.commit("pmSchedule/todayPmFamilyTransfer", value);
       }
+    },
+
+    carList() {
+      return this.$store.getters["car/fetchCarList"];
     }
   },
-  //
+
+  // methods-----------------------------------------------------------------------
   methods: {
     onAdd(index) {
       this.moveIndex = index;
@@ -359,7 +344,7 @@ export default {
       // const absenceUserList = this.absenceUser;
       const todayPmUsersList = this.todayPmUsers;
       const todayPmDriver = this.pmDriverSchedule;
-
+      const pmCarList = this.pmCar;
 
       this.$store.dispatch("pmSchedule/saveTodayPmTransferOderLists", {
         todayPmTransferOderLists,
@@ -380,6 +365,11 @@ export default {
 
       this.$store.dispatch("driver/saveTodayPmDriver", {
         todayPmDriver,
+        day
+      });
+
+      this.$store.dispatch("car/saveTodayPmCarList", {
+        pmCarList,
         day
       });
 
@@ -394,7 +384,7 @@ export default {
       // const absenceUserList = this.absenceUser;
       const todayPmUsersList = this.todayPmUsers;
       const todayPmDriver = this.pmDriverSchedule;
-
+      const pmCarList = this.pmCar;
 
       this.$store.dispatch("pmSchedule/saveTodayPmTransferOderLists", {
         todayPmTransferOderLists,
@@ -413,6 +403,10 @@ export default {
         day
       });
 
+      this.$store.dispatch("car/saveTodayPmCarList", {
+        pmCarList,
+        day
+      });
       this.$store.dispatch("pmSchedule/temporarilySavedCalendarEvent", day);
       this.$store.dispatch("driver/saveTodayPmDriver", {
         todayPmDriver,
@@ -421,7 +415,6 @@ export default {
     },
 
     checkDriver(value) {
-
       const drivers = [...this.pmDriverSchedule];
       const driver = drivers.filter(driver => driver == value);
       if (driver.length > 1) {
@@ -433,33 +426,74 @@ export default {
         });
       }
     },
+    deleteCar(i) {
+      if (this.pmTransferOderLists[i].length > 0) {
+        this.$swal({
+          title: "データが存在します",
+          text: "元の位置に戻すか、別な車両に動かしてください",
+          icon: "warning",
+          dangerMode: true
+        });
+        return;
+      }
+      const newCarList = [...this.pmCar];
+      newCarList.splice(i, 1);
+      console.log(i);
+      this.$store.commit("car/addPmCarList", newCarList);
+    },
+
+    async fetchTodayPmTransferOderLists() {
+      const pmTransferOderLists = [
+        this.$store.state.pmSchedule.pmTransferOderLists
+      ];
+      console.log(pmTransferOderLists);
+      pmTransferOderLists.forEach(data => {
+        this.pmTransferOderLists = { ...data };
+      });
+    },
+    addCar() {
+      this.dialog = false;
+      let newCarList = [...this.$store.state.car.carList];
+      const car = newCarList.filter(car => car.name == this.dialogm1);
+      let addCar = "";
+      car.forEach(car => (addCar = car));
+      // newCarList.push(addCar);
+      this.$store.commit("car/pushPmCarList", addCar);
+      // this.$store.dispatch("pmSchedule/addPmNewList");
+      console.log(this.pmTransferOderLists);
+      const pm = this.pmTransferOderLists;
+      const newPm = Object.values(pm);
+      newPm.push([]);
+      this.pmTransferOderLists = newPm;
+      console.log(newPm);
+    }
   },
-  watch:{
-    async day(){
+  watch: {
+    async day() {
       const today = this.day;
-    const day = moment(today).format("ddd");
+      const day = moment(today).format("ddd");
 
-    this.$store.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
-    // this.$store.dispatch("schedule/fetchAbsenceUser", this.$route.params.id);
-    this.$store.dispatch("pmSchedule/fetchPmFamilyTransfer", {
-      day,
-      today
-    });
-    this.$store.dispatch("driver/fetchTodayPmDriver", today);
+      this.$store.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
+      // this.$store.dispatch("schedule/fetchAbsenceUser", this.$route.params.id);
+      this.$store.dispatch("pmSchedule/fetchPmFamilyTransfer", {
+        day,
+        today
+      });
+      this.$store.dispatch("driver/fetchTodayPmDriver", today);
+      this.$store.dispatch("car/fetchTodayPmCarList", today);
 
-
-    this.$store.dispatch("car/getCarList");
-    await this.$store.dispatch(
-      "pmSchedule/fetchTodayPmTransferOderLists",
-      this.$route.params.id
-    );
-    const pmTransferOderLists = [
-      this.$store.state.pmSchedule.pmTransferOderLists
-    ];
-    // console.log(pmTransferOderLists);
-    pmTransferOderLists.forEach(data => {
-      this.pmTransferOderLists = { ...data };
-    });
+      // this.$store.dispatch("car/getCarList");
+      await this.$store.dispatch(
+        "pmSchedule/fetchTodayPmTransferOderLists",
+        this.$route.params.id
+      );
+      const pmTransferOderLists = [
+        this.$store.state.pmSchedule.pmTransferOderLists
+      ];
+      // console.log(pmTransferOderLists);
+      pmTransferOderLists.forEach(data => {
+        this.pmTransferOderLists = { ...data };
+      });
     }
   }
 };

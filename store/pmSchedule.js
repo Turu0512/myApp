@@ -143,20 +143,6 @@ export const actions = {
       });
   },
 
-  // async saveTodayPmAbsenceUser({ rootState, commit }, list) {
-  //   // console.log(list);
-  //   const uid = rootState.login.loginUser.uid;
-
-  //   await fbstore
-  //     .collection("adminUser")
-  //     .doc(uid)
-  //     .collection(list.day)
-  //     .doc("todayPmAbsenceUser")
-  //     .set({
-  //       ...list.absenceUserList
-  //     });
-  // },
-
   async saveTodayPmUsers({ rootState, commit }, list) {
     // console.log(list);
     const uid = rootState.login.loginUser.uid;
@@ -186,7 +172,7 @@ export const actions = {
     //   list.push(snapshot.data());
     // console.log(lists);
     if (lists) {
-      console.log(lists);
+      // console.log(lists);
       commit("fetchTodayPmTransferOderLists", lists);
     } else {
       const carList = rootState.car.carList;

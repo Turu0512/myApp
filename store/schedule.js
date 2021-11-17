@@ -15,8 +15,9 @@ export const mutations = {
   },
 
   fetchTodayAmTransferOderLists(state, list) {
-    state.amTransferOderLists = list;
-    // console.log(list);
+    const newList = Object.values(list);
+    state.amTransferOderLists = newList;
+    console.log(newList);
   },
 
   clearTodayAmTransferOderLists(state, list) {
@@ -24,9 +25,12 @@ export const mutations = {
     for (let i = 0; i < list.length; i++) {
       newList[i] = new Array();
     }
+    // console.log(newList);
     state.amTransferOderLists = newList;
   },
-
+  // addAmNewList(state, length) {
+  //   state.amTransferOderLists[length] = [];
+  // },
   todayUsers(state, list) {
     // console.log(list);
     if (list) {
@@ -80,11 +84,15 @@ export const mutations = {
 };
 
 // --------------------Actions-------------------------
-// Savelist---------------------------------------------------------
 export const actions = {
+  addAmNewList({ rootState, commit }) {
+    const carLength = rootState.car.amCarList.length;
+    commit("addAmNewList", carLength);
+  },
+  // Savelist---------------------------------------------------------
   async saveTodayAmTransferOderLists({ rootState, commit }, list) {
     const uid = rootState.login.loginUser.uid;
-    console.log(uid);
+    // console.log(uid);
 
     await fbstore
       .collection("adminUser")
@@ -151,7 +159,7 @@ export const actions = {
       .get();
     const lists = listRef.data();
     if (lists) {
-      console.log("fetch" + lists);
+      // console.log(lists);
       commit("fetchTodayAmTransferOderLists", lists);
     } else {
       const carList = rootState.car.carList;
