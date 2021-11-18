@@ -23,12 +23,33 @@ export const actions = {
     commit("logout");
   },
 
-  googleLogin({ commit }) {
+  // googleLogin({ commit }) {
+  //   firebase
+  //     .auth()
+  //     .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+  //     .then(() => {
+  //       const provider = new firebase.auth.GoogleAuthProvider();
+  //       firebase
+  //         .auth()
+  //         .signInWithRedirect(provider)
+  //         .then(result => {
+  //           // ログイン成功時の処理
+  //           commit("login/setLoginUser", result.user);
+  //           window.alert("ログインしました");
+  //         })
+  //         .catch(error => {
+  //           // ログイン失敗時の処理
+  //           window.alert("ログインに失敗しました");
+  //           console.log(error);
+  //         });
+  //     });
+  // },
+  yahooLogin({ commit }) {
     firebase
       .auth()
       .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
       .then(() => {
-        const provider = new firebase.auth.GoogleAuthProvider();
+        const provider = new firebase.auth.OAuthProvider("yahoo.com");
         firebase
           .auth()
           .signInWithRedirect(provider)
