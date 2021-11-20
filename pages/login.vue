@@ -2,7 +2,7 @@
   <v-app>
     <v-card width="400px" class="mx-auto mt-5">
       <div id="firebase-authui"></div>
-      <v-btn @click="yahooLogin">yahoo</v-btn>
+
       <!-- <v-card-title>
         <h1 class="display-1">新規登録</h1>
       </v-card-title>
@@ -104,7 +104,6 @@ export default {
     //         console.log(error);
     //       });
     //   },
-
     //   login() {
     //     firebase
     //       .auth()
@@ -124,9 +123,6 @@ export default {
     //           });
     //       });
     //   },
-    yahooLogin() {
-      this.$store.dispatch("login/yahooLogin");
-    }
   }
 };
 </script>
