@@ -19,11 +19,11 @@
               <v-btn
                 outlined
                 small
-                v-model="date"
                 readonly
                 v-bind="attrs"
                 v-on="on"
                 class="noprint ma-4"
+                @click="addTodayDate"
                 >過去データを呼び出す</v-btn
               >
             </template>
@@ -37,8 +37,15 @@
               <v-btn text color="primary" @click="menu = false">
                 Cancel
               </v-btn>
-              <v-btn text color="primary" @click="reuseData">
-                <!-- <v-btn text color="primary" @click="$refs.menu.save(date)"> -->
+              <!-- <v-btn text color="primary" @click="reuseData"> -->
+              <v-btn
+                text
+                color="primary"
+                @click="
+                  $refs.menu.save(date);
+                  reuseData();
+                "
+              >
                 OK
               </v-btn>
             </v-date-picker>
@@ -405,12 +412,8 @@ export default {
   },
 
   methods: {
-    test() {
-      const day = this.day;
-      // const day = encodeURIComponent(JSON.stringify(this.day));
-
-      // this.$router.push({ path: "schedule", query: { id: day } });
-      this.$router.push({ name: "schedule-id", params: { id: day } });
+    addTodayDate() {
+      this.date = this.$route.params.id;
     },
 
     checkDriver(value) {
