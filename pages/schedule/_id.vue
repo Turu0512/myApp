@@ -2,13 +2,10 @@
   <v-app :style="{ background: $vuetify.theme.themes.light.background }">
     <v-container>
       <v-row>
-        <v-col cols="3" class="noprint">
+        <v-col cols="12">
           <v-btn outlined small class="ma-4" @click="backToSchedule">
             カレンダーを表示する
           </v-btn>
-          <v-btn @click="print">印刷</v-btn>
-        </v-col>
-        <v-col cols="4">
           <v-menu
             ref="menu"
             v-model="menu"
@@ -20,11 +17,13 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
+                outlined
+                small
                 v-model="date"
                 readonly
                 v-bind="attrs"
                 v-on="on"
-                class="noprint"
+                class="noprint ma-4"
                 >過去データを呼び出す</v-btn
               >
             </template>
@@ -44,6 +43,7 @@
               </v-btn>
             </v-date-picker>
           </v-menu>
+          <v-btn @click="print" outlined small class="ma-4">印刷</v-btn>
         </v-col>
       </v-row>
       <v-card>

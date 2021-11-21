@@ -2,7 +2,7 @@
   <v-app :style="{ background: $vuetify.theme.themes.light.background }">
     <v-container>
       <div>
-        <v-sheet tile height="6vh" color="grey" class="d-flex align-center">
+        <v-sheet tile height="6vh" color="info" class="d-flex align-center">
           <v-btn outlined small class="ma-4" @click="setToday">
             当日に戻る
           </v-btn>
