@@ -37,7 +37,6 @@
               <v-btn text color="primary" @click="menu = false">
                 Cancel
               </v-btn>
-              <!-- <v-btn text color="primary" @click="reuseData"> -->
               <v-btn
                 text
                 color="primary"
@@ -53,19 +52,21 @@
           <v-btn @click="print" outlined small class="ma-4">印刷</v-btn>
         </v-col>
       </v-row>
-      <v-card>
+      <!----------------------main---------------------------------------- -->
+
+      <v-card color="info">
         <v-card-title class="justify-center">
-          <v-btn @click="yesterday" class="noprint">前日</v-btn>
+          <v-btn @click="yesterday" class="noprint mr-12">前日</v-btn>
           {{ title }}
-          <v-btn @click="tomorrow" class="noprint">翌日</v-btn>
+          <v-btn @click="tomorrow" class="noprint ml-12">翌日</v-btn>
         </v-card-title>
       </v-card>
       <v-row>
         <v-col cols="10">
-          <v-card>
+          <h1 class="subtitle-1">
             迎え
-          </v-card>
-          <!-- -------------------main---------------------------------------- -->
+          </h1>
+
           <div class="d-flex flex-column">
             <v-col
               v-for="(car, index) in amCar"
@@ -147,15 +148,6 @@
             </v-col>
           </div>
 
-          <!-- <v-select
-            item-text="name"
-            :items="carList"
-            label="車両追加"
-            class="pa-0 ma-0 text-caption"
-            height="5"
-            dense
-            solo
-          ></v-select> -->
           <!-- dialog------------------------------------------------------------------ -->
           <v-dialog v-model="dialog" scrollable max-width="300px">
             <template v-slot:activator="{ on, attrs }">

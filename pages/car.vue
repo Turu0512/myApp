@@ -117,7 +117,7 @@ export default {
         return;
       }
       const car = { ...this.car };
-      console.log(car);
+      // console.log(car);
       await this.$store
         .dispatch("car/saveCar", car)
         .then(
@@ -150,6 +150,7 @@ export default {
 
   computed: {
     carList() {
+      console.log(this.$store.state.car.carList);
       return this.$store.getters["car/fetchCarList"];
     }
   }

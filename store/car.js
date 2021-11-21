@@ -72,6 +72,7 @@ export const actions = {
       .then(snapshot => {
         snapshot.forEach(doc => list.push(doc.data()));
       });
+    // console.log(list);
     commit("addCarList", list);
     commit("addAmCarList", list);
     commit("addPmCarList", list);
@@ -122,14 +123,15 @@ export const actions = {
 
   saveCar({ rootState, commit, dispatch }, car) {
     const uid = rootState.login.loginUser.uid;
+    console.log(car);
 
     fbstore
       .collection("adminUser")
       .doc(uid)
       .collection("carList")
       .doc(car.id)
-      .set({
-        car,
+      .update({
+        ...car,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       });
     dispatch("getCarList");

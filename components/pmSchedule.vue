@@ -3,9 +3,9 @@
     <v-container>
       <v-row>
         <v-col cols="10">
-          <v-card>
+          <h1 class="subtitle-1">
             送り
-          </v-card>
+          </h1>
           <!-- -------------------main---------------------------------------- -->
           <div class="d-flex flex-column">
             <v-col
@@ -69,19 +69,6 @@
                   class="ml-2"
                 >
                   施設
-                  <!-- <v-btn
-                    max-height="24px"
-                    max-width="24px"
-                    fab
-                    dark
-                    color="indigo"
-                    x-small
-                    class="mt-1"
-                  >
-                    <v-icon dark>
-                      mdi-plus
-                    </v-icon>
-                  </v-btn> -->
                 </v-sheet>
                 <v-btn
                   max-height="24px"
