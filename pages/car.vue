@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app :style="{ background: $vuetify.theme.themes.light.background }">
     <v-card>
       <v-card-title class="justify-center">
         車両管理

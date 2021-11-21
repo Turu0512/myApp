@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app :style="{ background: $vuetify.theme.themes.light.background }">
     <h1 class="text-center">利用者一覧</h1>
     <v-container>
       <v-col>
@@ -32,23 +32,23 @@
     </v-container>
 
     <v-container>
-      <v-simple-table fixed-header height="100%">
+      <v-simple-table fixed-header height="100%" class="orange lighten-4">
         <template v-slot:default>
           <thead>
             <tr>
-              <th class="text-left">
+              <th class="text-left  orange lighten-3">
                 名前
               </th>
-              <th class="text-rigth text-center">
+              <th class="text-rigth text-center orange lighten-3">
                 性別
               </th>
-              <th class="text-rigth text-center">
+              <th class="text-rigth text-center orange lighten-3">
                 住所
               </th>
-              <th class="text-rigth text-center">
+              <th class="text-rigth text-center orange lighten-3">
                 利用日
               </th>
-              <th class="text-rigth text-center">
+              <th class="text-rigth text-center orange lighten-3">
                 ー
               </th>
             </tr>
@@ -74,19 +74,14 @@
           </tbody>
         </template>
       </v-simple-table>
-      <v-btn @click="check">check</v-btn>
     </v-container>
   </v-app>
 </template>
 
 <script>
-import firebase from "@/plugins/firebase";
-
 export default {
   created() {
     const uid = this.$store.state.login.loginUser.uid;
-    // console.log(uid);
-
     this.$store.dispatch("user/getUsersList", uid);
   },
 
@@ -138,13 +133,7 @@ export default {
       this.$router.push({ name: "stopUser" });
     },
     editUser(user) {
-      // console.log(user);
       this.$router.push({ name: "user-id", params: { id: user.id } });
-    },
-
-    async check() {
-      const uid = await firebase.auth().currentUser.uid;
-      console.log(uid);
     }
   }
 };

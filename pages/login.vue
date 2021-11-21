@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app :style="{ background: $vuetify.theme.themes.light.background }">
     <v-card width="400px" class="mx-auto mt-5">
       <div id="firebase-authui"></div>
 

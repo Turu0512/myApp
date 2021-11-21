@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app :style="{ background: $vuetify.theme.themes.light.background }">
     <v-container>
       <v-row>
         <v-col cols="3" class="noprint">
@@ -271,6 +271,7 @@
         <!-- <v-btn @click="check">チェック</v-btn> -->
       </v-row>
     </v-container>
+
     <pmSchedule @save="saveTodaySchedule" :day="day" ref="pmSchedule" />
   </v-app>
 </template>

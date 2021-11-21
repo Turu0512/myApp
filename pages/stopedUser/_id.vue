@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app :style="{ background: $vuetify.theme.themes.light.background }">
     <h1 class="text-center">中止者編集</h1>
 
     <v-container>
@@ -75,26 +75,6 @@
 
       <v-row>
         <v-col cols="2">
-          <v-subheader class="text-center">送迎</v-subheader>
-        </v-col>
-
-        <v-radio-group
-          row
-          v-for="(transfer, i) in transfers"
-          :key="i"
-          v-model="editUser.transfers"
-        >
-          <v-radio
-            :id="transfer.label"
-            :label="transfer.label"
-            :value="transfer.label"
-            class="mr-7"
-          ></v-radio>
-        </v-radio-group>
-      </v-row>
-
-      <v-row>
-        <v-col cols="2">
           <v-subheader class="text-center">中止</v-subheader>
         </v-col>
         <v-checkbox
@@ -108,8 +88,8 @@
         </v-col>
       </v-row>
       <v-row class="justify-center mt-10">
-        <v-btn @click="cancel">戻る</v-btn>
-        <v-btn @click="editUserSave">保存</v-btn>
+        <v-btn @click="cancel" class="mr-5">戻る</v-btn>
+        <v-btn @click="editUserSave" class="ml-5 mr-5">保存</v-btn>
         <v-btn class="ml-5" @click="deleteUser">削除</v-btn>
       </v-row>
     </v-container>
@@ -121,24 +101,14 @@ import firebase from "@/plugins/firebase";
 
 export default {
   async created() {
-    let uid = "";
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        uid = user.uid;
-      }
-
-      const id = this.$route.params.id;
-      this.$store.dispatch("user/fetchStopUserData", { uid, id });
+    const uid = this.$store.state.login.loginUser.uid;
+    const id = this.$route.params.id;
+    await this.$store.dispatch("user/fetchStopUserData", { id, uid });
+    const edit = [this.$store.state.user.editUserData];
+    edit.forEach(data => {
+      this.editUser = { ...data };
     });
   },
-  // async created() {
-  //   await this.$store.dispatch("user/fetchStopUserData", this.$route.params.id);
-  //   console.log(this.$store.state.user.editUserData);
-  //   const edit = this.$store.state.user.editUserData;
-  //   edit.forEach(data => {
-  //     this.editUser = { ...data };
-  //   });
-
   data: () => ({
     sex: ["男", "女"],
     items: [
@@ -150,24 +120,11 @@ export default {
       { week: "土" },
       { week: "日" }
     ],
-    transfers: [
-      { label: "送迎あり" },
-      { label: "送迎なし" },
-      { label: "途中送迎" }
-    ],
-
-    // editUser: {},
     uid: "",
-    stoped: true
+    stoped: true,
+    editUser: {}
   }),
-  computed: {
-    editUser: {
-      get() {
-        return this.$store.getters["user/editUsersData"];
-      },
-      set() {}
-    }
-  },
+
   methods: {
     cancel() {
       this.$swal({

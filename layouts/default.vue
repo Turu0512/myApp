@@ -1,14 +1,15 @@
 <template>
-  <v-app id="inspire">
-    <v-navigation-drawer v-model="drawer" app clipped class="noprint">
-      <v-list-item>
-        <v-list-item-title class="title">
-          Application
-        </v-list-item-title>
-        <v-btn icon>
-          <v-icon>mdi-chevron-left</v-icon>
-        </v-btn>
-      </v-list-item>
+  <v-app
+    id="inspire"
+    :style="{ background: $vuetify.theme.themes.light.background }"
+  >
+    <v-navigation-drawer
+      v-model="drawer"
+      app
+      clipped
+      class="noprint"
+      color="info"
+    >
       <v-divider />
       <v-list nav>
         <v-list-item v-for="menu in menus" :key="menu.title" :to="menu.url">
@@ -32,13 +33,13 @@
       <!--  -->
     </v-navigation-drawer>
 
-    <v-app-bar app clippedLeft class="noprint">
+    <v-app-bar app clippedLeft class="noprint" color="accent">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>送迎くん</v-toolbar-title>
     </v-app-bar>
     <v-main>
-      <router-view @drawer="drawer = false"></router-view>
+      <router-view @drawer="drawer = false" class="mt-5"></router-view>
     </v-main>
   </v-app>
 </template>

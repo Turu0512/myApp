@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app :style="{ background: $vuetify.theme.themes.light.background }">
     <v-container>
       <div>
         <v-sheet tile height="6vh" color="grey" class="d-flex align-center">

@@ -45,7 +45,8 @@ export default {
     customVariables: ["~/assets/variables.scss"],
     treeShake: true,
     theme: {
-      dark: true,
+      dark: false,
+      light: true,
       themes: {
         dark: {
           primary: colors.blue.darken2,
@@ -55,6 +56,16 @@ export default {
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3
+        },
+        light: {
+          primary: colors.blue.darken2,
+          accent: colors.orange.accent2,
+          secondary: colors.amber.darken3,
+          info: colors.orange.lighten4,
+          warning: colors.amber.base,
+          error: colors.deepOrange.accent5,
+          success: colors.green.accent3,
+          background: colors.orange.lighten5
         }
       }
     }

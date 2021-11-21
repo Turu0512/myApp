@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app :style="{ background: $vuetify.theme.themes.light.background }">
     <h1 class="text-center">利用中止者一覧</h1>
     <v-container>
       <v-col>
@@ -28,24 +28,24 @@
       </v-row>
     </v-container>
     <v-container>
-      <v-simple-table fixed-header height="300px">
+      <v-simple-table fixed-header height="100%" class="orange lighten-4">
         <template v-slot:default>
           <thead>
             <tr>
-              <th class="text-left">
+              <th class="text-left  orange lighten-3">
                 名前
               </th>
-              <th class="text-rigth text-center">
+              <th class="text-rigth text-center orange lighten-3">
                 性別
               </th>
-              <th class="text-rigth text-center">
+              <th class="text-rigth text-center orange lighten-3">
                 住所
               </th>
-              <th class="text-rigth text-center">
+              <th class="text-rigth text-center orange lighten-3">
                 利用日
               </th>
-              <th class="text-rigth text-center">
-                -
+              <th class="text-rigth text-center orange lighten-3">
+                ー
               </th>
             </tr>
           </thead>
@@ -75,12 +75,9 @@
 </template>
 
 <script>
-import firebase from "@/plugins/firebase";
-
 export default {
   created() {
     const uid = this.$store.state.login.loginUser.uid;
-    console.log(uid);
 
     this.$store.dispatch("user/fetchStopUsers", uid);
   },
@@ -145,7 +142,6 @@ export default {
       this.$router.push({ name: "servisUserList" });
     },
     editUser(user) {
-      console.log(user.id);
       this.$router.push({ name: "stopedUser-id", params: { id: user.id } });
     }
   }

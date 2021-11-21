@@ -11,7 +11,6 @@ export const state = () => ({
 // ------------------Mutations-------------------------------
 export const mutations = {
   addUser(state, usersList) {
-    console.log(usersList);
     state.transferUsers.push(usersList);
     this.$router.push({ name: "servisUserList" });
   },
@@ -19,24 +18,20 @@ export const mutations = {
   getEditUser(state, getEditUser) {
     state.editUserData = "";
     state.editUserData = getEditUser;
-    console.log(getEditUser);
   },
 
   getUsersList(state, usersList) {
-    console.log(usersList);
     state.transferUsers = [];
     state.transferUsers = usersList;
   },
 
   setStopUsersList(state, stopUsers) {
-    console.log(stopUsers);
     state.stopUsers = "";
     state.stopUsers = stopUsers;
   },
 
   setLoginUser(state, user) {
     state.loginUser = user;
-    // console.log(state.loginUser)
   }
 };
 
@@ -44,7 +39,6 @@ export const mutations = {
 export const actions = {
   async addUser({ rootState, commit }, user) {
     const uid = rootState.login.loginUser.uid;
-    console.log(uid);
     await fbstore
       .collection("adminUser")
       .doc(uid)
@@ -61,7 +55,6 @@ export const actions = {
           })
           .then(() => {
             commit("addUser", user);
-            // console.log(user, res.id);
           });
       });
   },
@@ -69,8 +62,6 @@ export const actions = {
   async updateUser({ commit }, user) {
     const users = await firebase.auth().currentUser;
     const uid = users.uid;
-    // console.log(uid);
-    console.log("upde:" + uid);
 
     await fbstore
       .collection("adminUser")
@@ -99,7 +90,6 @@ export const actions = {
   async getUsersList({ rootState, commit }) {
     let list = [];
     const uid = rootState.login.loginUser.uid;
-    // console.log("action: " + uid);
 
     await fbstore
       .collection("adminUser")
@@ -168,7 +158,6 @@ export const actions = {
 
   async fetchStopUsers({ commit }, uid) {
     const list = [];
-    console.log(uid);
     await fbstore
       .collection("adminUser")
       .doc(uid)
@@ -204,25 +193,22 @@ export const actions = {
       .set({
         ...user
       });
-  },
-
-  async check({ commit, rootState }) {
-    console.log(rootState.login.loginUser.uid);
-    const uid = firebase.auth().currentUser.uid;
-    // const uid = users.uid;
-    fbstore
-      .collection("adminUser")
-      .doc(uid)
-      .collection("usersList")
-      .orderBy("firstNameRuby")
-      .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          // doc.data() is never undefined for query doc snapshots
-          console.log(doc.id, " => ", doc.data());
-        });
-      });
   }
+
+  // async check({ commit, rootState }) {
+  //   const uid = firebase.auth().currentUser.uid;
+  //   fbstore
+  //     .collection("adminUser")
+  //     .doc(uid)
+  //     .collection("usersList")
+  //     .orderBy("firstNameRuby")
+  //     .get()
+  //     .then(querySnapshot => {
+  //       querySnapshot.forEach(doc => {
+  //         console.log(doc.id, " => ", doc.data());
+  //       });
+  //     });
+  // }
 };
 
 // -----------------------Getters-------------------------
