@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col cols="12">
-          <v-btn outlined small class="ma-4" @click="backToSchedule">
+          <v-btn outlined small class="noprint ma-4" @click="backToSchedule">
             カレンダーを表示する
           </v-btn>
           <v-menu
@@ -49,12 +49,12 @@
               </v-btn>
             </v-date-picker>
           </v-menu>
-          <v-btn @click="print" outlined small class="ma-4">印刷</v-btn>
+          <v-btn @click="print" outlined small class="noprint ma-4">印刷</v-btn>
         </v-col>
       </v-row>
       <!----------------------main---------------------------------------- -->
 
-      <v-card color="info">
+      <v-card color="info" flat>
         <v-card-title class="justify-center">
           <v-btn @click="yesterday" class="noprint mr-12">前日</v-btn>
           {{ title }}
@@ -72,8 +72,8 @@
               v-for="(car, index) in amCar"
               :key="index"
               class="pa-2 pt-5"
-              outlined
               tile
+              flat
             >
               <v-card
                 class="d-flex flex-row"
@@ -82,9 +82,10 @@
                 "
                 flat
                 tile
-                max-height="56px"
+                max-height="59px"
+                outlined
               >
-                <v-card max-width="100px">
+                <v-card max-width="100px" flat color="info">
                   <v-card-title class="text-subtitle-1 pa-0 ma-0 mt-n5">{{
                     car.name
                   }}</v-card-title>
@@ -97,11 +98,12 @@
                     :items="drivers"
                     label="ドライバー"
                     class="pa-0 ma-0 text-caption mt-n1"
-                    height="5"
                     dense
                     solo
+                    flat
                   ></v-select>
                 </v-card>
+                <v-divider vertical></v-divider>
 
                 <draggable
                   class="d-flex flex-row pa-1"
@@ -124,9 +126,10 @@
                   >
                 </draggable>
                 <v-sheet
-                  color="grey"
+                  color="info"
                   style="heigth: 25px; width: 25px; position: relative"
-                  class="ml-2"
+                  class="ml-2 pt-1"
+                  align="center"
                 >
                   施設
                 </v-sheet>
@@ -134,30 +137,25 @@
                   max-height="24px"
                   max-width="24px"
                   fab
-                  dark
                   x-small
-                  color="primary"
+                  color="blue-grey lighten-3"
                   @click="deleteCar(index)"
-                  class="noprint"
+                  class="noprint ml-1 mt-3"
+                  depressed
                 >
-                  <v-icon dark>
+                  <v-icon>
                     mdi-close
                   </v-icon>
                 </v-btn>
               </v-card>
+              <v-divider></v-divider>
             </v-col>
           </div>
 
           <!-- dialog------------------------------------------------------------------ -->
           <v-dialog v-model="dialog" scrollable max-width="300px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                color="primary"
-                dark
-                v-bind="attrs"
-                v-on="on"
-                class="noprint"
-              >
+              <v-btn v-bind="attrs" v-on="on" class="noprint mr-5">
                 車両追加
               </v-btn>
             </template>
@@ -185,11 +183,13 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-btn @click="addReverseSchedule" class="noprint">反転挿入</v-btn>
+
           <!-- dialog------------------------------------------------------------------ -->
         </v-col>
 
         <v-col cols="2">
-          <v-card width="150" tile class="noprint">
+          <v-card width="150" tile class="noprint" flat>
             <v-list class="user" dense>
               <v-subheader>利用者一覧</v-subheader>
               <v-list-item-group class="pa-0" color="primary">
@@ -215,7 +215,7 @@
             </v-list>
           </v-card>
           <!-- 家族送迎ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
-          <v-list class="user" dense>
+          <v-list class="user" dense flat>
             <v-subheader>家族送迎</v-subheader>
             <v-list-item-group color="primary" class="pa-0">
               <draggable
@@ -240,7 +240,7 @@
             </v-list-item-group>
           </v-list>
           <!-- 休みーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
-          <v-card width="150" tile class="pt-2">
+          <v-card width="150" tile class="pt-2" flat>
             <v-list class="user" dense>
               <v-subheader>休み</v-subheader>
               <v-list-item-group class="pa-0" color="primary">
@@ -266,8 +266,6 @@
             </v-list>
           </v-card>
         </v-col>
-        <v-btn @click="addReverseSchedule" class="noprint">反転挿入</v-btn>
-        <!-- <v-btn @click="check">チェック</v-btn> -->
       </v-row>
     </v-container>
 
@@ -591,6 +589,13 @@ export default {
 .v-list-item {
   min-height: 5px !important;
 }
+
+.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
+  background: #ffe0b2;
+}
+/* .v-application .text-subtitle-1 {
+  background: #ffe0b2;
+} */
 @media print {
   .noprint {
     display: none;

@@ -12,8 +12,8 @@
               v-for="(car, index) in pmCar"
               :key="index"
               class="pa-2 pt-5"
-              outlined
               tile
+              flat
             >
               <v-card
                 class="d-flex flex-row"
@@ -22,9 +22,10 @@
                 "
                 flat
                 tile
-                max-height="56px"
+                max-height="59px"
+                outlined
               >
-                <v-card max-width="100px">
+                <v-card max-width="100px" color="info" flat>
                   <v-card-title class="text-subtitle-1 pa-0 ma-0 mt-n5">{{
                     car.name
                   }}</v-card-title>
@@ -37,11 +38,12 @@
                     :items="drivers"
                     label="ドライバー"
                     class="pa-0 ma-0 text-caption mt-n1"
-                    height="5"
                     dense
                     solo
+                    flat
                   ></v-select>
                 </v-card>
+                <v-divider vertical></v-divider>
 
                 <draggable
                   class="d-flex flex-row pa-1"
@@ -64,9 +66,10 @@
                   >
                 </draggable>
                 <v-sheet
-                  color="grey"
+                  color="info"
                   style="heigth: 25px; width: 25px; position: relative"
-                  class="ml-2"
+                  class="ml-2 pt-1"
+                  align="center"
                 >
                   施設
                 </v-sheet>
@@ -74,30 +77,25 @@
                   max-height="24px"
                   max-width="24px"
                   fab
-                  dark
                   x-small
-                  color="primary"
+                  color="blue-grey lighten-3"
                   @click="deleteCar(index)"
-                  class="noprint"
+                  class="noprint ml-1 mt-3"
+                  depressed
                 >
-                  <v-icon dark>
+                  <v-icon>
                     mdi-close
                   </v-icon>
                 </v-btn>
               </v-card>
+              <v-divider></v-divider>
             </v-col>
           </div>
 
           <!-- dialog------------------------------------------------------------------ -->
           <v-dialog v-model="dialog" scrollable max-width="300px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                color="primary"
-                dark
-                v-bind="attrs"
-                v-on="on"
-                class="noprint"
-              >
+              <v-btn v-bind="attrs" v-on="on" class="noprint">
                 車両追加
               </v-btn>
             </template>
@@ -128,9 +126,9 @@
           <!-- dialog------------------------------------------------------------------ -->
         </v-col>
 
-        <v-col cols="2" class="noprint">
-          <v-card width="150" tile>
-            <v-list class="user" dense>
+        <v-col cols="2">
+          <v-card width="150" tile flat>
+            <v-list class="user noprint" dense>
               <v-subheader>利用者一覧</v-subheader>
               <v-list-item-group class="pa-0" color="primary">
                 <draggable
@@ -154,31 +152,6 @@
               </v-list-item-group>
             </v-list>
           </v-card>
-          <!-- 休みーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
-          <!-- <v-card width="150" tile class="pt-2">
-            <v-list class="user" dense>
-              <v-subheader>休み</v-subheader>
-              <v-list-item-group class="pa-0" color="primary">
-                <draggable
-                  group="pmGroup"
-                  @start="drag = true"
-                  @end="drag = false"
-                  :options="options"
-                  v-model="absenceUser"
-                >
-                  <v-list-item
-                    v-for="(item, index) in absenceUser"
-                    :key="index"
-                  >
-                    <v-list-item-content class="pa-0">
-                      <v-list-item-title
-                        v-text="item.displayName"
-                      ></v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </draggable>
-              </v-list-item-group>
-            </v-list> -->
           <!-- 家族送迎ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
           <v-list class="user" dense>
             <v-subheader>家族送迎</v-subheader>
@@ -205,8 +178,12 @@
             </v-list-item-group>
           </v-list>
         </v-col>
-        <v-btn @click="temporarilySaved" class="noprint">一時保存</v-btn>
-        <v-btn @click="saveTodaySchedule" class="noprint">保存</v-btn>
+      </v-row>
+      <v-row class="justify-center">
+        <v-btn-group>
+          <v-btn @click="temporarilySaved" class="noprint mr-2">一時保存</v-btn>
+          <v-btn @click="saveTodaySchedule" class="noprint ml-2">保存</v-btn>
+        </v-btn-group>
       </v-row>
     </v-container>
   </v-app>
