@@ -1,9 +1,9 @@
 <template>
-  <v-app :style="{ background: $vuetify.theme.themes.light.background }">
+  <v-app max-height="100%" min-width="0px">
     <v-container>
       <v-row>
         <v-col cols="12">
-          <v-btn outlined small class="noprint ma-4" @click="backToSchedule">
+          <v-btn small class="noprint ma-4" @click="backToSchedule">
             カレンダーを表示する
           </v-btn>
           <v-menu
@@ -17,7 +17,6 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
-                outlined
                 small
                 readonly
                 v-bind="attrs"
@@ -49,7 +48,7 @@
               </v-btn>
             </v-date-picker>
           </v-menu>
-          <v-btn @click="print" outlined small class="noprint ma-4">印刷</v-btn>
+          <v-btn @click="print" small class="noprint ma-4">印刷</v-btn>
         </v-col>
       </v-row>
       <!----------------------main---------------------------------------- -->
@@ -67,11 +66,11 @@
             迎え
           </h1>
 
-          <div class="d-flex flex-column">
+          <div class="d-flex flex-column mb-5">
             <v-col
               v-for="(car, index) in amCar"
               :key="index"
-              class="pa-2 pt-5"
+              class="px-2 pt-8 pb-0"
               tile
               flat
             >
@@ -83,7 +82,6 @@
                 flat
                 tile
                 max-height="59px"
-                outlined
               >
                 <v-card max-width="100px" flat color="info">
                   <v-card-title class="text-subtitle-1 pa-0 ma-0 mt-n5">{{
@@ -97,13 +95,13 @@
                     @change="checkDriver"
                     :items="drivers"
                     label="ドライバー"
-                    class="pa-0 ma-0 text-caption mt-n1"
+                    class="pa-0 ma-0 text-caption mt-n1 text-center"
                     dense
                     solo
                     flat
                   ></v-select>
                 </v-card>
-                <v-divider vertical></v-divider>
+                <!-- <v-divider vertical></v-divider> -->
 
                 <draggable
                   class="d-flex flex-row pa-1"
@@ -126,10 +124,10 @@
                   >
                 </draggable>
                 <v-sheet
-                  color="info"
                   style="heigth: 25px; width: 25px; position: relative"
-                  class="ml-2 pt-1"
+                  class="ml-2 pt-1 "
                   align="center"
+                  color="info"
                 >
                   施設
                 </v-sheet>
@@ -189,10 +187,16 @@
         </v-col>
 
         <v-col cols="2">
-          <v-card width="150" tile class="noprint" flat>
-            <v-list class="user" dense>
-              <v-subheader>利用者一覧</v-subheader>
-              <v-list-item-group class="pa-0" color="primary">
+          <v-card width="150" tile class="noprint mt-3" flat>
+            <v-list
+              class="user pa-0 grey lighten-4 mb-2"
+              dense
+              min-height="50px"
+            >
+              <v-list-item-title class="text-center orange lighten-4 "
+                >利用者一覧</v-list-item-title
+              >
+              <v-list-item-group class="grey lighten-4" n>
                 <draggable
                   group="myGroup"
                   @start="drag = true"
@@ -215,9 +219,11 @@
             </v-list>
           </v-card>
           <!-- 家族送迎ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
-          <v-list class="user" dense flat>
-            <v-subheader>家族送迎</v-subheader>
-            <v-list-item-group color="primary" class="pa-0">
+          <v-list class="user pa-0 grey lighten-4 mb-2" dense min-height="50px">
+            <v-list-item-title class="text-center orange lighten-4 "
+              >家族送迎</v-list-item-title
+            >
+            <v-list-item-group color="primary" class="grey lighten-4">
               <draggable
                 group="myGroup"
                 @start="drag = true"
@@ -240,31 +246,28 @@
             </v-list-item-group>
           </v-list>
           <!-- 休みーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
-          <v-card width="150" tile class="pt-2" flat>
-            <v-list class="user" dense>
-              <v-subheader>休み</v-subheader>
-              <v-list-item-group class="pa-0" color="primary">
-                <draggable
-                  group="myGroup"
-                  @start="drag = true"
-                  @end="drag = false"
-                  :options="options"
-                  v-model="absenceUser"
-                >
-                  <v-list-item
-                    v-for="(item, index) in absenceUser"
-                    :key="index"
-                  >
-                    <v-list-item-content class="pa-0">
-                      <v-list-item-title
-                        v-text="item.displayName"
-                      ></v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </draggable>
-              </v-list-item-group>
-            </v-list>
-          </v-card>
+          <v-list class="user pa-0 grey lighten-4" dense min-height="50px">
+            <v-list-item-title class="text-center orange lighten-4 "
+              >休み</v-list-item-title
+            >
+            <v-list-item-group class="grey lighten-4">
+              <draggable
+                group="myGroup"
+                @start="drag = true"
+                @end="drag = false"
+                :options="options"
+                v-model="absenceUser"
+              >
+                <v-list-item v-for="(item, index) in absenceUser" :key="index">
+                  <v-list-item-content class="pa-0">
+                    <v-list-item-title
+                      v-text="item.displayName"
+                    ></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </draggable>
+            </v-list-item-group>
+          </v-list>
         </v-col>
       </v-row>
     </v-container>
@@ -593,12 +596,27 @@ export default {
 .theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
   background: #ffe0b2;
 }
-/* .v-application .text-subtitle-1 {
-  background: #ffe0b2;
-} */
+
+.v-application--wrap {
+  min-height: unset;
+}
+
 @media print {
   .noprint {
     display: none;
+  }
+
+  .v-application .pb-0 {
+    border-bottom: solid;
+    border-color: black;
+    border-width: 1px;
+  }
+
+  .v-sheet.v-list:not(.v-sheet--outlined) {
+    border: solid;
+    border-color: black !important;
+    border-width: 1px;
+    margin-top: 10px;
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-app :style="{ background: $vuetify.theme.themes.light.background }">
+  <v-app>
     <v-container>
       <v-row>
         <v-col cols="10">
@@ -7,11 +7,11 @@
             送り
           </h1>
           <!-- -------------------main---------------------------------------- -->
-          <div class="d-flex flex-column">
+          <div class="d-flex flex-column mb-5">
             <v-col
               v-for="(car, index) in pmCar"
               :key="index"
-              class="pa-2 pt-5"
+              class="px-2 pt-8 pb-0"
               tile
               flat
             >
@@ -23,7 +23,6 @@
                 flat
                 tile
                 max-height="59px"
-                outlined
               >
                 <v-card max-width="100px" color="info" flat>
                   <v-card-title class="text-subtitle-1 pa-0 ma-0 mt-n5">{{
@@ -127,9 +126,15 @@
         </v-col>
 
         <v-col cols="2">
-          <v-card width="150" tile flat>
-            <v-list class="user noprint" dense>
-              <v-subheader>利用者一覧</v-subheader>
+          <v-card width="150" tile flat class="noprint mb-2">
+            <v-list
+              class="user pa-0 grey lighten-4 noprint"
+              dense
+              min-height="50px"
+            >
+              <v-list-item-title class="text-center orange lighten-4"
+                >利用者一覧</v-list-item-title
+              >
               <v-list-item-group class="pa-0" color="primary">
                 <draggable
                   group="pmGroup"
@@ -153,8 +158,10 @@
             </v-list>
           </v-card>
           <!-- 家族送迎ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
-          <v-list class="user" dense>
-            <v-subheader>家族送迎</v-subheader>
+          <v-list class="user pa-0 grey lighten-4" dense min-height="50px">
+            <v-list-item-title class="text-center orange lighten-4"
+              >家族送迎</v-list-item-title
+            >
             <v-list-item-group color="primary" class="pa-0">
               <draggable
                 group="pmGroup"
@@ -179,7 +186,7 @@
           </v-list>
         </v-col>
       </v-row>
-      <v-row class="justify-center">
+      <v-row class="justify-center mb-10">
         <v-btn-group>
           <v-btn @click="temporarilySaved" class="noprint mr-2">一時保存</v-btn>
           <v-btn @click="saveTodaySchedule" class="noprint ml-2">保存</v-btn>

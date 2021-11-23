@@ -1,9 +1,9 @@
 <template>
-  <v-app :style="{ background: $vuetify.theme.themes.light.background }">
+  <v-app>
     <v-container>
       <div>
         <v-sheet tile height="6vh" color="info" class="d-flex align-center">
-          <v-btn outlined small class="ma-4" @click="setToday">
+          <v-btn small class="ma-4" @click="setToday">
             当日に戻る
           </v-btn>
           <v-btn icon @click="$refs.calendar.prev()">

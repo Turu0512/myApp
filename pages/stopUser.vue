@@ -1,9 +1,9 @@
 <template>
-  <v-app :style="{ background: $vuetify.theme.themes.light.background }">
+  <v-app>
     <h1 class="text-center">利用中止者一覧</h1>
     <v-container>
       <v-col>
-        <v-btn outlined small class="ma-4" @click="toServisUserListPage">
+        <v-btn small class="ma-4" @click="toServisUserListPage">
           利用者一覧へ戻る
         </v-btn>
       </v-col>
@@ -28,7 +28,7 @@
       </v-row>
     </v-container>
     <v-container>
-      <v-simple-table fixed-header height="100%" class="orange lighten-4">
+      <v-simple-table fixed-header height="100%" class="orange lighten-5">
         <template v-slot:default>
           <thead>
             <tr>

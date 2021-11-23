@@ -1,12 +1,12 @@
 <template>
-  <v-app :style="{ background: $vuetify.theme.themes.light.background }">
+  <v-app>
     <h1 class="text-center">利用者一覧</h1>
     <v-container>
       <v-col>
-        <v-btn outlined small class="ma-4" @click="toCreateUserPage">
+        <v-btn small class="ma-4" @click="toCreateUserPage">
           利用者登録
         </v-btn>
-        <v-btn outlined small class="ma-4" @click="toStopUserPage">
+        <v-btn small class="ma-4" @click="toStopUserPage">
           利用中止者一覧
         </v-btn>
       </v-col>
@@ -32,7 +32,7 @@
     </v-container>
 
     <v-container>
-      <v-simple-table fixed-header height="100%" class="orange lighten-4">
+      <v-simple-table fixed-header height="100%" class="orange lighten-5">
         <template v-slot:default>
           <thead>
             <tr>

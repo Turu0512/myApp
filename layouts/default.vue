@@ -8,7 +8,7 @@
       app
       clipped
       class="noprint"
-      color="info"
+      color="grey lighten-4"
     >
       <v-divider />
       <v-list nav>
@@ -24,7 +24,7 @@
 
       <template v-slot:append>
         <div class="pa-2">
-          <v-btn block @click="logout">
+          <v-btn block @click="logout" color="white">
             Logout
           </v-btn>
         </div>
@@ -45,8 +45,6 @@
 </template>
 
 <script>
-import firebase from "@/plugins/firebase";
-const fbstore = firebase.firestore();
 import moment from "moment";
 
 export default {
@@ -54,10 +52,14 @@ export default {
   data: () => ({
     drawer: false,
     menus: [
-      { title: "利用者一覧", icon: "mdi-web", url: "/servisUserList" },
+      {
+        title: "利用者一覧",
+        icon: "mdi-account-group",
+        url: "/servisUserList"
+      },
       {
         title: "送迎表",
-        icon: "mdi-heart",
+        icon: "mdi-application-edit-outline",
         url: {
           name: "schedule-id",
           params: { id: moment().format("yyyy-MM-DD") }
@@ -65,10 +67,10 @@ export default {
         action: "toSchedule"
       },
 
-      { title: "車両一覧", icon: "mdi-information-variant", url: "/car" },
+      { title: "車両管理", icon: "mdi-car", url: "/car" },
       {
-        title: "ドライバー  一覧",
-        icon: "mdi-information-variant",
+        title: "ドライバー管理",
+        icon: "mdi-account-circle-outline",
         url: "/driver"
       }
     ]
