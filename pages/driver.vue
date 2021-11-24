@@ -31,7 +31,7 @@
       <v-btn v-else @click="saveCar">保存</v-btn>
     </v-container>
     <v-container>
-      <v-simple-table fixed-header height="300px" class="orange lighten-5">
+      <v-simple-table fixed-header class="orange lighten-5">
         <template v-slot:default>
           <thead>
             <tr>

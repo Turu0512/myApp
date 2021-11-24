@@ -64,7 +64,8 @@ export default {
           info: colors.orange.lighten4,
           warning: colors.amber.base,
           error: colors.deepOrange.accent5,
-          success: colors.green.accent3
+          success: colors.green.accent3,
+          background: colors.orange.lighten5
         }
       }
     }
