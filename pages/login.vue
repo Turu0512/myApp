@@ -7,7 +7,7 @@
             <v-card-title class="justify-center text-h3">
               送迎くん
             </v-card-title>
-            <v-img src="illustrain10-norimono17.png" height="300px"></v-img>
+            <v-img src="illustrain10-norimono17.png"></v-img>
 
             <v-card-title class="justify-center subtitle-1">
               簡易送迎表作成アプリ<br />送迎くんへようこそ！<br />下記のログイン方法からお選びください
@@ -37,34 +37,27 @@ export default {
           photoURL
         });
         if (this.$router.currentRoute.name === "login")
-          this.$router.push({ name: "/" });
-      } else {
-        this.$store.commit("login/logout");
-        this.$router.push({ name: "login" });
+          this.$router.push({ name: "servisUserList" });
       }
     });
   },
 
   mounted() {
-    const auth = firebase.auth();
-    auth.languageCode = "ja";
     const firebaseui = require("firebaseui");
-
-    if (location.pathname === "/login") {
-      const ui =
-        firebaseui.auth.AuthUI.getInstance() ||
-        new firebaseui.auth.AuthUI(firebase.auth());
-      ui.start("#firebase-authui", {
-        signInOptions: [
-          firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-          firebase.auth.FacebookAuthProvider.PROVIDER_ID
-        ],
-        callbacks: {
-          signInSuccessWithAuthResult: () => {
-            return true;
-          }
-        }
-      });
+    const uiConfig = {
+      signInFlow: "popup",
+      signInSuccessUrl: "/servisUserList",
+      signInOptions: [
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        firebase.auth.FacebookAuthProvider.PROVIDER_ID
+      ]
+    };
+    if (firebaseui.auth.AuthUI.getInstance()) {
+      const ui = firebaseui.auth.AuthUI.getInstance();
+      ui.start("#firebase-authui", uiConfig);
+    } else {
+      const ui = new firebaseui.auth.AuthUI(firebase.auth());
+      ui.start("#firebase-authui", uiConfig);
     }
   }
 };

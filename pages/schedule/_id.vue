@@ -312,7 +312,6 @@ export default {
     amTransferOderLists.forEach(data => {
       this.amTransferOderLists.push(data);
     });
-    console.log(this.amTransferOderLists);
     this.$store.dispatch("pmSchedule/fetchCalendarEvent");
   },
 
@@ -352,7 +351,6 @@ export default {
         return this.$store.getters["schedule/todayUsers"];
       },
       set(value) {
-        console.log("today" + value);
         this.$store.commit("schedule/fetchTodayUsers", value);
       }
     },
@@ -425,10 +423,8 @@ export default {
     async reuseData() {
       const today = this.date;
       const day = moment(today).format("ddd");
-      console.log(day);
       const newToday = this.$route.params.id;
       const newDay = moment(newToday).format("ddd");
-      console.log(newDay);
 
       if (day != newDay) {
         this.$swal({
@@ -535,7 +531,6 @@ export default {
       const newAm = Object.values(am);
       newAm.push([]);
       this.amTransferOderLists = newAm;
-      console.log(newAm);
     },
 
     async print() {
@@ -553,7 +548,6 @@ export default {
         params: { id: this.$route.params.id }
       });
       const today = this.day;
-      console.log(today);
       const day = moment(today).format("ddd");
       // this.$store.dispatch("car/getCarList");
       this.$store.dispatch("car/fetchTodayAmCarList", today);

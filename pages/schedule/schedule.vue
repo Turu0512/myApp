@@ -39,7 +39,6 @@ import moment from "moment";
 export default {
   created() {
     this.$store.dispatch("pmSchedule/fetchCalendarEvent");
-    console.log(this.$store.state.pmSchedule.eventData);
   },
   data: () => ({
     value: moment().format("yyyy-MM-DD")
@@ -61,7 +60,6 @@ export default {
       alert(`clicked ${event.name}`);
     },
     viewDay(date) {
-      console.log(date);
       this.$router.push({ name: "schedule-id", params: { id: date } });
     }
   }

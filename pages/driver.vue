@@ -142,7 +142,6 @@ export default {
         return;
       }
       const driver = { ...this.driver };
-      console.log(driver);
       await this.$store
         .dispatch("driver/saveDriver", driver)
         .then(

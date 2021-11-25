@@ -145,7 +145,6 @@ export default {
       const daysOfWeek = ["月", "火", "水", "木", "金", "土", "日"];
       if (!this.stoped) {
         let editDayOfWeek = this.editUser.dayOfWeek;
-        console.log(daysOfWeek);
         this.editUser.dayOfWeek = [...editDayOfWeek].sort(
           (a, b) => daysOfWeek.indexOf(a) - daysOfWeek.indexOf(b)
         );

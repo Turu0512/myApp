@@ -194,21 +194,6 @@ export const actions = {
         ...user
       });
   }
-
-  // async check({ commit, rootState }) {
-  //   const uid = firebase.auth().currentUser.uid;
-  //   fbstore
-  //     .collection("adminUser")
-  //     .doc(uid)
-  //     .collection("usersList")
-  //     .orderBy("firstNameRuby")
-  //     .get()
-  //     .then(querySnapshot => {
-  //       querySnapshot.forEach(doc => {
-  //         console.log(doc.id, " => ", doc.data());
-  //       });
-  //     });
-  // }
 };
 
 // -----------------------Getters-------------------------

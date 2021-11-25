@@ -147,7 +147,6 @@ export default {
 
   computed: {
     carList() {
-      console.log(this.$store.state.car.carList);
       return this.$store.getters["car/fetchCarList"];
     }
   }

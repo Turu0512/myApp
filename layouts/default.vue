@@ -1,8 +1,5 @@
 <template>
-  <v-app
-    id="inspire"
-    :style="{ background: $vuetify.theme.themes.light.background }"
-  >
+  <v-app id="inspire">
     <v-navigation-drawer
       v-model="drawer"
       app
@@ -63,8 +60,7 @@ export default {
         url: {
           name: "schedule-id",
           params: { id: moment().format("yyyy-MM-DD") }
-        },
-        action: "toSchedule"
+        }
       },
 
       { title: "車両管理", icon: "mdi-car", url: "/car" },
@@ -80,9 +76,6 @@ export default {
     logout() {
       this.$store.dispatch("login/logoutFb");
       this.$router.push({ name: "login" });
-    },
-    toSchedule() {
-      console.log(value);
     }
   }
 };
