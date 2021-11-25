@@ -49,7 +49,6 @@
                   group="pmGroup"
                   @start="drag = true"
                   @end="drag = false"
-                  :options="options"
                   @add="onAdd(index)"
                   v-model="pmTransferOderLists[index]"
                   :data-column-id="index"
@@ -140,7 +139,6 @@
                   group="pmGroup"
                   @start="drag = true"
                   @end="drag = false"
-                  :options="options"
                   v-model="todayPmUsers"
                 >
                   <v-list-item
@@ -167,7 +165,6 @@
                 group="pmGroup"
                 @start="drag = true"
                 @end="drag = false"
-                :options="options"
                 v-model="pmFamilyTransfer"
               >
                 <v-list-item
@@ -244,17 +241,12 @@ export default {
   },
 
   data: () => ({
-    options: {
-      group: "pmGroup",
-      animation: 200
-    },
     dialogm1: "",
     dialog: false,
     selectedItem: 1,
     moveIndex: "",
     moveAmTransferOderList: {},
     pmTransferOderLists: []
-    // pmDriverSchedule:[]
   }),
 
   computed: {

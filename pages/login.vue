@@ -27,20 +27,20 @@ import "firebaseui/dist/firebaseui.css";
 
 export default {
   layout: "auth",
-  created() {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        const { uid, displayName, photoURL } = user;
-        this.$store.commit("login/setLoginUser", {
-          uid,
-          displayName,
-          photoURL
-        });
-        if (this.$router.currentRoute.name === "login")
-          this.$router.push({ name: "servisUserList" });
-      }
-    });
-  },
+  // created() {
+  //   firebase.auth().onAuthStateChanged(user => {
+  //     if (user) {
+  //       const { uid, displayName, photoURL } = user;
+  //       this.$store.commit("login/setLoginUser", {
+  //         uid,
+  //         displayName,
+  //         photoURL
+  //       });
+  //       if (this.$router.currentRoute.name === "login")
+  //         this.$router.push({ name: "servisUserList" });
+  //     }
+  //   });
+  // },
 
   mounted() {
     const firebaseui = require("firebaseui");

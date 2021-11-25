@@ -108,7 +108,6 @@
                   group="myGroup"
                   @start="drag = true"
                   @end="drag = false"
-                  :options="options"
                   @add="onAdd(index)"
                   v-model="amTransferOderLists[index]"
                   :data-column-id="index"
@@ -201,7 +200,6 @@
                   group="myGroup"
                   @start="drag = true"
                   @end="drag = false"
-                  :options="options"
                   v-model="todayUsers"
                 >
                   <v-list-item
@@ -228,7 +226,6 @@
                 group="myGroup"
                 @start="drag = true"
                 @end="drag = false"
-                :options="options"
                 v-model="familyTransfer"
               >
                 <v-list-item
@@ -255,7 +252,6 @@
                 group="myGroup"
                 @start="drag = true"
                 @end="drag = false"
-                :options="options"
                 v-model="absenceUser"
               >
                 <v-list-item v-for="(item, index) in absenceUser" :key="index">
@@ -316,10 +312,6 @@ export default {
   },
 
   data: () => ({
-    options: {
-      group: "myGroup",
-      animation: 200
-    },
     dialogm1: "",
     dialog: false,
     selectedItem: 1,
