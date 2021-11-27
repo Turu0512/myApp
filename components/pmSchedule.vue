@@ -125,7 +125,7 @@
         </v-col>
 
         <v-col cols="2">
-          <v-card width="150" tile flat class="noprint mb-2">
+          <v-card tile flat class="noprint mb-2">
             <v-list
               class="user pa-0 grey lighten-4 noprint"
               dense
@@ -194,7 +194,7 @@
 </template>
 
 <script>
-moment.lang("ja", {
+moment.updateLocale("ja", {
   weekdays: [
     "日曜日",
     "月曜日",

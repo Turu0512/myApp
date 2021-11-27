@@ -36,7 +36,7 @@
       <v-toolbar-title>送迎くん</v-toolbar-title>
     </v-app-bar>
     <v-main>
-      <router-view @drawer="drawer = false" class="mt-5"></router-view>
+      <router-view @drawer="drawer = false"></router-view>
     </v-main>
   </v-app>
 </template>
@@ -59,7 +59,7 @@ export default {
         icon: "mdi-application-edit-outline",
         url: {
           name: "schedule-id",
-          params: { id: moment().format("yyyy-MM-DD") }
+          params: { id: moment().format("YYYY-MM-DD") }
         }
       },
 

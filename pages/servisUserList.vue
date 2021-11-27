@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <h1 class="text-center">利用者一覧</h1>
+    <h1 class="text-center mt-5">利用者一覧</h1>
     <v-container>
       <v-col>
         <v-btn small class="ma-4" @click="toCreateUserPage">

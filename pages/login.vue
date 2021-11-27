@@ -7,10 +7,10 @@
             <v-card-title class="justify-center text-h3">
               送迎くん
             </v-card-title>
-            <v-img src="illustrain10-norimono17.png"></v-img>
+            <v-img v-bind:src="image_src"></v-img>
 
             <v-card-title class="justify-center subtitle-1">
-              簡易送迎表作成アプリ<br />送迎くんへようこそ！<br />下記のログイン方法からお選びください
+              簡易送迎表作成アプリ<br />送迎くんです！<br />下記のログイン方法からお選びください
             </v-card-title>
             <v-card height="100%" id="firebase-authui" class="py-1" flat>
             </v-card>
@@ -27,6 +27,11 @@ import "firebaseui/dist/firebaseui.css";
 
 export default {
   layout: "auth",
+  data() {
+    return {
+      image_src: require("@/static/illustrain10-norimono17.png")
+    };
+  },
   // created() {
   //   firebase.auth().onAuthStateChanged(user => {
   //     if (user) {
@@ -46,7 +51,7 @@ export default {
     const firebaseui = require("firebaseui");
     const uiConfig = {
       signInFlow: "popup",
-      signInSuccessUrl: "/servisUserList",
+      signInSuccessUrl: "/",
       signInOptions: [
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         firebase.auth.FacebookAuthProvider.PROVIDER_ID

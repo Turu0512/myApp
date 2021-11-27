@@ -41,11 +41,11 @@ export default {
     this.$store.dispatch("pmSchedule/fetchCalendarEvent");
   },
   data: () => ({
-    value: moment().format("yyyy-MM-DD")
+    value: moment().format("YYYY-MM-DD")
   }),
   computed: {
     title() {
-      return moment(this.value).format("yyyy年 M月");
+      return moment(this.value).format("YYYY年 MM月");
     },
     events() {
       return this.$store.state.pmSchedule.eventData;
@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     setToday() {
-      this.value = moment().format("yyyy-MM-DD");
+      this.value = moment().format("YYYY-MM-DD");
       this.$router.push({ name: "schedule-id", params: { id: this.value } });
     },
     showEvent({ event }) {

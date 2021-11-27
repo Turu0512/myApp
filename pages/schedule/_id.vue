@@ -186,7 +186,7 @@
         </v-col>
 
         <v-col cols="2">
-          <v-card width="150" tile class="noprint mt-3" flat>
+          <v-card tile class="noprint mt-3" flat>
             <v-list
               class="user pa-0 grey lighten-4 mb-2"
               dense
@@ -273,7 +273,7 @@
 </template>
 
 <script>
-moment.lang("ja", {
+moment.updateLocale("ja", {
   weekdays: [
     "日曜日",
     "月曜日",
@@ -485,13 +485,13 @@ export default {
     tomorrow() {
       const dayData = this.day;
       const day = moment(dayData) + 86400000;
-      const day2 = moment(day).format("yyyy-MM-DD");
+      const day2 = moment(day).format("YYYY-MM-DD");
       this.day = day2;
     },
     yesterday() {
       const dayData = this.day;
       const day = moment(dayData) - 86400000;
-      const day2 = moment(day).format("yyyy-MM-DD");
+      const day2 = moment(day).format("YYYY-MM-DD");
       this.day = day2;
     },
 
