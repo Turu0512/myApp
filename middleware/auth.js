@@ -1,7 +1,7 @@
 import firebase from "@/plugins/firebase";
 const fbstore = firebase.firestore();
 
-export default function({ redirect, store, route }) {
+export default function({ redirect, store, route, from }) {
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
       const { uid, displayName, photoURL } = user;
@@ -16,9 +16,11 @@ export default function({ redirect, store, route }) {
         photoURL
       });
     } else if (route.path !== "/login") {
+      console.log("reload");
       redirect("/login");
-    } else {
-      console.log("middleware: エラー");
+    } else if (from.path === "/login") {
+      console.log("stay");
+      return;
     }
   });
 }

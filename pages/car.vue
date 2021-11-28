@@ -1,10 +1,7 @@
 <template>
   <v-app>
-    <v-card>
-      <v-card-title class="justify-center">
-        車両管理
-      </v-card-title>
-    </v-card>
+    <h1 class="text-center">車両管理</h1>
+
     <v-container>
       <v-row align="center">
         <v-col cols="2">
@@ -34,20 +31,20 @@
       <v-btn v-else @click="saveCar">保存</v-btn>
     </v-container>
     <v-container>
-      <v-simple-table fixed-header height="300px">
+      <v-simple-table fixed-header class="orange lighten-5">
         <template v-slot:default>
           <thead>
             <tr>
-              <th class="text-left">
+              <th class="text-left  orange lighten-3">
                 車両名
               </th>
-              <th class="text-rigth text-center">
+              <th class="text-rigth text-center orange lighten-3">
                 定員数
               </th>
-              <th class="text-rigth text-center">
+              <th class="text-rigth text-center orange lighten-3">
                 ー
               </th>
-              <th class="text-rigth text-center">
+              <th class="text-rigth text-center orange lighten-3">
                 ー
               </th>
             </tr>
@@ -117,7 +114,7 @@ export default {
         return;
       }
       const car = { ...this.car };
-      console.log(car);
+      // console.log(car);
       await this.$store
         .dispatch("car/saveCar", car)
         .then(

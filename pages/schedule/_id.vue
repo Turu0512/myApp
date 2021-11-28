@@ -1,14 +1,11 @@
 <template>
-  <v-app>
+  <v-app max-height="100%" min-width="0px">
     <v-container>
       <v-row>
-        <v-col cols="3" class="noprint">
-          <v-btn outlined small class="ma-4" @click="backToSchedule">
+        <v-col cols="12">
+          <v-btn small class="noprint ma-4" @click="backToSchedule">
             カレンダーを表示する
           </v-btn>
-          <v-btn @click="print">印刷</v-btn>
-        </v-col>
-        <v-col cols="4">
           <v-menu
             ref="menu"
             v-model="menu"
@@ -20,11 +17,12 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
-                v-model="date"
+                small
                 readonly
                 v-bind="attrs"
                 v-on="on"
-                class="noprint"
+                class="noprint ma-4"
+                @click="addTodayDate"
                 >過去データを呼び出す</v-btn
               >
             </template>
@@ -38,34 +36,43 @@
               <v-btn text color="primary" @click="menu = false">
                 Cancel
               </v-btn>
-              <v-btn text color="primary" @click="reuseData">
-                <!-- <v-btn text color="primary" @click="$refs.menu.save(date)"> -->
+              <v-btn
+                text
+                color="primary"
+                @click="
+                  $refs.menu.save(date);
+                  reuseData();
+                "
+              >
                 OK
               </v-btn>
             </v-date-picker>
           </v-menu>
+          <v-btn @click="print" small class="noprint ma-4">印刷</v-btn>
         </v-col>
       </v-row>
-      <v-card>
+      <!----------------------main---------------------------------------- -->
+
+      <v-card color="info" flat>
         <v-card-title class="justify-center">
-          <v-btn @click="yesterday" class="noprint">前日</v-btn>
+          <v-btn @click="yesterday" class="noprint mr-12">前日</v-btn>
           {{ title }}
-          <v-btn @click="tomorrow" class="noprint">翌日</v-btn>
+          <v-btn @click="tomorrow" class="noprint ml-12">翌日</v-btn>
         </v-card-title>
       </v-card>
       <v-row>
         <v-col cols="10">
-          <v-card>
+          <h1 class="subtitle-1">
             迎え
-          </v-card>
-          <!-- -------------------main---------------------------------------- -->
-          <div class="d-flex flex-column">
+          </h1>
+
+          <div class="d-flex flex-column mb-5">
             <v-col
               v-for="(car, index) in amCar"
               :key="index"
-              class="pa-2 pt-5"
-              outlined
+              class="px-2 pt-8 pb-0"
               tile
+              flat
             >
               <v-card
                 class="d-flex flex-row"
@@ -74,9 +81,9 @@
                 "
                 flat
                 tile
-                max-height="56px"
+                max-height="59px"
               >
-                <v-card max-width="100px">
+                <v-card max-width="100px" flat color="info">
                   <v-card-title class="text-subtitle-1 pa-0 ma-0 mt-n5">{{
                     car.name
                   }}</v-card-title>
@@ -88,19 +95,19 @@
                     @change="checkDriver"
                     :items="drivers"
                     label="ドライバー"
-                    class="pa-0 ma-0 text-caption mt-n1"
-                    height="5"
+                    class="pa-0 ma-0 text-caption mt-n1 text-center"
                     dense
                     solo
+                    flat
                   ></v-select>
                 </v-card>
+                <!-- <v-divider vertical></v-divider> -->
 
                 <draggable
                   class="d-flex flex-row pa-1"
                   group="myGroup"
                   @start="drag = true"
                   @end="drag = false"
-                  :options="options"
                   @add="onAdd(index)"
                   v-model="amTransferOderLists[index]"
                   :data-column-id="index"
@@ -116,9 +123,10 @@
                   >
                 </draggable>
                 <v-sheet
-                  color="grey"
                   style="heigth: 25px; width: 25px; position: relative"
-                  class="ml-2"
+                  class="ml-2 pt-1 "
+                  align="center"
+                  color="info"
                 >
                   施設
                 </v-sheet>
@@ -126,39 +134,25 @@
                   max-height="24px"
                   max-width="24px"
                   fab
-                  dark
                   x-small
-                  color="primary"
+                  color="blue-grey lighten-3"
                   @click="deleteCar(index)"
-                  class="noprint"
+                  class="noprint ml-1 mt-3"
+                  depressed
                 >
-                  <v-icon dark>
+                  <v-icon>
                     mdi-close
                   </v-icon>
                 </v-btn>
               </v-card>
+              <v-divider></v-divider>
             </v-col>
           </div>
 
-          <!-- <v-select
-            item-text="name"
-            :items="carList"
-            label="車両追加"
-            class="pa-0 ma-0 text-caption"
-            height="5"
-            dense
-            solo
-          ></v-select> -->
           <!-- dialog------------------------------------------------------------------ -->
           <v-dialog v-model="dialog" scrollable max-width="300px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                color="primary"
-                dark
-                v-bind="attrs"
-                v-on="on"
-                class="noprint"
-              >
+              <v-btn v-bind="attrs" v-on="on" class="noprint mr-5">
                 車両追加
               </v-btn>
             </template>
@@ -186,19 +180,26 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-btn @click="addReverseSchedule" class="noprint">反転挿入</v-btn>
+
           <!-- dialog------------------------------------------------------------------ -->
         </v-col>
 
         <v-col cols="2">
-          <v-card width="150" tile class="noprint">
-            <v-list class="user" dense>
-              <v-subheader>利用者一覧</v-subheader>
-              <v-list-item-group class="pa-0" color="primary">
+          <v-card tile class="noprint mt-3" flat>
+            <v-list
+              class="user pa-0 grey lighten-4 mb-2"
+              dense
+              min-height="50px"
+            >
+              <v-list-item-title class="text-center orange lighten-4 "
+                >利用者一覧</v-list-item-title
+              >
+              <v-list-item-group class="grey lighten-4" n>
                 <draggable
                   group="myGroup"
                   @start="drag = true"
                   @end="drag = false"
-                  :options="options"
                   v-model="todayUsers"
                 >
                   <v-list-item
@@ -216,14 +217,15 @@
             </v-list>
           </v-card>
           <!-- 家族送迎ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
-          <v-list class="user" dense>
-            <v-subheader>家族送迎</v-subheader>
-            <v-list-item-group color="primary" class="pa-0">
+          <v-list class="user pa-0 grey lighten-4 mb-2" dense min-height="50px">
+            <v-list-item-title class="text-center orange lighten-4 "
+              >家族送迎</v-list-item-title
+            >
+            <v-list-item-group color="primary" class="grey lighten-4">
               <draggable
                 group="myGroup"
                 @start="drag = true"
                 @end="drag = false"
-                :options="options"
                 v-model="familyTransfer"
               >
                 <v-list-item
@@ -241,42 +243,37 @@
             </v-list-item-group>
           </v-list>
           <!-- 休みーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー -->
-          <v-card width="150" tile class="pt-2">
-            <v-list class="user" dense>
-              <v-subheader>休み</v-subheader>
-              <v-list-item-group class="pa-0" color="primary">
-                <draggable
-                  group="myGroup"
-                  @start="drag = true"
-                  @end="drag = false"
-                  :options="options"
-                  v-model="absenceUser"
-                >
-                  <v-list-item
-                    v-for="(item, index) in absenceUser"
-                    :key="index"
-                  >
-                    <v-list-item-content class="pa-0">
-                      <v-list-item-title
-                        v-text="item.displayName"
-                      ></v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </draggable>
-              </v-list-item-group>
-            </v-list>
-          </v-card>
+          <v-list class="user pa-0 grey lighten-4" dense min-height="50px">
+            <v-list-item-title class="text-center orange lighten-4 "
+              >休み</v-list-item-title
+            >
+            <v-list-item-group class="grey lighten-4">
+              <draggable
+                group="myGroup"
+                @start="drag = true"
+                @end="drag = false"
+                v-model="absenceUser"
+              >
+                <v-list-item v-for="(item, index) in absenceUser" :key="index">
+                  <v-list-item-content class="pa-0">
+                    <v-list-item-title
+                      v-text="item.displayName"
+                    ></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </draggable>
+            </v-list-item-group>
+          </v-list>
         </v-col>
-        <v-btn @click="addReverseSchedule" class="noprint">反転挿入</v-btn>
-        <!-- <v-btn @click="check">チェック</v-btn> -->
       </v-row>
     </v-container>
+
     <pmSchedule @save="saveTodaySchedule" :day="day" ref="pmSchedule" />
   </v-app>
 </template>
 
 <script>
-moment.lang("ja", {
+moment.updateLocale("ja", {
   weekdays: [
     "日曜日",
     "月曜日",
@@ -311,15 +308,10 @@ export default {
     amTransferOderLists.forEach(data => {
       this.amTransferOderLists.push(data);
     });
-    console.log(this.amTransferOderLists);
     this.$store.dispatch("pmSchedule/fetchCalendarEvent");
   },
 
   data: () => ({
-    options: {
-      group: "myGroup",
-      animation: 200
-    },
     dialogm1: "",
     dialog: false,
     selectedItem: 1,
@@ -351,7 +343,6 @@ export default {
         return this.$store.getters["schedule/todayUsers"];
       },
       set(value) {
-        console.log("today" + value);
         this.$store.commit("schedule/fetchTodayUsers", value);
       }
     },
@@ -404,12 +395,8 @@ export default {
   },
 
   methods: {
-    test() {
-      const day = this.day;
-      // const day = encodeURIComponent(JSON.stringify(this.day));
-
-      // this.$router.push({ path: "schedule", query: { id: day } });
-      this.$router.push({ name: "schedule-id", params: { id: day } });
+    addTodayDate() {
+      this.date = this.$route.params.id;
     },
 
     checkDriver(value) {
@@ -428,10 +415,8 @@ export default {
     async reuseData() {
       const today = this.date;
       const day = moment(today).format("ddd");
-      console.log(day);
       const newToday = this.$route.params.id;
       const newDay = moment(newToday).format("ddd");
-      console.log(newDay);
 
       if (day != newDay) {
         this.$swal({
@@ -500,13 +485,13 @@ export default {
     tomorrow() {
       const dayData = this.day;
       const day = moment(dayData) + 86400000;
-      const day2 = moment(day).format("yyyy-MM-DD");
+      const day2 = moment(day).format("YYYY-MM-DD");
       this.day = day2;
     },
     yesterday() {
       const dayData = this.day;
       const day = moment(dayData) - 86400000;
-      const day2 = moment(day).format("yyyy-MM-DD");
+      const day2 = moment(day).format("YYYY-MM-DD");
       this.day = day2;
     },
 
@@ -538,7 +523,6 @@ export default {
       const newAm = Object.values(am);
       newAm.push([]);
       this.amTransferOderLists = newAm;
-      console.log(newAm);
     },
 
     async print() {
@@ -556,7 +540,6 @@ export default {
         params: { id: this.$route.params.id }
       });
       const today = this.day;
-      console.log(today);
       const day = moment(today).format("ddd");
       // this.$store.dispatch("car/getCarList");
       this.$store.dispatch("car/fetchTodayAmCarList", today);
@@ -595,9 +578,31 @@ export default {
 .v-list-item {
   min-height: 5px !important;
 }
+
+.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
+  background: #ffe0b2;
+}
+
+.v-application--wrap {
+  min-height: unset;
+}
+
 @media print {
   .noprint {
     display: none;
+  }
+
+  .v-application .pb-0 {
+    border-bottom: solid;
+    border-color: black;
+    border-width: 1px;
+  }
+
+  .v-sheet.v-list:not(.v-sheet--outlined) {
+    border: solid;
+    border-color: black !important;
+    border-width: 1px;
+    margin-top: 10px;
   }
 }
 </style>

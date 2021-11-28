@@ -14,7 +14,6 @@ export const mutations = {
 
   addDriverList(state, list) {
     state.driverList = list;
-    // console.log(list)
   },
   fetchTodayAmDriver(state, list) {
     state.amDriverSchedule = list;
@@ -98,8 +97,7 @@ export const actions = {
       .doc(id)
       .delete()
       .then(() => {
-        console.log(id);
-        console.log("Document successfully deleted!");
+        // console.log("Document successfully deleted!");
         dispatch("getDriverList");
       })
       .catch(error => {
@@ -109,7 +107,6 @@ export const actions = {
 
   // schedule--------------------------------------------------------------------------
   async saveTodayAmDriver({ rootState, commit }, list) {
-    // console.log(list);
     const uid = rootState.login.loginUser.uid;
 
     await fbstore
@@ -122,7 +119,6 @@ export const actions = {
       });
   },
   async saveTodayPmDriver({ rootState, commit }, list) {
-    console.log(list);
     const uid = rootState.login.loginUser.uid;
 
     await fbstore
@@ -146,11 +142,9 @@ export const actions = {
       .get();
     const lists = listRef.data();
     if (lists) {
-      // console.log("fetch" + lists);
       commit("fetchTodayAmDriver", lists);
     } else {
       commit("clearTodayAmDriver");
-      // console.log("fetch" + "error");
       return;
     }
   },
@@ -165,11 +159,8 @@ export const actions = {
       .get();
     const lists = listRef.data();
     if (lists) {
-      console.log("fetch" + lists);
       commit("fetchTodayPmDriver", lists);
     } else {
-      // commit("clearTodayDriver");
-      console.log("fetch" + "error");
       return;
     }
   },
@@ -184,11 +175,9 @@ export const actions = {
       .get();
     const lists = listRef.data();
     if (lists) {
-      // console.log("fetch" + lists);
       commit("fetchTodayPmDriver", lists);
     } else {
       commit("clearTodayPmDriver");
-      // console.log("fetch" + "error");
       return;
     }
   }

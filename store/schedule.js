@@ -10,14 +10,12 @@ export const state = () => ({
 // ------------------Mutations-------------------------------
 export const mutations = {
   addCar(state, car) {
-    // console.log(car);
     state.carList.push(car);
   },
 
   fetchTodayAmTransferOderLists(state, list) {
     const newList = Object.values(list);
     state.amTransferOderLists = newList;
-    console.log(newList);
   },
 
   clearTodayAmTransferOderLists(state, list) {
@@ -25,23 +23,15 @@ export const mutations = {
     for (let i = 0; i < list.length; i++) {
       newList[i] = new Array();
     }
-    // console.log(newList);
     state.amTransferOderLists = newList;
   },
-  // addAmNewList(state, length) {
-  //   state.amTransferOderLists[length] = [];
-  // },
   todayUsers(state, list) {
-    // console.log(list);
     if (list) {
-      // console.log(list);
       const lists = Object.keys(list).map(function(key) {
         return list[key];
       });
       state.todayUsers = lists;
-      // console.log(state.todayUsers);
     } else {
-      // console.log(state.absenceUser);
       return;
     }
   },
@@ -50,8 +40,6 @@ export const mutations = {
     state.todayUsers = _.sortBy(todayUser, user => {
       return user.firstNameRuby;
     });
-
-    // console.log();
   },
 
   todayAbsenceUser(state, list) {
@@ -63,7 +51,6 @@ export const mutations = {
       state.absenceUser = lists;
     } else {
       state.absenceUser = [];
-      // console.log("errer");
       return;
     }
   },
@@ -74,7 +61,6 @@ export const mutations = {
       const lists = Object.keys(list).map(function(key) {
         return list[key];
       });
-      // console.log(lists);
       state.familyTransfer = lists;
     } else {
       state.familyTransfer = [];
@@ -92,7 +78,6 @@ export const actions = {
   // Savelist---------------------------------------------------------
   async saveTodayAmTransferOderLists({ rootState, commit }, list) {
     const uid = rootState.login.loginUser.uid;
-    // console.log(uid);
 
     await fbstore
       .collection("adminUser")
@@ -105,7 +90,6 @@ export const actions = {
   },
 
   async saveTodayFamilyTransfer({ rootState, commit }, list) {
-    // console.log(list);
     const uid = rootState.login.loginUser.uid;
 
     await fbstore
@@ -119,7 +103,6 @@ export const actions = {
   },
 
   async saveTodayAbsenceUser({ rootState, commit }, list) {
-    // console.log(list);
     const uid = rootState.login.loginUser.uid;
 
     await fbstore
@@ -133,7 +116,6 @@ export const actions = {
   },
 
   async saveTodayUsers({ rootState, commit }, list) {
-    // console.log(list);
     const uid = rootState.login.loginUser.uid;
 
     await fbstore
@@ -159,19 +141,16 @@ export const actions = {
       .get();
     const lists = listRef.data();
     if (lists) {
-      // console.log(lists);
       commit("fetchTodayAmTransferOderLists", lists);
     } else {
       const carList = rootState.car.carList;
       commit("clearTodayAmTransferOderLists", carList);
-      // console.log("fetch" + "error");
       return;
     }
   },
 
   async fetchTodayUsers({ rootState, commit }, data) {
     const uid = rootState.login.loginUser.uid;
-    // console.log(uid);
 
     const listRef = await fbstore
       .collection("adminUser")
@@ -192,7 +171,6 @@ export const actions = {
         .get()
         .then(snapShot => {
           snapShot.forEach(user => {
-            // console.log(user.data())
             todayUsersList.push(user.data());
           });
         });

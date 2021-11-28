@@ -1,4 +1,43 @@
-# myApp
+## オリジナル簡易送迎表作成アプリ、送迎くんの概要
+
+```
+送迎表作成までに行う事（左上のボタンから、メニューを表示することができます）
+
+１：利用者情報の登録
+「利用者一覧」画面の「利用者登録」ボタンから登録画面へ行き、必要項目を入力して保存
+　表示名：送迎表を作成する際に表示する名前（基本的に姓を登録）
+（例）送迎　太郎　→ 表示名：送迎
+　同じ姓の方がいる場合　→　送迎（太）
+
+２：送迎車両の登録
+
+３：ドライバーの登録
+```
+
+## 送迎表作成手順
+
+メニューから「送迎表」をクリック、当日の送迎表が表示されます。
+
+### 手順１
+
+画面右側の「利用者一覧」から名前をドラッグし、追加したい送迎コースの車両名と「施設」との間の空白部分にドロップします。
+＊何らかの理由で送迎の必要のない方は「家族送迎」に追加してください。
+＊「休み」の欄に追加した方は、午後の「利用者一覧」から削除されるので注意してください。
+
+### 手順２
+
+「ドライバー」をクリックし、リストからドライバーを選択してください。（ドライバー管理で作成したドライバーが表示されます）
+
+### 手順３
+
+「一時保存」または「保存」ボタンを押し、保存してください。
+＊一時保存と保存の違いは、機能「カレンダーを表示する」で説明しています。
+
+### 手順４
+
+「印刷」ボタンを押し、印刷してご活用ください。
+
+# その他機能、ボタンの説明
 
 ## Build Setup
 
@@ -40,7 +79,6 @@ More information about the usage of this directory in [the documentation](https:
 Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
 
 More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
-
 
 ### `pages`
 

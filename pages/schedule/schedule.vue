@@ -2,8 +2,8 @@
   <v-app>
     <v-container>
       <div>
-        <v-sheet tile height="6vh" color="grey" class="d-flex align-center">
-          <v-btn outlined small class="ma-4" @click="setToday">
+        <v-sheet tile height="6vh" color="info" class="d-flex align-center">
+          <v-btn small class="ma-4" @click="setToday">
             当日に戻る
           </v-btn>
           <v-btn icon @click="$refs.calendar.prev()">
@@ -39,14 +39,13 @@ import moment from "moment";
 export default {
   created() {
     this.$store.dispatch("pmSchedule/fetchCalendarEvent");
-    console.log(this.$store.state.pmSchedule.eventData);
   },
   data: () => ({
-    value: moment().format("yyyy-MM-DD")
+    value: moment().format("YYYY-MM-DD")
   }),
   computed: {
     title() {
-      return moment(this.value).format("yyyy年 M月");
+      return moment(this.value).format("YYYY年 MM月");
     },
     events() {
       return this.$store.state.pmSchedule.eventData;
@@ -54,14 +53,13 @@ export default {
   },
   methods: {
     setToday() {
-      this.value = moment().format("yyyy-MM-DD");
+      this.value = moment().format("YYYY-MM-DD");
       this.$router.push({ name: "schedule-id", params: { id: this.value } });
     },
     showEvent({ event }) {
       alert(`clicked ${event.name}`);
     },
     viewDay(date) {
-      console.log(date);
       this.$router.push({ name: "schedule-id", params: { id: date } });
     }
   }

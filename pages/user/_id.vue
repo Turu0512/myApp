@@ -75,40 +75,6 @@
 
       <v-row>
         <v-col cols="2">
-          <v-subheader class="text-center">送迎</v-subheader>
-        </v-col>
-
-        <v-radio-group
-          row
-          v-for="(transfer, i) in transfers"
-          :key="i"
-          v-model="editUser.transfers"
-        >
-          <v-radio
-            :id="transfer.label"
-            :label="transfer.label"
-            :value="transfer.label"
-            class="mr-7"
-          ></v-radio>
-        </v-radio-group>
-      </v-row>
-
-      <!-- <v-row align="center">
-        <v-col cols="2" class="pa-0" align="center">
-          <v-subheader class="d-inline-block pa-4" align="center"
-            >持参品</v-subheader
-          >
-        </v-col>
-        <v-col cols="5">
-          <v-text-field
-            label="持参するものがあれば入力してください"
-            placeholder="例：杖"
-          ></v-text-field>
-        </v-col> -->
-      <!-- </v-row> -->
-
-      <v-row>
-        <v-col cols="2">
           <v-subheader class="text-center">中止</v-subheader>
         </v-col>
         <v-checkbox
@@ -122,12 +88,10 @@
         </v-col>
       </v-row>
       <v-row class="justify-center mt-10">
-        <v-btn @click="cancel">戻る</v-btn>
+        <v-btn @click="cancel" class="mr-5">戻る</v-btn>
 
-        <v-btn @click="editUserSave">保存</v-btn>
+        <v-btn @click="editUserSave" class="ml-5">保存</v-btn>
       </v-row>
-      <p>{{ editUser }}</p>
-      <p>{{ newedit }}</p>
     </v-container>
   </v-app>
 </template>
@@ -139,7 +103,6 @@ export default {
     const id = this.$route.params.id;
     await this.$store.dispatch("user/fetchEditUser", { uid, id });
     const edit = [this.$store.state.user.editUserData];
-    console.log(edit);
     edit.forEach(data => {
       this.editUser = { ...data };
     });
@@ -156,11 +119,7 @@ export default {
       { week: "土", index: "6" },
       { week: "日", index: "7" }
     ],
-    transfers: [
-      { label: "送迎あり" },
-      { label: "送迎なし" },
-      { label: "途中送迎" }
-    ],
+
     newedit: "",
     editUser: {},
     stoped: false
@@ -191,7 +150,6 @@ export default {
         );
         this.$store.dispatch("user/deleteUser", this.editUser);
         this.$store.dispatch("user/stopedUser", this.editUser);
-        // this.editUser = "";
 
         return;
       } else {
@@ -200,27 +158,8 @@ export default {
           (a, b) => daysOfWeek.indexOf(a) - daysOfWeek.indexOf(b)
         );
         await this.$store.dispatch("user/updateUser", this.editUser);
-        // this.editUser = "";
       }
     }
-  },
-  computed: {
-    // editUser() {
-    //   return ;
-    // },
-    // editUser: {
-    //   get() {
-    //     const a = [this.$store.state.user.editUserData];
-    //     let b = "";
-    //     // return JSON.parse(JSON.stringify(a));
-    //     return b;
-    //     // return this.$store.state.user.editUserData;
-    //   },
-    //   set(value) {
-    //     // this.$store.commit("user/getEditUser", value);
-    //     console.log(value);
-    //   }
-    // }
   }
 };
 </script>

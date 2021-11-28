@@ -1,10 +1,7 @@
 <template>
   <v-app>
-    <v-card>
-      <v-card-title class="justify-center">
-        ドライバー管理
-      </v-card-title>
-    </v-card>
+    <h1 class="text-center">ドライバー管理</h1>
+
     <v-container>
       <v-row align="center">
         <v-col cols="2">
@@ -34,20 +31,20 @@
       <v-btn v-else @click="saveCar">保存</v-btn>
     </v-container>
     <v-container>
-      <v-simple-table fixed-header height="300px">
+      <v-simple-table fixed-header class="orange lighten-5">
         <template v-slot:default>
           <thead>
             <tr>
-              <th class="text-left">
+              <th class="text-left orange lighten-3">
                 ドライバー名
               </th>
-              <th class="text-rigth text-center">
+              <th class="text-rigth text-center orange lighten-3">
                 表示名
               </th>
-              <th class="text-rigth text-center">
+              <th class="text-rigth text-center orange lighten-3">
                 ー
               </th>
-              <th class="text-rigth text-center">
+              <th class="text-rigth text-center orange lighten-3">
                 ー
               </th>
             </tr>
@@ -145,7 +142,6 @@ export default {
         return;
       }
       const driver = { ...this.driver };
-      console.log(driver);
       await this.$store
         .dispatch("driver/saveDriver", driver)
         .then(

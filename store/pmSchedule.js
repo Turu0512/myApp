@@ -11,33 +11,26 @@ export const state = () => ({
 // ------------------Mutations-------------------------------
 export const mutations = {
   addCar(state, car) {
-    // console.log(car);
     state.carList.push(car);
   },
 
   fetchTodayPmTransferOderLists(state, list) {
     state.pmTransferOderLists = list;
-    // console.log(list);
   },
 
   fetchTodayPmUsers(state, todayUser) {
-    // console.log(todayUser);
     state.todayPmUsers = _.sortBy(todayUser, user => {
       return user.firstNameRuby;
     });
   },
 
   todayPmUsers(state, list) {
-    // console.log(list);
     if (list) {
-      // console.log(list);
       const lists = Object.keys(list).map(function(key) {
         return list[key];
       });
       state.todayPmUsers = lists;
-      // console.log(state.todayPmUsers);
     } else {
-      // console.log(state.absenceUser);
       return;
     }
   },
@@ -50,27 +43,12 @@ export const mutations = {
     state.todayPmUsers = user;
   },
 
-  // todayAbsenceUser(state, list) {
-  //   if (list) {
-  //     // 配列に変換。変換しないとオブジェクトで渡されてしまい、配列じゃない！とエラーが出る
-  //     const lists = Object.keys(list).map(function(key) {
-  //       return list[key];
-  //     });
-  //     // console.log(lists);
-  //     state.absenceUser = lists;
-  //   } else {
-  //     state.absenceUser = [];
-  //     return;
-  //   }
-  // },
-
   todayPmFamilyTransfer(state, list) {
     if (list) {
       // 配列に変換。変換しないとオブジェクトで渡されてしまい、配列じゃない！とエラーが出る
       const lists = Object.keys(list).map(function(key) {
         return list[key];
       });
-      // console.log(lists);
       state.pmFamilyTransfer = lists;
     } else {
       state.pmFamilyTransfer = [];
@@ -125,12 +103,9 @@ export const actions = {
       .set({
         ...list.todayPmTransferOderLists
       });
-
-    // console.log(list);
   },
 
   async saveTodayPmFamilyTransfer({ rootState, commit }, list) {
-    // console.log(list);
     const uid = rootState.login.loginUser.uid;
 
     await fbstore
@@ -144,7 +119,6 @@ export const actions = {
   },
 
   async saveTodayPmUsers({ rootState, commit }, list) {
-    // console.log(list);
     const uid = rootState.login.loginUser.uid;
 
     await fbstore
@@ -168,16 +142,11 @@ export const actions = {
       .doc("todayPmTransferOderLists")
       .get();
     const lists = listRef.data();
-    // .then(snapshot => {
-    //   list.push(snapshot.data());
-    // console.log(lists);
     if (lists) {
-      // console.log(lists);
       commit("fetchTodayPmTransferOderLists", lists);
     } else {
       const carList = rootState.car.carList;
       commit("clearTodayAmTransferOderLists", carList);
-      // console.log("pmtr error");
       return;
     }
   },
@@ -204,26 +173,12 @@ export const actions = {
         .get()
         .then(snapShot => {
           snapShot.forEach(user => {
-            // console.log(user.data())
             todayUsersList.push(user.data());
           });
         });
       commit("fetchTodayPmUsers", todayUsersList);
     }
   },
-
-  // async fetchAbsenceUser({ rootState, commit }, day) {
-  //   const uid = rootState.login.loginUser.uid;
-
-  //   const listRef = await fbstore
-  //     .collection("adminUser")
-  //     .doc(uid)
-  //     .collection(day)
-  //     .doc("todayAbsenceUser")
-  //     .get();
-  //   const lists = listRef.data();
-  //   commit("todayAbsenceUser", lists);
-  // },
 
   async fetchPmFamilyTransfer({ rootState, commit }, day) {
     const uid = rootState.login.loginUser.uid;
@@ -279,7 +234,6 @@ export const actions = {
       .then(snapshot => {
         snapshot.forEach(doc => eventData.push(doc.data()));
       });
-    // console.log(eventData);
     commit("fetchCalendarEvent", eventData);
   }
 };
@@ -288,10 +242,6 @@ export const getters = {
   pmTransferOderLists: state => {
     return state.pmTransferOderLists;
   },
-
-  // absenceUser: state => {
-  //   return state.absenceUser;
-  // },
 
   todayPmUsers: state => {
     return state.todayPmUsers;
