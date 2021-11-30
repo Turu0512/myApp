@@ -16,10 +16,8 @@ export default function({ redirect, store, route, from }) {
         photoURL
       });
     } else if (route.path !== "/login") {
-      console.log("reload");
       redirect("/login");
     } else if (from.path === "/login") {
-      console.log("stay");
       return;
     }
   });

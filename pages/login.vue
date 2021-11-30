@@ -12,7 +12,16 @@
             <v-card-title class="justify-center subtitle-1">
               簡易送迎表作成アプリ<br />送迎くんです！<br />下記のログイン方法からお選びください
             </v-card-title>
-            <v-card height="100%" id="firebase-authui" class="py-1" flat>
+            <v-card-title width="220px" class="py-1 justify-center" flat>
+              <v-btn
+                class="ml-6"
+                width="220px"
+                @click="guestLogin"
+                color="primary"
+                >ゲストログイン</v-btn
+              >
+            </v-card-title>
+            <v-card id="firebase-authui" class="py-1 justify-center" flat>
             </v-card>
           </v-card>
         </v-col>
@@ -63,6 +72,29 @@ export default {
     } else {
       const ui = new firebaseui.auth.AuthUI(firebase.auth());
       ui.start("#firebase-authui", uiConfig);
+    }
+  },
+
+  methods: {
+    guestLogin() {
+      firebase
+        .auth()
+        .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        .then(() => {
+          firebase
+            .auth()
+            .signInWithEmailAndPassword(this.$config.email, this.$config.pass)
+            .then(userCredential => {
+              // ログイン成功時の処理
+              console.log(userCredential);
+              window.alert("ログインしました");
+              this.$router.push({ name: "index" });
+            })
+            .catch(error => {
+              window.alert("ログインに失敗しました");
+              console.log(error);
+            });
+        });
     }
   }
 };

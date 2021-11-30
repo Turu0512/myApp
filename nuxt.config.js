@@ -78,5 +78,10 @@ export default {
   build: {},
   generate: {
     dir: "dist"
+  },
+
+  publicRuntimeConfig: {
+    email: process.env.DEMO_EMAIL,
+    pass: process.env.DEMO_PASS
   }
 };
