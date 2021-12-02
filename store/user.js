@@ -118,7 +118,7 @@ export const actions = {
       .delete()
       .then(() => {
         this.$router.push({ name: "servisUserList" });
-        console.log("Document successfully deleted!");
+        // console.log("Document successfully deleted!");
       })
       .catch(error => {
         console.error("Error removing document: ", error);
@@ -136,7 +136,7 @@ export const actions = {
       .delete()
       .then(() => {
         this.$router.push({ name: "stopUser" });
-        console.log("Document successfully deleted!");
+        // console.log("Document successfully deleted!");
       })
       .catch(error => {
         console.error("Error removing document: ", error);
