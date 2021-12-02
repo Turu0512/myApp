@@ -221,7 +221,6 @@ export default {
     this.$store.dispatch("driver/fetchTodayPmDriver", today);
     this.$store.dispatch("car/fetchTodayPmCarList", today);
     this.$store.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
-    // this.$store.dispatch("schedule/fetchAbsenceUser", this.$route.params.id);
     this.$store.dispatch("pmSchedule/fetchPmFamilyTransfer", {
       day,
       today
@@ -234,7 +233,6 @@ export default {
     const pmTransferOderLists = [
       this.$store.state.pmSchedule.pmTransferOderLists
     ];
-    // console.log(pmTransferOderLists);
     pmTransferOderLists.forEach(data => {
       this.pmTransferOderLists = { ...data };
     });
@@ -277,16 +275,6 @@ export default {
       }
     },
 
-    // absenceUser: {
-    //   get() {
-    //     return this.$store.getters["schedule/absenceUser"];
-    //   },
-    //   set(value) {
-    //     // console.log(value);
-    //     this.$store.commit("schedule/todayAbsenceUser", value);
-    //   }
-    // },
-
     pmFamilyTransfer: {
       get() {
         return this.$store.getters["pmSchedule/pmFamilyTransfer"];
@@ -311,7 +299,6 @@ export default {
       const day = this.$route.params.id;
       const todayPmTransferOderLists = { ...this.pmTransferOderLists };
       const pmFamilyTransferList = this.pmFamilyTransfer;
-      // const absenceUserList = this.absenceUser;
       const todayPmUsersList = this.todayPmUsers;
       const todayPmDriver = this.pmDriverSchedule;
       const pmCarList = this.pmCar;
@@ -324,10 +311,7 @@ export default {
         pmFamilyTransferList,
         day
       });
-      // this.$store.dispatch("schedule/saveTodayAbsenceUser", {
-      //   absenceUserList,
-      //   day
-      // });
+
       this.$store.dispatch("pmSchedule/saveTodayPmUsers", {
         todayPmUsersList,
         day
@@ -351,7 +335,6 @@ export default {
       const day = this.$route.params.id;
       const todayPmTransferOderLists = { ...this.pmTransferOderLists };
       const pmFamilyTransferList = this.pmFamilyTransfer;
-      // const absenceUserList = this.absenceUser;
       const todayPmUsersList = this.todayPmUsers;
       const todayPmDriver = this.pmDriverSchedule;
       const pmCarList = this.pmCar;
@@ -364,10 +347,6 @@ export default {
         pmFamilyTransferList,
         day
       });
-      // this.$store.dispatch("schedule/saveTodayAbsenceUser", {
-      //   absenceUserList,
-      //   day
-      // });
       this.$store.dispatch("pmSchedule/saveTodayPmUsers", {
         todayPmUsersList,
         day
@@ -408,7 +387,6 @@ export default {
       }
       const newCarList = [...this.pmCar];
       newCarList.splice(i, 1);
-      console.log(i);
       this.$store.commit("car/addPmCarList", newCarList);
     },
 
@@ -416,7 +394,6 @@ export default {
       const pmTransferOderLists = [
         this.$store.state.pmSchedule.pmTransferOderLists
       ];
-      console.log(pmTransferOderLists);
       pmTransferOderLists.forEach(data => {
         this.pmTransferOderLists = { ...data };
       });
@@ -427,15 +404,11 @@ export default {
       const car = newCarList.filter(car => car.name == this.dialogm1);
       let addCar = "";
       car.forEach(car => (addCar = car));
-      // newCarList.push(addCar);
       this.$store.commit("car/pushPmCarList", addCar);
-      // this.$store.dispatch("pmSchedule/addPmNewList");
-      console.log(this.pmTransferOderLists);
       const pm = this.pmTransferOderLists;
       const newPm = Object.values(pm);
       newPm.push([]);
       this.pmTransferOderLists = newPm;
-      console.log(newPm);
     }
   },
   watch: {
@@ -444,7 +417,6 @@ export default {
       const day = moment(today).format("ddd");
 
       this.$store.dispatch("pmSchedule/fetchTodayPmUsers", { day, today });
-      // this.$store.dispatch("schedule/fetchAbsenceUser", this.$route.params.id);
       this.$store.dispatch("pmSchedule/fetchPmFamilyTransfer", {
         day,
         today
@@ -452,7 +424,6 @@ export default {
       this.$store.dispatch("driver/fetchTodayPmDriver", today);
       this.$store.dispatch("car/fetchTodayPmCarList", today);
 
-      // this.$store.dispatch("car/getCarList");
       await this.$store.dispatch(
         "pmSchedule/fetchTodayPmTransferOderLists",
         this.$route.params.id
@@ -460,7 +431,6 @@ export default {
       const pmTransferOderLists = [
         this.$store.state.pmSchedule.pmTransferOderLists
       ];
-      // console.log(pmTransferOderLists);
       pmTransferOderLists.forEach(data => {
         this.pmTransferOderLists = { ...data };
       });

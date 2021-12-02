@@ -146,7 +146,6 @@ export const actions = {
       .doc(id)
       .delete()
       .then(() => {
-        console.log("Document successfully deleted!");
         dispatch("getCarList");
       })
       .catch(error => {

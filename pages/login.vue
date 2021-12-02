@@ -41,20 +41,6 @@ export default {
       image_src: require("@/static/illustrain10-norimono17.png")
     };
   },
-  // created() {
-  //   firebase.auth().onAuthStateChanged(user => {
-  //     if (user) {
-  //       const { uid, displayName, photoURL } = user;
-  //       this.$store.commit("login/setLoginUser", {
-  //         uid,
-  //         displayName,
-  //         photoURL
-  //       });
-  //       if (this.$router.currentRoute.name === "login")
-  //         this.$router.push({ name: "servisUserList" });
-  //     }
-  //   });
-  // },
 
   mounted() {
     const firebaseui = require("firebaseui");
@@ -79,21 +65,14 @@ export default {
     guestLogin() {
       firebase
         .auth()
-        .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-        .then(() => {
-          firebase
-            .auth()
-            .signInWithEmailAndPassword(this.$config.email, this.$config.pass)
-            .then(userCredential => {
-              // ログイン成功時の処理
-              console.log(userCredential);
-              window.alert("ログインしました");
-              this.$router.push({ name: "index" });
-            })
-            .catch(error => {
-              window.alert("ログインに失敗しました");
-              console.log(error);
-            });
+        .signInWithEmailAndPassword(this.$config.email, this.$config.pass)
+        .then(userCredential => {
+          // ログイン成功時の処理
+          window.alert("ログインしました");
+          this.$router.push({ name: "index" });
+        })
+        .catch(error => {
+          window.alert("ログインに失敗しました");
         });
     }
   }
