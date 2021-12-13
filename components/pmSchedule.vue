@@ -49,7 +49,6 @@
                   group="pmGroup"
                   @start="drag = true"
                   @end="drag = false"
-                  @add="onAdd(index)"
                   v-model="pmTransferOderLists[index]"
                   :data-column-id="index"
                   style="min-width:100px"
@@ -184,10 +183,10 @@
         </v-col>
       </v-row>
       <v-row class="justify-center mb-10">
-        <v-btn-group>
+        <v-item-group>
           <v-btn @click="temporarilySaved" class="noprint mr-2">一時保存</v-btn>
           <v-btn @click="saveTodaySchedule" class="noprint ml-2">保存</v-btn>
-        </v-btn-group>
+        </v-item-group>
       </v-row>
     </v-container>
   </v-app>
@@ -242,7 +241,7 @@ export default {
     dialogm1: "",
     dialog: false,
     selectedItem: 1,
-    moveIndex: "",
+    // moveIndex: "",
     moveAmTransferOderList: {},
     pmTransferOderLists: []
   }),
@@ -291,9 +290,9 @@ export default {
 
   // methods-----------------------------------------------------------------------
   methods: {
-    onAdd(index) {
-      this.moveIndex = index;
-    },
+    // onAdd(index) {
+    //   this.moveIndex = index;
+    // },
     saveTodaySchedule() {
       this.$emit("save");
       const day = this.$route.params.id;
