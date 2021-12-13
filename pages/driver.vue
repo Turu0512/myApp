@@ -28,7 +28,10 @@
       <v-btn v-if="!editMode" @click="createDriver">
         ドライバー追加
       </v-btn>
-      <v-btn v-else @click="saveCar">保存</v-btn>
+      <v-col v-else>
+        <v-btn @click="cancelled">キャンセル</v-btn>
+        <v-btn @click="saveCar" class="ml-5">保存</v-btn>
+      </v-col>
     </v-container>
     <v-container>
       <v-simple-table fixed-header class="orange lighten-5">
@@ -96,13 +99,16 @@ export default {
         return;
       }
       const driverList = [...this.driverList];
-      const driverName = driverList.filter(
+      const driverDisplayName = driverList.filter(
         driver => driver.displayName == this.driver.displayName
       );
-      if (driverName.length != 0) {
+      const driverName = driverList.filter(
+        driver => driver.name == this.driver.name
+      );
+      if (driverDisplayName.length != 0 && driverName.length != 0) {
         this.$swal({
-          title: "同じ表示名のドライバー",
-          text: "既に存在する表示名を登録することはできません",
+          title: "同じドライバーがいます",
+          text: "既に存在するドライバーを登録することはできません",
           icon: "warning",
           dangerMode: true
         });
@@ -123,19 +129,28 @@ export default {
       this.driver.index = i;
     },
 
+    cancelled() {
+      this.driver.name = "";
+      this.driver.displayName = "";
+      this.editMode = false;
+    },
+
     async saveCar() {
       if (!this.driver.name || !this.driver.displayName) {
         alert("表示名、ドライバー名、どちらも入力してください");
         return;
       }
       const driverList = [...this.driverList];
-      const driverName = driverList.filter(
+      const driverDisplayName = driverList.filter(
         driver => driver.displayName == this.driver.displayName
       );
-      if (driverName.length != 0) {
+      const driverName = driverList.filter(
+        driver => driver.name == this.driver.name
+      );
+      if (driverDisplayName.length != 0 && driverName.length != 0) {
         this.$swal({
-          title: "同じ表示名のドライバー",
-          text: "既に存在する表示名を登録することはできません",
+          title: "同じドライバーがいます",
+          text: "既に存在するドライバーを登録することはできません",
           icon: "warning",
           dangerMode: true
         });

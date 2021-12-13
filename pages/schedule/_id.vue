@@ -106,18 +106,13 @@
                 <draggable
                   class="d-flex flex-row pa-1"
                   group="myGroup"
-                  @start="drag = true"
-                  @end="drag = false"
-                  @add="onAdd(index)"
                   v-model="amTransferOderLists[index]"
-                  :data-column-id="index"
                   style="min-width:100px"
                 >
                   <v-card-title
                     class="pa-0 mx-1 text-body-1"
                     v-for="item in amTransferOderLists[index]"
                     :key="item.id"
-                    :data-column-id="index"
                   >
                     {{ item.displayName }} →</v-card-title
                   >
@@ -196,12 +191,7 @@
                 >利用者一覧</v-list-item-title
               >
               <v-list-item-group class="grey lighten-4" n>
-                <draggable
-                  group="myGroup"
-                  @start="drag = true"
-                  @end="drag = false"
-                  v-model="todayUsers"
-                >
+                <draggable group="myGroup" v-model="todayUsers">
                   <v-list-item
                     v-for="todayUser in todayUsers"
                     :key="todayUser.id"
@@ -222,12 +212,7 @@
               >家族送迎</v-list-item-title
             >
             <v-list-item-group color="primary" class="grey lighten-4">
-              <draggable
-                group="myGroup"
-                @start="drag = true"
-                @end="drag = false"
-                v-model="familyTransfer"
-              >
+              <draggable group="myGroup" v-model="familyTransfer">
                 <v-list-item
                   v-for="(item, index) in familyTransfer"
                   :key="index"
@@ -315,7 +300,6 @@ export default {
     dialogm1: "",
     dialog: false,
     selectedItem: 1,
-    moveIndex: "",
     moveAmTransferOderList: {},
 
     date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -326,7 +310,6 @@ export default {
     menu2: false,
     amTransferOderLists: [],
     day: ""
-    // driverSchedule: []
   }),
 
   computed: {
@@ -429,11 +412,6 @@ export default {
     },
     backToSchedule() {
       this.$router.push({ name: "schedule-schedule" });
-    },
-    onAdd(index) {
-      // console.log(index)
-      this.moveIndex = index;
-      // this.amTransferOderList.push(amTransferOderList[index])
     },
 
     saveTodaySchedule() {
