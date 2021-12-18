@@ -1,4 +1,5 @@
 ## オリジナル簡易送迎表作成アプリ、送迎くんの概要
+アプリURL：　https://myapp-3f23b.web.app/login
 
 ### 作成背景
 
@@ -8,6 +9,8 @@
 ### 主な機能・技術
 
 vue-draggable を使用し、ドラッグ＆ドロップでの操作を可能にしました。さらに、シンプルな UI、機能、ボタンを最小限にすることで、PC に苦手意識のある方でも簡単に操作することが可能です。
+
+HTML / CSS / JavaScript  / Vue.js / Nuxt.js / Node.js / Firebase( fireauth / firestore )
 
 ![タイトルなし2](https://user-images.githubusercontent.com/84743939/144119712-feb1e102-08ff-4a47-b968-1d4bfe8eab6b.gif)
 
