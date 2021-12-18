@@ -1,5 +1,5 @@
 ## オリジナル簡易送迎表作成アプリ、送迎くんの概要
-アプリURL：　https://myapp-3f23b.web.app/login
+アプリURL：　https://myapp-3f23b.web.app
 
 ### 作成背景
 
